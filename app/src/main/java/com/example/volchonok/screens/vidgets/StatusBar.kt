@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -40,7 +41,7 @@ class StatusBar(private val userData: UserData) {
     private fun CreateCoins() {
         Card(shape = RoundedCornerShape(10000.dp, 10.dp, 10.dp, 10000.dp)) {
             Row(
-                Modifier.background(colorResource(id = R.color.main)),
+                Modifier.background(MaterialTheme.colorScheme.primary),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
@@ -51,9 +52,8 @@ class StatusBar(private val userData: UserData) {
                 Text(
                     userData.coins.toString(),
                     Modifier.padding(15.dp, 0.dp),
-                    color = Color.White,
-                    fontSize = 14.sp,
-                    fontFamily = FontFamily(Font(R.font.enthalpy298_regular))
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    style = MaterialTheme.typography.labelLarge
                 )
             }
         }
@@ -66,7 +66,7 @@ class StatusBar(private val userData: UserData) {
             contentDescription = "avatar",
             modifier = Modifier
                 .size(36.dp)
-                .border(2.dp, colorResource(id = R.color.main), CircleShape)
+                .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape)
         )
     }
 }

@@ -12,6 +12,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -42,14 +43,12 @@ class CoursesScreen {
             Text(
                 text = stringResource(id = R.string.course_greeting),
                 modifier = Modifier.padding(top = 30.dp),
-                fontSize = 24.sp,
-                fontFamily = FontFamily(Font(R.font.enthalpy298_regular))
+                style = MaterialTheme.typography.bodyMedium,
             )
             Text(
                 text = stringResource(id = R.string.what_learn),
                 modifier = Modifier.padding(top = 10.dp),
-                fontSize = 12.sp,
-                fontFamily = FontFamily(Font(R.font.montserrat_regular))
+                style = MaterialTheme.typography.labelSmall,
             )
             CoursesList(coursesList)
         }
@@ -80,27 +79,24 @@ class CoursesScreen {
                 Column(modifier = Modifier.padding(start = 20.dp, top = 20.dp)) {
                     Text(
                         text = courseData.name,
-                        fontSize = 24.sp,
-                        fontFamily = FontFamily(Font(R.font.enthalpy298_regular)),
-                        color = Color.White
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onPrimary
                     )
                     Text(
                         text = courseData.description,
                         modifier = Modifier.padding(top = 10.dp),
-                        fontSize = 12.sp,
-                        fontFamily = FontFamily(Font(R.font.montserrat_regular)),
-                        color = Color.White
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onPrimary
                     )
                     Button(
                         onClick = { /* Обработка нажатия кнопки */ },
                         modifier = Modifier.padding(top = 30.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.White)
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.onPrimary)
                     ) {
                         Text(
                             text = stringResource(id = R.string.sign_up_btn),
-                            color = colorResource(id = R.color.main),
-                            fontSize = 12.sp,
-                            fontFamily = FontFamily(Font(R.font.montserrat_medium)),
+                            color = MaterialTheme.colorScheme.primary,
+                            style = MaterialTheme.typography.labelMedium,
                             //modifier = Modifier.padding(28.dp, 12.dp),
                         )
                     }
