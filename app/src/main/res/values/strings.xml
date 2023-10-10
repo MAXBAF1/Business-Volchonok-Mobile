@@ -1,7 +1,13 @@
 <resources>
     <string name="app_name">Volchonok</string>
 
+    <!--Course screen-->
     <string name="course_greeting">Hello, bro</string>
     <string name="what_learn">What do you want to learn?</string>
     <string name="sign_up_btn">Записаться</string>
+
+    <!--Course info screen-->
+    <string name="lessons_cnt">Уроков</string>
+    <string name="about">Об этом курсе</string>
+    <string name="why_you">Почему этот курс для тебя</string>
 </resources>

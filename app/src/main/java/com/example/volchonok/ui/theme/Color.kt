@@ -3,6 +3,7 @@ package com.example.volchonok.ui.theme
 import androidx.compose.ui.graphics.Color
 
 val BlueMain = Color(0xFF4B94DD)
+val GrayMain = Color(0xFF898989)
 
 val Purple80 = Color(0xFFD0BCFF)
 val PurpleGrey80 = Color(0xFFCCC2DC)
