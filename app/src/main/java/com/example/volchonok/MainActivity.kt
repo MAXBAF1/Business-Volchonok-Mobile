@@ -13,6 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.volchonok.data.CourseData
 import com.example.volchonok.data.LessonData
 import com.example.volchonok.data.ModuleData
+import com.example.volchonok.data.ReviewData
 import com.example.volchonok.data.UserData
 import com.example.volchonok.screens.CourseInfoScreen
 import com.example.volchonok.screens.CoursesScreen
@@ -23,26 +24,6 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // Тестовые данные
-        val userData = UserData(R.drawable.wolf_icon, 5)
-        val coursesList = arrayListOf(
-            CourseData(
-                "Название курса 1",
-                listOf(
-                    ModuleData(
-                        "Модуль 1", listOf(
-                            LessonData("Урок 1", "Описание", "30", true),
-                            LessonData("Урок 2", "Описание", "30")
-                        ), emptyList()
-                    ), ModuleData("Модуль 2", emptyList(), emptyList())
-                ),
-                "Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!мLearn the basics of the lang",
-                "Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!мLearn the basics of the langLearn the basics of the language: make new friends, plan a family dinner, go shopping and much more!Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!мLearn the basics of the langLearn the basics of the language: make new friends, plan a family dinner, go shopping and much more!Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!мLearn the basics of the langLearn the basics of the language: make new friends, plan a family dinner, go shopping and much more!Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!мLearn the basics of the langLearn the basics of the language: make new friends, plan a family dinner, go shopping and much more!Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!мLearn the basics of the langLearn the basics of the language: make new friends, plan a family dinner, go shopping and much more!Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!мLearn the basics of the lang"
-
-            ),
-        )
-
 
         setContent {
             val navController = rememberNavController()
@@ -76,5 +57,41 @@ class MainActivity : ComponentActivity() {
         const val COURSES_SCREEN_ROUTE = "COURSES_SCREEN"
         const val COURSE_INFO_SCREEN_ROUTE = "COURSE_INFO_SCREEN"
     }
+
+    // Тестовые данные
+    private val userData = UserData("Пётр Иванов", R.drawable.wolf_icon, 5)
+    private val coursesList = arrayListOf(
+        CourseData(
+            "Название курса 1",
+            listOf(
+                ModuleData(
+                    "Модуль 1", listOf(
+                        LessonData(
+                            "Урок 1",
+                            "Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!",
+                            "30",
+                            true
+                        ), LessonData("Урок 2", "Описание", "30")
+                    ), emptyList()
+                ), ModuleData("Модуль 2", emptyList(), emptyList())
+            ),
+            "Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!мLearn the basics of the lang",
+            "Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!мLearn the basics of the langLearn the basics of the language: make new friends, plan a family dinner, go shopping and much more!Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!мLearn the basics of the langLearn the basics of the language: make new friends, plan a family dinner, go shopping and much more!Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!мLearn the basics of the langLearn the basics of the language: make new friends, plan a family dinner, go shopping and much more!Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!мLearn the basics of the langLearn the basics of the language: make new friends, plan a family dinner, go shopping and much more!Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!мLearn the basics of the langLearn the basics of the language: make new friends, plan a family dinner, go shopping and much more!Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!мLearn the basics of the lang",
+            listOf(
+                ReviewData(
+                    userData,
+                    "Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!"
+                ), ReviewData(
+                    userData,
+                    "Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!"
+                ), ReviewData(
+                    userData,
+                    "Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!"
+                )
+            )
+
+        ),
+    )
+
 }
 

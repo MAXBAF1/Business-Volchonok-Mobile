@@ -33,7 +33,7 @@ class TopAppBar(private val userData: UserData) {
 
     @Composable
     private fun CreateCoins() {
-        Card(shape = RoundedCornerShape(10000.dp, 10.dp, 10.dp, 10000.dp)) {
+        Card(shape = RoundedCornerShape(Int.MAX_VALUE.dp, 10.dp, 10.dp, Int.MAX_VALUE.dp)) {
             Row(
                 Modifier.background(MaterialTheme.colorScheme.primary),
                 verticalAlignment = Alignment.CenterVertically

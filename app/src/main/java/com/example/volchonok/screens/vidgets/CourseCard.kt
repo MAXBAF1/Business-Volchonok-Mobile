@@ -34,16 +34,15 @@ import com.example.volchonok.R
 import com.example.volchonok.data.CourseData
 
 class CourseCard(
-    private val courseData: CourseData,
-    private val toCourseInfoScreen: (CourseData) -> Unit
+    private val courseData: CourseData, private val toCourseInfoScreen: (CourseData) -> Unit
 ) {
     @Composable
     fun Add() {
         ElevatedCard(
             shape = RoundedCornerShape(20.dp),
-            elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
             modifier = Modifier
-                .padding(top = 10.dp)
+                .padding(top = 15.dp)
                 .fillMaxWidth(),
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary)
         ) {
@@ -55,17 +54,13 @@ class CourseCard(
                     contentScale = ContentScale.FillHeight
                 )*/
                 val color = MaterialTheme.colorScheme.onPrimaryContainer
-                Canvas(modifier = Modifier
-                    .fillMaxWidth()
-                    .rotate(0f)) {
-                    val canvasWidth = size.width
-                    val canvasHeight = size.height
+                Canvas(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
                     drawOval(
                         color = color,
-                        topLeft = Offset(
-                            x = 195.dp.toPx(),
-                            y = -80.dp.toPx()
-                        ),
+                        topLeft = Offset(x = 195.dp.toPx(), y = -80.dp.toPx()),
                         size = Size(width = 560.dp.toPx(), height = 430.dp.toPx()),
                     )
                 }

@@ -5,4 +5,5 @@ data class CourseData(
     val modules: List<ModuleData>,
     val description: String,
     val whyYouDescription: String,
+    val reviews: List<ReviewData>
 )

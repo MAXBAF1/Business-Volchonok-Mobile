@@ -24,6 +24,13 @@ val Typography = Typography(
         lineHeight = 36.sp,
         letterSpacing = 0.5.sp
     ),
+    titleSmall = TextStyle(
+        fontFamily = FontFamily(Font(R.font.montserrat_regular)),
+        fontWeight = FontWeight.W600,
+        fontSize = 14.sp,
+        lineHeight = 18.sp,
+        letterSpacing = 0.sp
+    ),
     labelLarge = TextStyle(
         fontFamily = FontFamily(Font(R.font.montserrat_regular)),
         fontWeight = FontWeight.W400,
@@ -42,7 +49,7 @@ val Typography = Typography(
         fontFamily = FontFamily(Font(R.font.montserrat_regular)),
         fontWeight = FontWeight.W400,
         fontSize = 12.sp,
-        lineHeight = 12.sp,
+        lineHeight = 18.sp,
         letterSpacing = 0.5.sp
     )
 )

@@ -36,7 +36,7 @@ class CoursesScreen(
 
     @Composable
     private fun CoursesList(coursesList: Iterable<CourseData>) {
-        Column(modifier = Modifier.padding(top = 20.dp)) {
+        Column(modifier = Modifier.padding(top = 15.dp)) {
             coursesList.forEach {
                 CourseCard(courseData = it, toCourseInfoScreen).Add()
             }

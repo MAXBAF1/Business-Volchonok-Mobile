@@ -3,9 +3,12 @@ package com.example.volchonok.screens
 import android.content.Context
 import android.widget.ScrollView
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DropdownMenuItem
@@ -29,6 +32,7 @@ import com.example.volchonok.data.ModuleData
 import com.example.volchonok.data.UserData
 import com.example.volchonok.screens.vidgets.Greeting
 import com.example.volchonok.screens.vidgets.ModuleCard
+import com.example.volchonok.screens.vidgets.ReviewCard
 import com.example.volchonok.screens.vidgets.TopAppBar
 
 class CourseInfoScreen(
@@ -45,13 +49,17 @@ class CourseInfoScreen(
             TopAppBar(userData).Create()
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                 Greeting()
-                Column(modifier = Modifier.padding(top = 15.dp)) {
-                    courseData.modules.forEach { ModuleCard(it).Add() }
-                }
+                ModulesList()
                 Description()
+                Reviews()
             }
+        }
+    }
 
-
+    @Composable
+    fun ModulesList() {
+        Column(modifier = Modifier.padding(top = 15.dp)) {
+            courseData.modules.forEach { ModuleCard(it).Add() }
         }
     }
 
@@ -79,41 +87,17 @@ class CourseInfoScreen(
         )
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    private fun DropDownMenu(moduleData: ModuleData) {
-        val options = listOf("Option 1", "Option 2", "Option 3")
-        var expanded by remember { mutableStateOf(false) }
-        var selectedOptionText by remember { mutableStateOf(options[0]) }
-
-        ExposedDropdownMenuBox(
-            expanded = expanded,
-            onExpandedChange = { expanded = !expanded },
-        ) {
-            TextField(
-                modifier = Modifier.menuAnchor(),
-                readOnly = true,
-                value = selectedOptionText,
-                onValueChange = {},
-                label = { Text(moduleData.name) },
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                colors = ExposedDropdownMenuDefaults.textFieldColors(),
-            )
-            ExposedDropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false },
-            ) {
-                options.forEach { selectionOption ->
-                    DropdownMenuItem(
-                        text = { Text(selectionOption) },
-                        onClick = {
-                            selectedOptionText = selectionOption
-                            expanded = false
-                        },
-                    )
-                }
+    private fun Reviews() {
+        Text(
+            text = stringResource(id = R.string.reviews),
+            modifier = Modifier.padding(top = 30.dp),
+            style = MaterialTheme.typography.titleMedium,
+        )
+        LazyRow() {
+            itemsIndexed(courseData.reviews) {_, item ->
+                ReviewCard(item).Add()
             }
         }
     }
-
 }
