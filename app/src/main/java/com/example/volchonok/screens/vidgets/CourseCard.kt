@@ -1,6 +1,8 @@
 package com.example.volchonok.screens.vidgets
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,6 +21,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -36,7 +42,9 @@ class CourseCard(
         ElevatedCard(
             shape = RoundedCornerShape(20.dp),
             elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-            modifier = Modifier.padding(top = 10.dp).fillMaxWidth(),
+            modifier = Modifier
+                .padding(top = 10.dp)
+                .fillMaxWidth(),
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary)
         ) {
             Box {
@@ -46,6 +54,22 @@ class CourseCard(
                     alignment = Alignment.CenterEnd,
                     contentScale = ContentScale.FillHeight
                 )*/
+                val color = MaterialTheme.colorScheme.onPrimaryContainer
+                Canvas(modifier = Modifier
+                    .fillMaxWidth()
+                    .rotate(0f)) {
+                    val canvasWidth = size.width
+                    val canvasHeight = size.height
+                    drawOval(
+                        color = color,
+                        topLeft = Offset(
+                            x = 195.dp.toPx(),
+                            y = -80.dp.toPx()
+                        ),
+                        size = Size(width = 560.dp.toPx(), height = 430.dp.toPx()),
+                    )
+                }
+
                 Column(modifier = Modifier.padding(20.dp)) {
                     AddNameAndDescription()
                     AddSignUpBtn()
@@ -63,7 +87,9 @@ class CourseCard(
         )
         Text(
             text = courseData.description,
-            modifier = Modifier.padding(top = 10.dp).widthIn(max = 160.dp),
+            modifier = Modifier
+                .padding(top = 10.dp)
+                .widthIn(max = 160.dp),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onPrimary,
             overflow = TextOverflow.Ellipsis,
