@@ -2,6 +2,7 @@ package com.example.volchonok.screens
 
 import android.content.Context
 import android.widget.ScrollView
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -36,22 +37,25 @@ import com.example.volchonok.screens.vidgets.ReviewCard
 import com.example.volchonok.screens.vidgets.TopAppBar
 
 class CourseInfoScreen(
-    private val userData: UserData,
-    private val courseData: CourseData
+    private val userData: UserData, private val courseData: CourseData
 ) {
     @Composable
     fun Create() {
         Column(
-            Modifier
-                .padding(30.dp, 15.dp)
-                .fillMaxSize()
+            Modifier.fillMaxSize()
         ) {
-            TopAppBar(userData).Create()
+            Column(Modifier.padding(start = 30.dp, top = 15.dp, end = 30.dp, bottom = 0.dp)) {
+                TopAppBar(userData).Create()
+            }
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-                Greeting()
-                ModulesList()
-                Description()
-                Reviews()
+                Column(Modifier.padding(30.dp, 0.dp)) {
+                    Greeting()
+                    ModulesList()
+                    Description()
+                }
+                Column(Modifier.padding(start = 30.dp, bottom = 15.dp)) {
+                    Reviews()
+                }
             }
         }
     }
@@ -95,7 +99,7 @@ class CourseInfoScreen(
             style = MaterialTheme.typography.titleMedium,
         )
         LazyRow() {
-            itemsIndexed(courseData.reviews) {_, item ->
+            itemsIndexed(courseData.reviews) { _, item ->
                 ReviewCard(item).Add()
             }
         }
