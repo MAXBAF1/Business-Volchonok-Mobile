@@ -1,4 +1,4 @@
-package com.example.volchonok.screens.vidgets
+package com.example.volchonok.screens.vidgets.cards
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image

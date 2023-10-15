@@ -3,16 +3,12 @@ package com.example.volchonok.screens
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.volchonok.R
 import com.example.volchonok.data.CourseData
 import com.example.volchonok.data.UserData
-import com.example.volchonok.screens.vidgets.CourseCard
+import com.example.volchonok.screens.vidgets.cards.CourseCard
 import com.example.volchonok.screens.vidgets.Greeting
 import com.example.volchonok.screens.vidgets.TopAppBar
 
@@ -23,14 +19,17 @@ class CoursesScreen(
 ) {
     @Composable
     fun Create() {
-        Column(
-            Modifier
-                .padding(30.dp, 15.dp)
-                .fillMaxSize()
-        ) {
+        Column {
             TopAppBar(userData).Create()
-            Greeting()
-            CoursesList(coursesList)
+            Column(
+                Modifier
+                    .padding(start = 30.dp, top = 0.dp, end = 30.dp, bottom = 15.dp)
+                    .fillMaxSize()
+            ) {
+
+                Greeting(userData.name)
+                CoursesList(coursesList)
+            }
         }
     }
 

@@ -10,9 +10,9 @@ import androidx.compose.ui.unit.dp
 import com.example.volchonok.R
 
 @Composable
-fun Greeting() {
+fun Greeting(userName: String) {
     Text(
-        text = stringResource(id = R.string.course_greeting),
+        text = "${stringResource(id = R.string.course_greeting)} $userName",
         modifier = Modifier.padding(top = 15.dp),
         style = MaterialTheme.typography.titleMedium,
     )

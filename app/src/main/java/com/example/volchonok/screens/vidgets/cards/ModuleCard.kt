@@ -1,4 +1,4 @@
-package com.example.volchonok.screens.vidgets
+package com.example.volchonok.screens.vidgets.cards
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,15 +27,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.volchonok.R
 import com.example.volchonok.data.LessonData
 import com.example.volchonok.data.ModuleData
+import com.example.volchonok.screens.vidgets.CompletedLessonsCntText
 
-class ModuleCard(private val moduleData: ModuleData) {
-    private val completedLessonCnt = moduleData.lessonNotes.count { it.isCompleted }
+class ModuleCard(
+    private val moduleData: ModuleData,
+    private val toLessonsScreen: (ModuleData) -> Unit
+) {
 
     @Composable
     fun Add() {
@@ -46,7 +47,7 @@ class ModuleCard(private val moduleData: ModuleData) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 15.dp),
-            shape = RoundedCornerShape(20.dp),
+            shape = RoundedCornerShape(25.dp),
             elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
         ) {
             Column(Modifier) {
@@ -61,7 +62,7 @@ class ModuleCard(private val moduleData: ModuleData) {
 
     @Composable
     private fun ModuleRow(onExpand: () -> Unit) {
-        val cardColor = if (completedLessonCnt > 0) {
+        val cardColor = if (moduleData.lessonNotes.count { it.isCompleted } > 0) {
             MaterialTheme.colorScheme.primary
         } else MaterialTheme.colorScheme.secondary
         val interactionSource = remember { MutableInteractionSource() }
@@ -86,7 +87,7 @@ class ModuleCard(private val moduleData: ModuleData) {
                 modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd
             ) {
                 Row {
-                    CompletedLessonsCntText()
+                    CompletedLessonsCntText(moduleData)
                     InfoCircle()
                 }
             }
@@ -98,38 +99,17 @@ class ModuleCard(private val moduleData: ModuleData) {
         Column(
             Modifier
                 .background(MaterialTheme.colorScheme.onPrimary)
+                .clickable { toLessonsScreen(moduleData) }
                 .padding(15.dp, 0.dp, 15.dp, 15.dp)
         ) {
-            moduleData.lessonNotes.forEach { LessonDescription(it) }
-        }
-    }
-
-    @Composable
-    private fun CompletedLessonsCntText() {
-        Card(
-            modifier = Modifier
-                .sizeIn(24.dp)
-                .padding(end = 10.dp),
-            shape = RoundedCornerShape(100),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onPrimary)
-        ) {
-            val lessonsCtnText = "$completedLessonCnt/${moduleData.lessonNotes.size} ${
-                stringResource(id = R.string.lessons_cnt)
-            }"
-            Text(
-                text = lessonsCtnText,
-                modifier = Modifier.padding(10.dp, 5.dp),
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.secondary,
-                textAlign = TextAlign.Center
-            )
+            moduleData.lessonNotes.forEach { LessonInfo(it) }
         }
     }
 
     @Composable
     private fun InfoCircle() {
         Card(
-            modifier = Modifier.size(24.dp),
+            modifier = Modifier.padding(start = 10.dp).size(24.dp),
             shape = CircleShape,
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onPrimary)
         ) {
@@ -147,12 +127,13 @@ class ModuleCard(private val moduleData: ModuleData) {
 
 
     @Composable
-    private fun LessonDescription(lessonData: LessonData) {
+    private fun LessonInfo(lessonData: LessonData) {
         val checkMarkColor = if (lessonData.isCompleted) {
             MaterialTheme.colorScheme.primary
         } else MaterialTheme.colorScheme.secondary
         Row(
-            modifier = Modifier.padding(top = 15.dp), verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier.padding(top = 15.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
                 modifier = Modifier
@@ -178,3 +159,4 @@ class ModuleCard(private val moduleData: ModuleData) {
         )
     }
 }
+

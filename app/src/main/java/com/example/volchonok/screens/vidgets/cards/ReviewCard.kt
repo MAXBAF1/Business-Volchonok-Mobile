@@ -1,4 +1,4 @@
-package com.example.volchonok.screens.vidgets
+package com.example.volchonok.screens.vidgets.cards
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -25,7 +25,7 @@ class ReviewCard(private val reviewData: ReviewData) {
     @Composable
     fun Add() {
         Card(
-            modifier = Modifier.padding(top = 15.dp, end = 15.dp),
+            modifier = Modifier.padding(end = 15.dp),
             border = BorderStroke(1.dp, MaterialTheme.colorScheme.onBackground),
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background)
         ) {

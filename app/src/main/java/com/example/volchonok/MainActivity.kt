@@ -17,6 +17,7 @@ import com.example.volchonok.data.ReviewData
 import com.example.volchonok.data.UserData
 import com.example.volchonok.screens.CourseInfoScreen
 import com.example.volchonok.screens.CoursesScreen
+import com.example.volchonok.screens.LessonsScreen
 import com.example.volchonok.ui.theme.VolchonokTheme
 
 class MainActivity : ComponentActivity() {
@@ -28,6 +29,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
             var selectedCourse: CourseData? = null
+            var selectedModule: ModuleData? = null
 
             VolchonokTheme {
                 Scaffold {
@@ -41,10 +43,18 @@ class MainActivity : ComponentActivity() {
                             }.Create()
                         }
                         composable(COURSE_INFO_SCREEN_ROUTE) {
-                            selectedCourse?.let {
-                                CourseInfoScreen(
-                                    userData = userData, courseData = it
-                                ).Create()
+                            selectedCourse?.let { courseData ->
+                                CourseInfoScreen(userData = userData, courseData = courseData) {
+                                    selectedModule = it
+                                    navController.navigate(LESSONS_SCREEN_ROUTE)
+                                }.Create()
+                            }
+                        }
+                        composable(LESSONS_SCREEN_ROUTE) {
+                            selectedModule?.let {
+                                LessonsScreen(userData = userData, moduleData = it) {
+                                    navController.popBackStack()
+                                }.Create()
                             }
                         }
                     }
@@ -56,6 +66,7 @@ class MainActivity : ComponentActivity() {
     companion object {
         const val COURSES_SCREEN_ROUTE = "COURSES_SCREEN"
         const val COURSE_INFO_SCREEN_ROUTE = "COURSE_INFO_SCREEN"
+        const val LESSONS_SCREEN_ROUTE = "LESSONS_SCREEN_ROUTE"
     }
 
     // Тестовые данные
@@ -65,15 +76,25 @@ class MainActivity : ComponentActivity() {
             "Название курса 1",
             listOf(
                 ModuleData(
-                    "Модуль 1", listOf(
+                    "Модуль 1",
+                    "Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!",
+                    listOf(
                         LessonData(
                             "Урок 1",
                             "Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!",
                             "30",
                             true
                         ), LessonData("Урок 2", "Описание", "30")
-                    ), emptyList()
-                ), ModuleData("Модуль 2", emptyList(), emptyList())
+                    ),
+                    listOf(
+                        LessonData(
+                            "Тест 1 (урок 1)",
+                            "Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!",
+                            "30",
+                            true
+                        ), LessonData("Тест 2 (урок 2)", "Описание", "30")
+                    ),
+                ), ModuleData("Модуль 2", "", emptyList(), emptyList())
             ),
             "Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!мLearn the basics of the lang",
             "Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!мLearn the basics of the langLearn the basics of the language: make new friends, plan a family dinner, go shopping and much more!Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!мLearn the basics of the langLearn the basics of the language: make new friends, plan a family dinner, go shopping and much more!Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!мLearn the basics of the langLearn the basics of the language: make new friends, plan a family dinner, go shopping and much more!Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!мLearn the basics of the langLearn the basics of the language: make new friends, plan a family dinner, go shopping and much more!Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!мLearn the basics of the langLearn the basics of the language: make new friends, plan a family dinner, go shopping and much more!Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!мLearn the basics of the lang",
