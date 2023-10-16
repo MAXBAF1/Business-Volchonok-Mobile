@@ -7,6 +7,9 @@ import androidx.activity.compose.setContent
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -15,9 +18,11 @@ import com.example.volchonok.data.LessonData
 import com.example.volchonok.data.ModuleData
 import com.example.volchonok.data.ReviewData
 import com.example.volchonok.data.UserData
+import com.example.volchonok.navigation.Navigation
 import com.example.volchonok.screens.CourseInfoScreen
 import com.example.volchonok.screens.CoursesScreen
 import com.example.volchonok.screens.LessonsScreen
+import com.example.volchonok.screens.ProfileScreen
 import com.example.volchonok.ui.theme.VolchonokTheme
 
 class MainActivity : ComponentActivity() {
@@ -27,47 +32,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            val navController = rememberNavController()
-            var selectedCourse: CourseData? = null
-            var selectedModule: ModuleData? = null
-
             VolchonokTheme {
                 Scaffold {
-                    NavHost(
-                        navController = navController, startDestination = COURSES_SCREEN_ROUTE
-                    ) {
-                        composable(COURSES_SCREEN_ROUTE) {
-                            CoursesScreen(userData = userData, coursesList = coursesList) {
-                                selectedCourse = it
-                                navController.navigate(COURSE_INFO_SCREEN_ROUTE)
-                            }.Create()
-                        }
-                        composable(COURSE_INFO_SCREEN_ROUTE) {
-                            selectedCourse?.let { courseData ->
-                                CourseInfoScreen(userData = userData, courseData = courseData) {
-                                    selectedModule = it
-                                    navController.navigate(LESSONS_SCREEN_ROUTE)
-                                }.Create()
-                            }
-                        }
-                        composable(LESSONS_SCREEN_ROUTE) {
-                            selectedModule?.let {
-                                LessonsScreen(userData = userData, moduleData = it) {
-                                    navController.popBackStack()
-                                }.Create()
-                            }
-                        }
-                    }
+                    Navigation(userData, coursesList).Create()
                 }
             }
         }
     }
 
-    companion object {
-        const val COURSES_SCREEN_ROUTE = "COURSES_SCREEN"
-        const val COURSE_INFO_SCREEN_ROUTE = "COURSE_INFO_SCREEN"
-        const val LESSONS_SCREEN_ROUTE = "LESSONS_SCREEN_ROUTE"
-    }
 
     // Тестовые данные
     private val userData = UserData("Пётр Иванов", R.drawable.wolf_icon, 5)

@@ -25,14 +25,15 @@ import com.example.volchonok.screens.vidgets.TopAppBar
 class CourseInfoScreen(
     private val userData: UserData,
     private val courseData: CourseData,
-    private val toLessonsScreen: (ModuleData) -> Unit
+    private val toLessonsScreen: (ModuleData) -> Unit,
+    private val toProfile: () -> Unit
 ) {
     @Composable
     fun Create() {
         Column(
             Modifier.fillMaxSize()
         ) {
-            TopAppBar(userData).Create()
+            TopAppBar(userData, toProfile).Create()
 
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                 Column(Modifier.padding(30.dp, 0.dp)) {

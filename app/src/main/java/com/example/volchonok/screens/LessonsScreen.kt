@@ -35,12 +35,13 @@ import com.example.volchonok.screens.vidgets.cards.LessonCard
 class LessonsScreen(
     private val userData: UserData,
     private val moduleData: ModuleData,
-    private val onBackClick: () -> Unit
+    private val onBackClick: () -> Unit,
+    private val toProfile: () -> Unit
 ) {
     @Composable
     fun Create() {
         Column {
-            TopAppBar(userData, true, onBackClick).Create()
+            TopAppBar(userData, toProfile, true, onBackClick).Create()
             ModuleInfo()
             TabLayout()
         }
@@ -80,7 +81,7 @@ class LessonsScreen(
     fun TabLayout() {
         val tabList =
             listOf(stringResource(id = R.string.notes), stringResource(id = R.string.tests))
-        val pagerState = rememberPagerState { tabList.size }
+        val pagerState = rememberPagerState()
 
         Column(
             modifier = Modifier
@@ -89,14 +90,14 @@ class LessonsScreen(
                 .background(MaterialTheme.colorScheme.onPrimary, RoundedCornerShape(20.dp))
         ) {
             TabRow(pagerState, tabList).Create()
-            HorizontalPager(pagerState)
+            HorizontalPager(tabList.size, pagerState)
         }
     }
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
-    private fun HorizontalPager(pagerState: PagerState) {
-        HorizontalPager(state = pagerState) { index ->
+    private fun HorizontalPager(pageCount: Int, pagerState: PagerState) {
+        HorizontalPager(pageCount) { index ->
             val list = when (index) {
                 0 -> moduleData.lessonNotes
                 1 -> moduleData.lessonTests

@@ -36,8 +36,9 @@ import com.example.volchonok.data.UserData
 
 class TopAppBar(
     private val userData: UserData,
+    private val toProfile: () -> Unit,
     private val isLessonScreen: Boolean = false,
-    private val onBackClick: () -> Unit = {}
+    private val onBackClick: () -> Unit = {},
 ) {
     private var backgroundColor: Color? = null
 
@@ -108,12 +109,11 @@ class TopAppBar(
         val borderColor = if (isLessonScreen) {
             MaterialTheme.colorScheme.onPrimary
         } else MaterialTheme.colorScheme.primary
-        Image(
-            painter = painterResource(id = userData.avatarId),
+        Image(painter = painterResource(id = userData.avatarId),
             contentDescription = "avatar",
             modifier = Modifier
                 .size(36.dp)
                 .border(2.dp, borderColor, CircleShape)
-        )
+                .clickable { toProfile() })
     }
 }

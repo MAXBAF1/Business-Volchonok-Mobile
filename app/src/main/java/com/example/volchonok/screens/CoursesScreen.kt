@@ -15,12 +15,13 @@ import com.example.volchonok.screens.vidgets.TopAppBar
 class CoursesScreen(
     private val userData: UserData,
     private val coursesList: Iterable<CourseData>,
-    private val toCourseInfoScreen: (CourseData) -> Unit
+    private val toCourseInfoScreen: (CourseData) -> Unit,
+    private val toProfile: () -> Unit
 ) {
     @Composable
     fun Create() {
         Column {
-            TopAppBar(userData).Create()
+            TopAppBar(userData, toProfile).Create()
             Column(
                 Modifier
                     .padding(start = 30.dp, top = 0.dp, end = 30.dp, bottom = 15.dp)
