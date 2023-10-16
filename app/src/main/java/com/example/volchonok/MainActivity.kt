@@ -42,7 +42,7 @@ class MainActivity : ComponentActivity() {
 
 
     // Тестовые данные
-    private val userData = UserData("Пётр Иванов", R.drawable.wolf_icon, 5)
+    private val userData = UserData("Пётр Иванов", R.drawable.wolf_icon, 5, "Almost Fluent")
     private val coursesList = arrayListOf(
         CourseData(
             "Название курса 1",

@@ -64,7 +64,10 @@ class Navigation(private val userData: UserData, private val coursesList: ArrayL
 
     @Composable
     private fun CreateProfileScreen() {
-        ProfileScreen().Create()
+        ProfileScreen(
+            userData,
+            coursesList,
+            onBackClick = { navController!!.popBackStack() }).Create()
     }
 
 

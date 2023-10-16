@@ -17,4 +17,8 @@
     <string name="tests">Тесты</string>
     <string name="completed">Пройдено</string>
     <string name="min">мин</string>
+
+    <!--Profile screen-->
+    <string name="profile">Профиль</string>
+    <string name="level">Level:</string>
 </resources>

@@ -97,7 +97,7 @@ class LessonsScreen(
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
     private fun HorizontalPager(pageCount: Int, pagerState: PagerState) {
-        HorizontalPager(pageCount) { index ->
+        HorizontalPager(pageCount, state = pagerState) { index ->
             val list = when (index) {
                 0 -> moduleData.lessonNotes
                 1 -> moduleData.lessonTests
