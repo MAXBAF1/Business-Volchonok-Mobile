@@ -27,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.volchonok.R
@@ -86,8 +87,12 @@ class ModuleCard(
             Box(
                 modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd
             ) {
+                val completedLessonCnt = moduleData.lessonNotes.count { it.isCompleted }
+                val lessonsCtnText = "${completedLessonCnt}/${moduleData.lessonNotes.size} ${
+                    stringResource(id = R.string.lessons_cnt)
+                }"
                 Row {
-                    CompletedLessonsCntText(moduleData)
+                    CompletedLessonsCntText(lessonsCtnText)
                     InfoCircle()
                 }
             }

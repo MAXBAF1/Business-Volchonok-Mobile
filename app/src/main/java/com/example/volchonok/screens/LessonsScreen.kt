@@ -65,7 +65,11 @@ class LessonsScreen(
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onPrimary
                     )
-                    CompletedLessonsCntText(moduleData = moduleData)
+                    val completedLessonCnt = moduleData.lessonNotes.count { it.isCompleted }
+                    val lessonsCtnText = "${completedLessonCnt}/${moduleData.lessonNotes.size} ${
+                        stringResource(id = R.string.lessons_cnt)
+                    }"
+                    CompletedLessonsCntText(lessonsCtnText)
                 }
                 Text(
                     text = moduleData.description,

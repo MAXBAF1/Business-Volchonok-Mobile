@@ -40,9 +40,9 @@ val Typography = Typography(
     ),
     labelMedium = TextStyle(
         fontFamily = FontFamily(Font(R.font.montserrat_regular)),
-        fontWeight = FontWeight.W600,
+        fontWeight = FontWeight.W900,
         fontSize = 12.sp,
-        lineHeight = 16.sp,
+        lineHeight = 18.sp,
         letterSpacing = 0.5.sp
     ),
     labelSmall = TextStyle(

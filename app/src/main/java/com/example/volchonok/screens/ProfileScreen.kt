@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -24,7 +26,9 @@ import androidx.compose.ui.unit.dp
 import com.example.volchonok.R
 import com.example.volchonok.data.CourseData
 import com.example.volchonok.data.UserData
+import com.example.volchonok.screens.vidgets.StylizedTextInput
 import com.example.volchonok.screens.vidgets.TopAppBar
+import com.example.volchonok.screens.vidgets.cards.CourseProgressCard
 
 class ProfileScreen(
     private val userData: UserData,
@@ -33,15 +37,55 @@ class ProfileScreen(
 ) {
     @Composable
     fun Create() {
-        Column(Modifier.padding(30.dp, 15.dp)) {
+        Column(
+            Modifier
+                .padding(start = 30.dp, end = 30.dp)
+                .verticalScroll(rememberScrollState())
+        ) {
             TopAppBar()
             UserInfoRow()
+            CourseProgressCard(coursesList).Create()
+            YourDataTexts()
+            TextInputs()
         }
     }
 
     @Composable
+    private fun TextInputs() {
+        StylizedTextInput("Лепинских Максим Игоревич", stringResource(id = R.string.fio)).Create()
+        StylizedTextInput("89501234567", stringResource(id = R.string.phone)).Create()
+        StylizedTextInput("example@gmail.com", stringResource(id = R.string.mail)).Create()
+        StylizedTextInput("Екатеринбург", stringResource(id = R.string.address)).Create()
+        StylizedTextInput("1", stringResource(id = R.string.grade), isLast = true).Create()
+    }
+
+    @Composable
+    private fun YourDataTexts() {
+        Text(
+            modifier = Modifier.padding(top = 30.dp),
+            text = stringResource(id = R.string.your_data),
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+
+        Row(modifier = Modifier.padding(top = 5.dp)) {
+            Text(
+                text = "${stringResource(id = R.string.fill_data)} ",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            Text(
+                text = stringResource(id = R.string.five_coins),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+        }
+
+    }
+
+    @Composable
     private fun TopAppBar() {
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(Modifier.padding(top = 15.dp), verticalAlignment = Alignment.CenterVertically) {
             Button(
                 onClick = { onBackClick() },
                 shape = CircleShape,

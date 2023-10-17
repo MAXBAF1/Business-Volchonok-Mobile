@@ -16,19 +16,16 @@ import com.example.volchonok.R
 import com.example.volchonok.data.ModuleData
 
 @Composable
-fun CompletedLessonsCntText(moduleData: ModuleData) {
-    val completedLessonCnt = moduleData.lessonNotes.count { it.isCompleted }
+fun CompletedLessonsCntText(text: String) {
     Card(
         modifier = Modifier
             .sizeIn(24.dp),
         shape = RoundedCornerShape(100),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onPrimary)
     ) {
-        val lessonsCtnText = "${completedLessonCnt}/${moduleData.lessonNotes.size} ${
-            stringResource(id = R.string.lessons_cnt)
-        }"
+
         Text(
-            text = lessonsCtnText,
+            text = text,
             modifier = Modifier.padding(10.dp, 5.dp),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.secondary,
