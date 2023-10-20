@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">Volchonok</string>
 
+    <!--Welcome screen-->
+    <string name="welcome">Добро пожаловать</string>
+    <string name="tap_to_start">нажмите начать, чтобы погрузиться в\nновый мир</string>
+    <string name="start">Начать</string>
+
     <!--Course screen-->
     <string name="course_greeting">Привет,</string>
     <string name="what_learn">Что хочешь изучить?</string>

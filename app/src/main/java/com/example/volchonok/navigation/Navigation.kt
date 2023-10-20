@@ -11,7 +11,9 @@ import com.example.volchonok.data.UserData
 import com.example.volchonok.screens.CourseInfoScreen
 import com.example.volchonok.screens.CoursesScreen
 import com.example.volchonok.screens.LessonsScreen
+import com.example.volchonok.screens.LoginScreen
 import com.example.volchonok.screens.ProfileScreen
+import com.example.volchonok.screens.WelcomeScreen
 
 class Navigation(private val userData: UserData, private val coursesList: ArrayList<CourseData>) {
     private var navController: NavHostController? = null
@@ -23,13 +25,29 @@ class Navigation(private val userData: UserData, private val coursesList: ArrayL
         navController = rememberNavController()
 
         NavHost(
-            navController = navController!!, startDestination = COURSES_SCREEN_ROUTE
+            navController = navController!!, startDestination = WELCOME_SCREEN_ROUTE
         ) {
+            composable(WELCOME_SCREEN_ROUTE) { CreateWelcomeScreen() }
+            composable(LOGIN_SCREEN_ROUTE) { CreateLoginScreen() }
             composable(COURSES_SCREEN_ROUTE) { CreateCoursesScreen() }
             composable(COURSE_INFO_SCREEN_ROUTE) { CreateCourseInfoScreen() }
             composable(LESSONS_SCREEN_ROUTE) { CreateLessonsScreen() }
             composable(PROFILE_SCREEN_ROUTE) { CreateProfileScreen() }
         }
+    }
+
+    @Composable
+    private fun CreateWelcomeScreen() {
+        WelcomeScreen(toLoginScreen = {
+            navController!!.navigate(LOGIN_SCREEN_ROUTE)
+        }).Create()
+    }
+
+    @Composable
+    private fun CreateLoginScreen() {
+        LoginScreen(toCoursesScreen = {
+            navController!!.navigate(COURSES_SCREEN_ROUTE)
+        }).Create()
     }
 
     @Composable
@@ -70,8 +88,9 @@ class Navigation(private val userData: UserData, private val coursesList: ArrayL
             onBackClick = { navController!!.popBackStack() }).Create()
     }
 
-
     companion object {
+        const val WELCOME_SCREEN_ROUTE = "WELCOME_SCREEN"
+        const val LOGIN_SCREEN_ROUTE = "LOGIN_SCREEN"
         const val COURSES_SCREEN_ROUTE = "COURSES_SCREEN"
         const val COURSE_INFO_SCREEN_ROUTE = "COURSE_INFO_SCREEN"
         const val LESSONS_SCREEN_ROUTE = "LESSONS_SCREEN_ROUTE"
