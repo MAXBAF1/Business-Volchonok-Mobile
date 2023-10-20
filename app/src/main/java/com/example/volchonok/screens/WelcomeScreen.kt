@@ -33,44 +33,54 @@ class WelcomeScreen(private val toLoginScreen: () -> Unit) {
             Modifier
                 .padding(30.dp)
                 .fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween) {
-            Column {
-                Text(
-                    modifier = Modifier.fillMaxWidth().padding(top = 45.dp),
-                    text = stringResource(id = R.string.welcome),
-                    style = MaterialTheme.typography.titleLarge,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 10.dp),
-                    text = stringResource(id = R.string.tap_to_start),
-                    style = MaterialTheme.typography.labelSmall,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-            }
+            WelcomeTexts()
             Image(
                 modifier = Modifier.size(390.dp, 456.dp),
                 contentScale = ContentScale.Crop,
                 painter = painterResource(id = R.drawable.party_wolf),
                 contentDescription = "party_wolf"
             )
-            Button(
+            StartButton()
+        }
+    }
+    
+    @Composable
+    private fun WelcomeTexts() {
+        Column {
+            Text(
+                modifier = Modifier.fillMaxWidth().padding(top = 45.dp),
+                text = stringResource(id = R.string.welcome),
+                style = MaterialTheme.typography.titleLarge,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(60.dp),
-                onClick = { toLoginScreen() },
-                shape = RoundedCornerShape(10.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.start).uppercase(),
-                    style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                )
-            }
+                    .padding(top = 10.dp),
+                text = stringResource(id = R.string.tap_to_start),
+                style = MaterialTheme.typography.labelSmall,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+        }
+    }
+
+    @Composable
+    private fun StartButton() {
+        Button(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp),
+            onClick = { toLoginScreen() },
+            shape = RoundedCornerShape(10.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+        ) {
+            Text(
+                text = stringResource(id = R.string.start).uppercase(),
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.onPrimary,
+            )
         }
     }
 }
