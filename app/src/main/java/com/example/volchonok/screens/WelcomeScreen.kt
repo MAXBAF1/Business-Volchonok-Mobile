@@ -16,6 +16,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -32,7 +33,10 @@ class WelcomeScreen(private val toLoginScreen: () -> Unit) {
         Column(
             Modifier
                 .padding(30.dp)
-                .fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween) {
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             WelcomeTexts()
             Image(
                 modifier = Modifier.size(390.dp, 456.dp),
@@ -43,21 +47,18 @@ class WelcomeScreen(private val toLoginScreen: () -> Unit) {
             StartButton()
         }
     }
-    
+
     @Composable
     private fun WelcomeTexts() {
-        Column {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                modifier = Modifier.fillMaxWidth().padding(top = 45.dp),
+                modifier = Modifier.padding(top = 45.dp),
                 text = stringResource(id = R.string.welcome),
                 style = MaterialTheme.typography.titleLarge,
-                textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onBackground
             )
             Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 10.dp),
+                modifier = Modifier.padding(top = 10.dp),
                 text = stringResource(id = R.string.tap_to_start),
                 style = MaterialTheme.typography.labelSmall,
                 textAlign = TextAlign.Center,

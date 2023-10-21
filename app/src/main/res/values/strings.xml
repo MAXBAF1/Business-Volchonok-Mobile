@@ -6,6 +6,14 @@
     <string name="tap_to_start">нажмите начать, чтобы погрузиться в\nновый мир</string>
     <string name="start">Начать</string>
 
+    <!--Login screen-->
+    <string name="business_wolf">Бизнес волчонок</string>
+    <string name="login">Логин</string>
+    <string name="password">Пароль</string>
+    <string name="log_in">Войти</string>
+    <string name="hide_password">Скрыть пароль</string>
+    <string name="show_password">Показать пароль</string>
+
     <!--Course screen-->
     <string name="course_greeting">Привет,</string>
     <string name="what_learn">Что хочешь изучить?</string>

@@ -85,7 +85,7 @@ class LessonsScreen(
     fun TabLayout() {
         val tabList =
             listOf(stringResource(id = R.string.notes), stringResource(id = R.string.tests))
-        val pagerState = rememberPagerState()
+        val pagerState = rememberPagerState { tabList.size }
 
         Column(
             modifier = Modifier
@@ -101,7 +101,7 @@ class LessonsScreen(
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
     private fun HorizontalPager(pageCount: Int, pagerState: PagerState) {
-        HorizontalPager(pageCount, state = pagerState) { index ->
+        HorizontalPager(state = pagerState) { index ->
             val list = when (index) {
                 0 -> moduleData.lessonNotes
                 1 -> moduleData.lessonTests
