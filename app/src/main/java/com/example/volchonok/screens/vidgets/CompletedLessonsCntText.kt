@@ -23,10 +23,9 @@ fun CompletedLessonsCntText(text: String) {
         shape = RoundedCornerShape(100),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onPrimary)
     ) {
-
         Text(
             text = text,
-            modifier = Modifier.padding(10.dp, 5.dp),
+            modifier = Modifier.padding(10.dp, 3.dp),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.secondary,
             textAlign = TextAlign.Center

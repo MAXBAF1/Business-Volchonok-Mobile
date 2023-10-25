@@ -51,7 +51,12 @@ class TopAppBar(
             Modifier
                 .fillMaxWidth()
                 .background(backgroundColor!!)
-                .padding(30.dp, 15.dp),
+                .padding(
+                    start = if (isLessonScreen) 20.dp else 30.dp,
+                    top = 15.dp,
+                    end = 30.dp,
+                    bottom = 15.dp
+                ),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {

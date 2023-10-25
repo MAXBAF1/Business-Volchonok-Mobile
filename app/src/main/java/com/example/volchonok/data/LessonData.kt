@@ -1,8 +1,12 @@
 package com.example.volchonok.data
 
-data class LessonData(
+import com.example.volchonok.enums.LessonType
+
+data class
+LessonData(
     val name: String,
     val description: String,
     val durationTime: String,
+    val lessonType: LessonType,
     val isCompleted: Boolean = false
 )

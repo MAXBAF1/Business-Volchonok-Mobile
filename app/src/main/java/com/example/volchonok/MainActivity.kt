@@ -18,6 +18,7 @@ import com.example.volchonok.data.LessonData
 import com.example.volchonok.data.ModuleData
 import com.example.volchonok.data.ReviewData
 import com.example.volchonok.data.UserData
+import com.example.volchonok.enums.LessonType
 import com.example.volchonok.navigation.Navigation
 import com.example.volchonok.screens.CourseInfoScreen
 import com.example.volchonok.screens.CoursesScreen
@@ -55,16 +56,18 @@ class MainActivity : ComponentActivity() {
                             "Урок 1",
                             "Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!",
                             "30",
+                            LessonType.Note,
                             true
-                        ), LessonData("Урок 2", "Описание", "30")
+                        ), LessonData("Урок 2", "Описание", "30", LessonType.Note)
                     ),
                     listOf(
                         LessonData(
                             "Тест 1 (урок 1)",
                             "Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!",
                             "30",
+                            LessonType.Test,
                             true
-                        ), LessonData("Тест 2 (урок 2)", "Описание", "30")
+                        ), LessonData("Тест 2 (урок 2)", "Описание", "30", LessonType.Test)
                     ),
                 ), ModuleData("Модуль 2", "", emptyList(), emptyList())
             ),

@@ -28,6 +28,7 @@ import com.example.volchonok.data.LessonData
 import com.example.volchonok.data.ModuleData
 import com.example.volchonok.data.UserData
 import com.example.volchonok.screens.vidgets.CompletedLessonsCntText
+import com.example.volchonok.screens.vidgets.InfoHeader
 import com.example.volchonok.screens.vidgets.TabRow
 import com.example.volchonok.screens.vidgets.TopAppBar
 import com.example.volchonok.screens.vidgets.cards.LessonCard
@@ -36,49 +37,23 @@ class LessonsScreen(
     private val userData: UserData,
     private val moduleData: ModuleData,
     private val onBackClick: () -> Unit,
-    private val toProfile: () -> Unit
+    private val toProfile: () -> Unit,
+    private val toNoteScreen: (LessonData) -> Unit,
+    private val toTestScreen: (LessonData) -> Unit,
 ) {
     @Composable
     fun Create() {
         Column {
             TopAppBar(userData, toProfile, true, onBackClick).Create()
-            ModuleInfo()
+            val completedLessonCnt = moduleData.lessonNotes.count { it.isCompleted }
+            val lessonsCtnText = "${completedLessonCnt}/${moduleData.lessonNotes.size} ${
+                stringResource(id = R.string.lessons_cnt)
+            }"
+            InfoHeader(moduleData.name, moduleData.description, lessonsCtnText)
             TabLayout()
         }
     }
 
-    @Composable
-    private fun ModuleInfo() {
-        Card(
-            shape = RoundedCornerShape(0.dp, 0.dp, 20.dp, 20.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary)
-        ) {
-            Column(Modifier.padding(30.dp, 15.dp)) {
-                Row(
-                    Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = moduleData.name,
-                        modifier = Modifier,
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onPrimary
-                    )
-                    val completedLessonCnt = moduleData.lessonNotes.count { it.isCompleted }
-                    val lessonsCtnText = "${completedLessonCnt}/${moduleData.lessonNotes.size} ${
-                        stringResource(id = R.string.lessons_cnt)
-                    }"
-                    CompletedLessonsCntText(lessonsCtnText)
-                }
-                Text(
-                    text = moduleData.description,
-                    modifier = Modifier.padding(top = 15.dp),
-                    style = MaterialTheme.typography.labelSmall,
-                )
-            }
-        }
-    }
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
@@ -90,17 +65,16 @@ class LessonsScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(start = 30.dp, top = 30.dp, end = 30.dp)
                 .background(MaterialTheme.colorScheme.onPrimary, RoundedCornerShape(20.dp))
         ) {
             TabRow(pagerState, tabList).Create()
-            HorizontalPager(tabList.size, pagerState)
+            HorizontalPager(pagerState)
         }
     }
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
-    private fun HorizontalPager(pageCount: Int, pagerState: PagerState) {
+    private fun HorizontalPager(pagerState: PagerState) {
         HorizontalPager(state = pagerState) { index ->
             val list = when (index) {
                 0 -> moduleData.lessonNotes
@@ -116,13 +90,15 @@ class LessonsScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 15.dp)
+                .padding(start = 30.dp, top = 15.dp, end = 30.dp)
         ) {
             itemsIndexed(list) { i, lesson ->
                 when (i) {
-                    0 -> LessonCard(lesson, true).Create()
-                    list.size - 1 -> LessonCard(lesson, isLast = true).Create()
-                    else -> LessonCard(lesson).Create()
+                    0 -> LessonCard(lesson, toNoteScreen, toTestScreen, true).Create()
+                    list.size - 1 -> LessonCard(
+                        lesson, toNoteScreen, toTestScreen, isLast = true
+                    ).Create()
+                    else -> LessonCard(lesson, toNoteScreen, toTestScreen).Create()
                 }
             }
         }

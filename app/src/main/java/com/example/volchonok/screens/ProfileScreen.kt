@@ -37,16 +37,16 @@ class ProfileScreen(
 ) {
     @Composable
     fun Create() {
-        Column(
-            Modifier
-                .padding(start = 30.dp, end = 30.dp)
-                .verticalScroll(rememberScrollState())
-        ) {
+        Column(modifier = Modifier.padding(start = 20.dp, end = 30.dp)) {
             TopAppBar()
-            UserInfoRow()
-            CourseProgressCard(coursesList).Create()
-            YourDataTexts()
-            TextInputs()
+            Column(
+                Modifier.padding(start = 10.dp).verticalScroll(rememberScrollState())
+            ) {
+                UserInfoRow()
+                CourseProgressCard(coursesList).Create()
+                YourDataTexts()
+                TextInputs()
+            }
         }
     }
 
@@ -85,7 +85,7 @@ class ProfileScreen(
 
     @Composable
     private fun TopAppBar() {
-        Row(Modifier.padding(top = 15.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(Modifier.padding(top = 15.dp, bottom = 15.dp), verticalAlignment = Alignment.CenterVertically) {
             Button(
                 onClick = { onBackClick() },
                 shape = CircleShape,
@@ -115,7 +115,7 @@ class ProfileScreen(
 
     @Composable
     private fun UserInfoRow() {
-        Row(Modifier.padding(top = 30.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(Modifier.padding(top = 15.dp), verticalAlignment = Alignment.CenterVertically) {
             Image(
                 painter = painterResource(id = userData.avatarId),
                 contentDescription = "avatar",

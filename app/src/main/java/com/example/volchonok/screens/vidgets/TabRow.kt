@@ -4,6 +4,7 @@ import androidx.compose.animation.Animatable
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.PagerState
@@ -31,15 +32,17 @@ class TabRow(private val pagerState: PagerState, private val tabList: List<Strin
     fun Create() {
         coroutineScope = rememberCoroutineScope()
         val tabIndex = pagerState.currentPage
-        TabRow(modifier = Modifier
-            .border(3.dp, MaterialTheme.colorScheme.primary, CircleShape)
-            .padding(6.dp)
-            .clip(RoundedCornerShape(20.dp)),
-            selectedTabIndex = tabIndex,
-            indicator = { },
-            divider = { }) {
-            tabList.forEachIndexed { index, text ->
-                Tab(pagerState, index, text)
+        Box(modifier = Modifier.padding(start = 30.dp, top = 30.dp, end = 30.dp)) {
+            TabRow(modifier = Modifier
+                .border(3.dp, MaterialTheme.colorScheme.primary, CircleShape)
+                .padding(6.dp)
+                .clip(RoundedCornerShape(20.dp)),
+                selectedTabIndex = tabIndex,
+                indicator = { },
+                divider = { }) {
+                tabList.forEachIndexed { index, text ->
+                    Tab(pagerState, index, text)
+                }
             }
         }
     }

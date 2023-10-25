@@ -2,6 +2,7 @@ package com.example.volchonok.screens.vidgets.cards
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,14 +18,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.volchonok.R
 import com.example.volchonok.data.LessonData
+import com.example.volchonok.enums.LessonType
 
 class LessonCard(
     private val lessonData: LessonData,
+    private val toNoteScreen: (LessonData) -> Unit,
+    private val toTestScreen: (LessonData) -> Unit,
     private val isFirst: Boolean = false,
     private val isLast: Boolean = false
 ) {
@@ -36,14 +41,18 @@ class LessonCard(
             MaterialTheme.colorScheme.primary
         } else MaterialTheme.colorScheme.onBackground
 
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = if (isFirst) 0.dp else 15.dp, bottom = if (isLast) 15.dp else 0.dp),
+        Card(modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = if (isFirst) 0.dp else 15.dp, bottom = if (isLast) 15.dp else 0.dp)
+            .clip(RoundedCornerShape(20.dp))
+            .clickable {
+                if (lessonData.lessonType == LessonType.Note) {
+                    toNoteScreen(lessonData)
+                } else toTestScreen(lessonData)
+            },
             shape = RoundedCornerShape(20.dp),
             border = BorderStroke(1.dp, cardColor!!),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background)
-        ) {
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background)) {
             Column(Modifier.padding(15.dp)) {
                 NameRow()
                 Text(
@@ -59,7 +68,6 @@ class LessonCard(
                     color = if (lessonData.isCompleted) cardColor!! else MaterialTheme.colorScheme.secondary
                 )
             }
-
         }
     }
 

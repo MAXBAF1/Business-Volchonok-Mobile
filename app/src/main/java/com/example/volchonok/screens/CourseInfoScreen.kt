@@ -41,7 +41,7 @@ class CourseInfoScreen(
                     ModulesList()
                     Description()
                 }
-                Column(Modifier.padding(start = 30.dp, bottom = 15.dp, top = 30.dp)) {
+                Column(Modifier.padding(bottom = 15.dp, top = 30.dp)) {
                     Reviews()
                 }
             }
@@ -82,12 +82,14 @@ class CourseInfoScreen(
     @Composable
     private fun Reviews() {
         Text(
+            modifier = Modifier.padding(start = 30.dp),
             text = stringResource(id = R.string.reviews),
             style = MaterialTheme.typography.titleMedium,
         )
         LazyRow(modifier = Modifier.padding(top = 15.dp)) {
-            itemsIndexed(courseData.reviews) { _, item ->
-                ReviewCard(item).Add()
+            itemsIndexed(courseData.reviews) { i, item ->
+                if (i == 0) ReviewCard(item, true).Add()
+                else ReviewCard(item).Add()
             }
         }
     }

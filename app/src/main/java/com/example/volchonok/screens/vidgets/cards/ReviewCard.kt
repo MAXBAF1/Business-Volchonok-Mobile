@@ -21,11 +21,11 @@ import androidx.compose.ui.unit.dp
 import com.example.volchonok.data.ReviewData
 import com.example.volchonok.data.UserData
 
-class ReviewCard(private val reviewData: ReviewData) {
+class ReviewCard(private val reviewData: ReviewData, private val isFirst: Boolean = false) {
     @Composable
     fun Add() {
         Card(
-            modifier = Modifier.padding(end = 15.dp),
+            modifier = Modifier.padding(start = if (isFirst) 30.dp else 0.dp, end = 15.dp),
             border = BorderStroke(1.dp, MaterialTheme.colorScheme.onBackground),
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background)
         ) {
