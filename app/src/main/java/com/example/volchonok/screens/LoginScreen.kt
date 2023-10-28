@@ -30,6 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.volchonok.R
+import com.example.volchonok.screens.vidgets.others.DefaultButton
 import com.example.volchonok.screens.vidgets.others.StylizedTextInput
 
 class LoginScreen(private val toCoursesScreen: () -> Unit) {
@@ -99,20 +100,6 @@ class LoginScreen(private val toCoursesScreen: () -> Unit) {
     private fun StartButton() {
         var enabled by remember { mutableStateOf(true) }
         enabled = loginText!!.value.isNotEmpty() && passwordText!!.value.isNotEmpty()
-        Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(60.dp),
-            onClick = { toCoursesScreen() },
-            shape = RoundedCornerShape(10.dp),
-            enabled = enabled,
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
-        ) {
-            Text(
-                text = stringResource(id = R.string.log_in).uppercase(),
-                style = MaterialTheme.typography.titleSmall,
-                color = MaterialTheme.colorScheme.onPrimary,
-            )
-        }
+        DefaultButton(enabled, stringResource(id = R.string.log_in).uppercase(), toCoursesScreen)
     }
 }

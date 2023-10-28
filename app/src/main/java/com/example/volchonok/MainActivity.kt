@@ -59,27 +59,22 @@ class MainActivity : ComponentActivity() {
                             true,
                             listOf(
                                 QuestionData(
-                                    "Tool  yang dapat digunakan untuk memanipulasi dua objek atau lebih atau lebih Pada Adobe Illustrator  disebut ...",
-                                    listOf(
+                                    "Вопрос 1", listOf(
                                         AnswerData("Ответ 1", false),
                                         AnswerData("Ответ 2", true),
                                         AnswerData("Ответ 3", false)
                                     )
-                                ),
-                                QuestionData(
-                                    "Tool  yang dapat digunakan untuk memanipulasi dua objek atau lebih atau lebih Pada Adobe Illustrator  disebut ...",
-                                    listOf(
-                                        AnswerData("Ответ 1", false),
-                                        AnswerData("Ответ 2", true),
-                                        AnswerData("Ответ 3", false)
+                                ), QuestionData(
+                                    "Вопрос 2", listOf(
+                                        AnswerData("Ответ 4", false),
+                                        AnswerData("Ответ 5", true),
+                                        AnswerData("Ответ 6", false)
                                     )
-                                ),
-                                QuestionData(
-                                    "Tool  yang dapat digunakan untuk memanipulasi dua objek atau lebih atau lebih Pada Adobe Illustrator  disebut ...",
-                                    listOf(
-                                        AnswerData("Ответ 1", false),
-                                        AnswerData("Ответ 2", true),
-                                        AnswerData("Ответ 3", false)
+                                ), QuestionData(
+                                    "Вопрос 3", listOf(
+                                        AnswerData("Ответ 7", false),
+                                        AnswerData("Ответ 8", true),
+                                        AnswerData("Ответ 9", false)
                                     )
                                 )
                             )
