@@ -1,4 +1,4 @@
-package com.example.volchonok.screens.vidgets
+package com.example.volchonok.screens.vidgets.others
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn

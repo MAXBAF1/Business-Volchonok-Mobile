@@ -6,23 +6,22 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.volchonok.data.CourseData
-import com.example.volchonok.data.LessonData
 import com.example.volchonok.data.ModuleData
 import com.example.volchonok.data.UserData
+import com.example.volchonok.interfaces.ILesson
 import com.example.volchonok.screens.CourseInfoScreen
 import com.example.volchonok.screens.CoursesScreen
+import com.example.volchonok.screens.LessonScreen
 import com.example.volchonok.screens.LessonsScreen
 import com.example.volchonok.screens.LoginScreen
-import com.example.volchonok.screens.NoteScreen
 import com.example.volchonok.screens.ProfileScreen
-import com.example.volchonok.screens.TestScreen
 import com.example.volchonok.screens.WelcomeScreen
 
 class Navigation(private val userData: UserData, private val coursesList: ArrayList<CourseData>) {
     private var navController: NavHostController? = null
     private var selectedCourse: CourseData? = null
     private var selectedModule: ModuleData? = null
-    private var selectedLesson: LessonData? = null
+    private var selectedLesson: ILesson? = null
 
     @Composable
     fun Create() {
@@ -36,8 +35,7 @@ class Navigation(private val userData: UserData, private val coursesList: ArrayL
             composable(COURSES_SCREEN_ROUTE) { CreateCoursesScreen() }
             composable(COURSE_INFO_SCREEN_ROUTE) { CreateCourseInfoScreen() }
             composable(LESSONS_SCREEN_ROUTE) { CreateLessonsScreen() }
-            composable(NOTE_SCREEN_ROUTE) { CreateNoteScreen() }
-            composable(TEST_SCREEN_ROUTE) { CreateTestScreen() }
+            composable(LESSON_SCREEN_ROUTE) { CreateLessonScreen() }
             composable(PROFILE_SCREEN_ROUTE) { CreateProfileScreen() }
         }
     }
@@ -81,35 +79,19 @@ class Navigation(private val userData: UserData, private val coursesList: ArrayL
                 moduleData = moduleData,
                 onBackClick = { navController!!.popBackStack() },
                 toProfile = { navController!!.navigate(PROFILE_SCREEN_ROUTE) },
-                toNoteScreen = {
+                toLessonScreen = {
                     selectedLesson = it
-                    navController!!.navigate(NOTE_SCREEN_ROUTE)
-                },
-                toTestScreen = {
-                    selectedLesson = it
-                    navController!!.navigate(TEST_SCREEN_ROUTE)
+                    navController!!.navigate(LESSON_SCREEN_ROUTE)
                 }).Create()
         }
     }
 
     @Composable
-    private fun CreateNoteScreen() {
+    private fun CreateLessonScreen() {
         selectedLesson?.let {
-            NoteScreen(
+            LessonScreen(
                 userData = userData,
-                testData = it,
-                onBackClick = { navController!!.popBackStack() },
-                toProfile = { navController!!.navigate(PROFILE_SCREEN_ROUTE) },
-            ).Create()
-        }
-    }
-
-    @Composable
-    private fun CreateTestScreen() {
-        selectedLesson?.let {
-            TestScreen(
-                userData = userData,
-                testData = it,
+                lessonData = it,
                 onBackClick = { navController!!.popBackStack() },
                 toProfile = { navController!!.navigate(PROFILE_SCREEN_ROUTE) },
             ).Create()
@@ -129,8 +111,7 @@ class Navigation(private val userData: UserData, private val coursesList: ArrayL
         const val COURSES_SCREEN_ROUTE = "COURSES_SCREEN"
         const val COURSE_INFO_SCREEN_ROUTE = "COURSE_INFO_SCREEN"
         const val LESSONS_SCREEN_ROUTE = "LESSONS_SCREEN_ROUTE"
-        const val NOTE_SCREEN_ROUTE = "NOTE_SCREEN_ROUTE"
-        const val TEST_SCREEN_ROUTE = "TEST_SCREEN_ROUTE"
+        const val LESSON_SCREEN_ROUTE = "LESSON_SCREEN_ROUTE"
         const val PROFILE_SCREEN_ROUTE = "PROFILE_SCREEN_ROUTE"
     }
 }

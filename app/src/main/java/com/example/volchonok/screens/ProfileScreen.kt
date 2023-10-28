@@ -2,7 +2,6 @@ package com.example.volchonok.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -26,8 +25,8 @@ import androidx.compose.ui.unit.dp
 import com.example.volchonok.R
 import com.example.volchonok.data.CourseData
 import com.example.volchonok.data.UserData
-import com.example.volchonok.screens.vidgets.StylizedTextInput
-import com.example.volchonok.screens.vidgets.TopAppBar
+import com.example.volchonok.screens.vidgets.others.StylizedTextInput
+import com.example.volchonok.screens.vidgets.others.TopAppBar
 import com.example.volchonok.screens.vidgets.cards.CourseProgressCard
 
 class ProfileScreen(

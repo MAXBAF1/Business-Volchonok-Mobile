@@ -14,6 +14,19 @@
     <string name="hide_password">Скрыть пароль</string>
     <string name="show_password">Показать пароль</string>
 
+    <!--Profile screen-->
+    <string name="profile">Профиль</string>
+    <string name="level">Level:</string>
+    <string name="modules_cnt">Модулей</string>
+    <string name="your_data">Ваши данные:</string>
+    <string name="fill_data">Заполните данные и получите</string>
+    <string name="five_coins">5 волчьих коинов</string>
+    <string name="fio">ФИО</string>
+    <string name="phone">Телефон</string>
+    <string name="mail">Почта</string>
+    <string name="address">Адрес для подарочков от бизнес-волчонка</string>
+    <string name="grade">Класс</string>
+
     <!--Course screen-->
     <string name="course_greeting">Привет,</string>
     <string name="what_learn">Что хочешь изучить?</string>
@@ -31,16 +44,6 @@
     <string name="completed">Пройдено</string>
     <string name="min">мин</string>
 
-    <!--Profile screen-->
-    <string name="profile">Профиль</string>
-    <string name="level">Level:</string>
-    <string name="modules_cnt">Модулей</string>
-    <string name="your_data">Ваши данные:</string>
-    <string name="fill_data">Заполните данные и получите</string>
-    <string name="five_coins">5 волчьих коинов</string>
-    <string name="fio">ФИО</string>
-    <string name="phone">Телефон</string>
-    <string name="mail">Почта</string>
-    <string name="address">Адрес для подарочков от бизнес-волчонка</string>
-    <string name="grade">Класс</string>
+    <!--Test screen-->
+    <string name="choose_answer">Выберите верный ответ</string>
 </resources>

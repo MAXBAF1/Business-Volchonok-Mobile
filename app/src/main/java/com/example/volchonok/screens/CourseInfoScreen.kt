@@ -17,10 +17,10 @@ import com.example.volchonok.R
 import com.example.volchonok.data.CourseData
 import com.example.volchonok.data.ModuleData
 import com.example.volchonok.data.UserData
-import com.example.volchonok.screens.vidgets.Greeting
+import com.example.volchonok.screens.vidgets.others.Greeting
 import com.example.volchonok.screens.vidgets.cards.ModuleCard
 import com.example.volchonok.screens.vidgets.cards.ReviewCard
-import com.example.volchonok.screens.vidgets.TopAppBar
+import com.example.volchonok.screens.vidgets.others.TopAppBar
 
 class CourseInfoScreen(
     private val userData: UserData,

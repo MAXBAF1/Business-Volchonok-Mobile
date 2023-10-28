@@ -13,9 +13,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,7 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.volchonok.R
 import com.example.volchonok.data.CourseData
-import com.example.volchonok.screens.vidgets.CompletedLessonsCntText
+import com.example.volchonok.screens.vidgets.others.CompletedLessonsCntText
 import kotlin.math.roundToInt
 
 class CourseProgressCard(coursesList: Iterable<CourseData>) {

@@ -9,8 +9,8 @@ import androidx.compose.ui.unit.dp
 import com.example.volchonok.data.CourseData
 import com.example.volchonok.data.UserData
 import com.example.volchonok.screens.vidgets.cards.CourseCard
-import com.example.volchonok.screens.vidgets.Greeting
-import com.example.volchonok.screens.vidgets.TopAppBar
+import com.example.volchonok.screens.vidgets.others.Greeting
+import com.example.volchonok.screens.vidgets.others.TopAppBar
 
 class CoursesScreen(
     private val userData: UserData,

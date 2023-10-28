@@ -1,4 +1,4 @@
-package com.example.volchonok.screens.vidgets
+package com.example.volchonok.screens.vidgets.others
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

@@ -1,4 +1,4 @@
-package com.example.volchonok.screens.vidgets
+package com.example.volchonok.screens.vidgets.others
 
 import androidx.compose.animation.Animatable
 import androidx.compose.foundation.ExperimentalFoundationApi

@@ -2,22 +2,19 @@ package com.example.volchonok.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
-import com.example.volchonok.data.LessonData
+import com.example.volchonok.data.NoteData
+import com.example.volchonok.data.TestData
 import com.example.volchonok.data.UserData
-import com.example.volchonok.screens.vidgets.InfoHeader
-import com.example.volchonok.screens.vidgets.TopAppBar
+import com.example.volchonok.screens.vidgets.others.InfoHeader
+import com.example.volchonok.screens.vidgets.others.TopAppBar
 
 class NoteScreen(
-    private val userData: UserData,
-    private val testData: LessonData,
-    private val onBackClick: () -> Unit,
-    private val toProfile: () -> Unit,
+    private val noteData: NoteData,
 ) {
     @Composable
     fun Create() {
         Column {
-            TopAppBar(userData, toProfile, true, onBackClick).Create()
-            InfoHeader(title = testData.name, description = testData.description)
+
         }
     }
 }

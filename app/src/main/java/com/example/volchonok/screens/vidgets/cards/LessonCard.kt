@@ -23,13 +23,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.volchonok.R
-import com.example.volchonok.data.LessonData
-import com.example.volchonok.enums.LessonType
+import com.example.volchonok.interfaces.ILesson
 
 class LessonCard(
-    private val lessonData: LessonData,
-    private val toNoteScreen: (LessonData) -> Unit,
-    private val toTestScreen: (LessonData) -> Unit,
+    private val lessonData: ILesson,
+    private val toLessonScreen: (ILesson) -> Unit,
     private val isFirst: Boolean = false,
     private val isLast: Boolean = false
 ) {
@@ -41,18 +39,16 @@ class LessonCard(
             MaterialTheme.colorScheme.primary
         } else MaterialTheme.colorScheme.onBackground
 
-        Card(modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = if (isFirst) 0.dp else 15.dp, bottom = if (isLast) 15.dp else 0.dp)
-            .clip(RoundedCornerShape(20.dp))
-            .clickable {
-                if (lessonData.lessonType == LessonType.Note) {
-                    toNoteScreen(lessonData)
-                } else toTestScreen(lessonData)
-            },
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = if (isFirst) 0.dp else 15.dp, bottom = if (isLast) 15.dp else 0.dp)
+                .clip(RoundedCornerShape(20.dp))
+                .clickable { toLessonScreen(lessonData) },
             shape = RoundedCornerShape(20.dp),
             border = BorderStroke(1.dp, cardColor!!),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background)) {
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background)
+        ) {
             Column(Modifier.padding(15.dp)) {
                 NameRow()
                 Text(

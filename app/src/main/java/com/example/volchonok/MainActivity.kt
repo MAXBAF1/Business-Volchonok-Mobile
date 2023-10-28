@@ -6,24 +6,15 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
-import androidx.navigation.NavController
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+import com.example.volchonok.data.AnswerData
 import com.example.volchonok.data.CourseData
-import com.example.volchonok.data.LessonData
+import com.example.volchonok.data.TestData
 import com.example.volchonok.data.ModuleData
+import com.example.volchonok.data.NoteData
+import com.example.volchonok.data.QuestionData
 import com.example.volchonok.data.ReviewData
 import com.example.volchonok.data.UserData
-import com.example.volchonok.enums.LessonType
 import com.example.volchonok.navigation.Navigation
-import com.example.volchonok.screens.CourseInfoScreen
-import com.example.volchonok.screens.CoursesScreen
-import com.example.volchonok.screens.LessonsScreen
-import com.example.volchonok.screens.ProfileScreen
 import com.example.volchonok.ui.theme.VolchonokTheme
 
 class MainActivity : ComponentActivity() {
@@ -52,22 +43,58 @@ class MainActivity : ComponentActivity() {
                     "Модуль 1",
                     "Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!",
                     listOf(
-                        LessonData(
+                        NoteData(
                             "Урок 1",
                             "Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!",
                             "30",
-                            LessonType.Note,
-                            true
-                        ), LessonData("Урок 2", "Описание", "30", LessonType.Note)
+                            true,
+                            "Learn the basics of the language: make new friends, plan a family di"
+                        ), NoteData("Урок 2", "Описание", "30", false, "ghggh")
                     ),
                     listOf(
-                        LessonData(
+                        TestData(
                             "Тест 1 (урок 1)",
                             "Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!",
                             "30",
-                            LessonType.Test,
-                            true
-                        ), LessonData("Тест 2 (урок 2)", "Описание", "30", LessonType.Test)
+                            true,
+                            listOf(
+                                QuestionData(
+                                    "Tool  yang dapat digunakan untuk memanipulasi dua objek atau lebih atau lebih Pada Adobe Illustrator  disebut ...",
+                                    listOf(
+                                        AnswerData("Ответ 1", false),
+                                        AnswerData("Ответ 2", true),
+                                        AnswerData("Ответ 3", false)
+                                    )
+                                ),
+                                QuestionData(
+                                    "Tool  yang dapat digunakan untuk memanipulasi dua objek atau lebih atau lebih Pada Adobe Illustrator  disebut ...",
+                                    listOf(
+                                        AnswerData("Ответ 1", false),
+                                        AnswerData("Ответ 2", true),
+                                        AnswerData("Ответ 3", false)
+                                    )
+                                ),
+                                QuestionData(
+                                    "Tool  yang dapat digunakan untuk memanipulasi dua objek atau lebih atau lebih Pada Adobe Illustrator  disebut ...",
+                                    listOf(
+                                        AnswerData("Ответ 1", false),
+                                        AnswerData("Ответ 2", true),
+                                        AnswerData("Ответ 3", false)
+                                    )
+                                )
+                            )
+                        ), TestData(
+                            "Тест 2 (урок 2)", "Описание", "30", false, listOf(
+                                QuestionData(
+                                    "Tool  yang dapat digunakan untuk memanipulasi dua objek atau lebih atau lebih Pada Adobe Illustrator  disebut ...",
+                                    listOf(
+                                        AnswerData("Ответ 1", false),
+                                        AnswerData("Ответ 2", true),
+                                        AnswerData("Ответ 3", false)
+                                    )
+                                )
+                            )
+                        )
                     ),
                 ), ModuleData("Модуль 2", "", emptyList(), emptyList())
             ),
