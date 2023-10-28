@@ -1,16 +1,17 @@
 package com.example.volchonok.screens.vidgets.cards
 
+import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -21,11 +22,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -43,27 +46,29 @@ class CourseCard(
             elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
             modifier = Modifier
                 .padding(top = 15.dp)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .height(185.dp),
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary)
         ) {
             Box {
-                /*Image(
-                    painter = painterResource(id = R.drawable.course_background),
-                    contentDescription = "course_background",
-                    alignment = Alignment.CenterEnd,
-                    contentScale = ContentScale.FillHeight
-                )*/
-                val color = MaterialTheme.colorScheme.onPrimaryContainer
+                val ovalColor = MaterialTheme.colorScheme.onPrimaryContainer
                 Canvas(
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
                     drawOval(
-                        color = color,
+                        color = ovalColor,
                         topLeft = Offset(x = 195.dp.toPx(), y = -80.dp.toPx()),
                         size = Size(width = 560.dp.toPx(), height = 430.dp.toPx()),
                     )
                 }
+                Image(
+                    modifier = Modifier.size(280.dp).offset(x = 130.dp),
+                    painter = painterResource(id = R.drawable.mic_wolf),
+                    contentDescription = "mic_wolf image",
+                    alignment = Alignment.TopEnd,
+                    contentScale = ContentScale.Crop
+                )
 
                 Column(modifier = Modifier.padding(20.dp)) {
                     AddNameAndDescription()
