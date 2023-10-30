@@ -8,13 +8,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,8 +29,11 @@ import com.example.volchonok.R
 import com.example.volchonok.screens.vidgets.others.DefaultButton
 import com.example.volchonok.screens.vidgets.others.StylizedTextInput
 
-class LoginScreen(private val toCoursesScreen: () -> Unit) {
-    private var loginText: MutableState<String>? = null
+class LoginScreen(
+    private val toCoursesScreen: () -> Unit,
+    private val getLoginResult: (loginText: String, passwordText: String) -> Double
+) {
+    private var usernameText: MutableState<String>? = null
     private var passwordText: MutableState<String>? = null
 
     @Composable
@@ -91,15 +90,21 @@ class LoginScreen(private val toCoursesScreen: () -> Unit) {
                 StylizedTextInput("password", stringResource(id = R.string.password), true)
             login.Create()
             password.Create()
-            loginText = login.text
+            usernameText = login.text
             passwordText = password.text
         }
     }
 
     @Composable
     private fun StartButton() {
-        var enabled by remember { mutableStateOf(true) }
-        enabled = loginText!!.value.isNotEmpty() && passwordText!!.value.isNotEmpty()
-        DefaultButton(enabled, stringResource(id = R.string.log_in).uppercase(), toCoursesScreen)
+        var enabled by remember { mutableStateOf(false) }
+        enabled = usernameText!!.value.isNotEmpty() && passwordText!!.value.isNotEmpty()
+        DefaultButton(enabled, stringResource(id = R.string.log_in).uppercase()) { checkData() }
+    }
+
+    private fun checkData() {
+        if (getLoginResult(usernameText!!.value, passwordText!!.value) == 200.0) {
+            toCoursesScreen()
+        }
     }
 }
