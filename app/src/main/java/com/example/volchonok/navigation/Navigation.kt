@@ -50,6 +50,10 @@ class Navigation(private val userData: UserData, private val coursesList: ArrayL
     @Composable
     private fun CreateLoginScreen() {
         LoginScreen(toCoursesScreen = {
+            // FIXME Нижепреведённое условие проверяет, что пользователь успешно залогинен
+            // if (LoginService().execute(loginText!!.value, passwordText!!.value).get() == 200.0)
+            // FIXME Список кодов ошибок можно найти на доске в Trello
+
             navController!!.navigate(COURSES_SCREEN_ROUTE)
         }).Create()
     }
