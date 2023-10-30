@@ -13,6 +13,8 @@
     <string name="log_in">Войти</string>
     <string name="hide_password">Скрыть пароль</string>
     <string name="show_password">Показать пароль</string>
+    <string name="incorrect">Неверный логин или пароль, если у вас нет данных для входа обратитесь к администратору</string>
+    <string name="unknown_error">Неизвестная ошибка, обратитесь к администратору</string>
 
     <!--Profile screen-->
     <string name="profile">Профиль</string>

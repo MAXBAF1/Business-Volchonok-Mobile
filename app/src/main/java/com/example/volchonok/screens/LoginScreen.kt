@@ -1,5 +1,7 @@
 package com.example.volchonok.screens
 
+import android.widget.TextView
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -21,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -28,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import com.example.volchonok.R
 import com.example.volchonok.screens.vidgets.others.DefaultButton
 import com.example.volchonok.screens.vidgets.others.StylizedTextInput
+
 
 class LoginScreen(
     private val toCoursesScreen: () -> Unit,
@@ -98,13 +102,30 @@ class LoginScreen(
     @Composable
     private fun StartButton() {
         var enabled by remember { mutableStateOf(false) }
+        var showToast by remember { mutableStateOf(false) }
+        if (showToast) {
+            CheckData()
+            showToast = false
+        }
         enabled = usernameText!!.value.isNotEmpty() && passwordText!!.value.isNotEmpty()
-        DefaultButton(enabled, stringResource(id = R.string.log_in).uppercase()) { checkData() }
-    }
-
-    private fun checkData() {
-        if (getLoginResult(usernameText!!.value, passwordText!!.value) == 200.0) {
-            toCoursesScreen()
+        DefaultButton(enabled, stringResource(id = R.string.log_in).uppercase()) {
+            showToast = true
         }
     }
+
+    @Composable
+    private fun CheckData() {
+        when (getLoginResult(usernameText!!.value, passwordText!!.value)) {
+            200.0 -> toCoursesScreen()
+            -1000.0 -> MakeToast(stringResource(id = R.string.incorrect))
+            -2000.0 -> MakeToast(stringResource(id = R.string.unknown_error))
+        }
+    }
+
+    @Composable
+    private fun MakeToast(message: String) {
+        Toast.makeText(LocalContext.current, message, Toast.LENGTH_SHORT).show()
+
+    }
+
 }
