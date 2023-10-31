@@ -1,6 +1,7 @@
 package com.example.volchonok.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -50,9 +51,11 @@ class Navigation(private val userData: UserData, private val coursesList: ArrayL
 
     @Composable
     private fun CreateLoginScreen() {
+        val ctx = LocalContext.current
+
         LoginScreen(toCoursesScreen = { navController!!.navigate(COURSES_SCREEN_ROUTE) },
             getLoginResult = { loginText, passwordText ->
-                return@LoginScreen LoginService().execute(loginText, passwordText).get()
+                return@LoginScreen LoginService(ctx).execute(loginText, passwordText).get()
             }).Create()
     }
 

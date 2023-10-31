@@ -1,7 +1,10 @@
 package com.example.volchonok.services;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
+
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -17,54 +20,25 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
-public class LoginService extends AsyncTask<String, Void, Double> {
+import static com.example.volchonok.services.enums.ServiceStringValue.*;
 
-    private static final String LOGIN_REQUEST_ADDRESS = "http://localhost:8080/api/v1/auth/login";
-    private static final String LOGIN_KEY = "login";
-    private static final String PASSWORD_KEY = "password";
-    private static final String CONTENT_TYPE = "application/json";
-    private static final String REQUEST_METHOD = "POST";
-    private static final String LOGIN_STATUS_KEY = "status";
-    private static OkHttpClient httpClient;
-    private static Request request;
+public class LoginService extends VolchonokService<String, Void, Double>{
+
+    public LoginService(Context ctx) {
+        super(ctx);
+    }
 
     private double login(String login, String password) {
-
-        double loginResult = 200.0;
-
         Map<String, String> requestBodyParameters = Map.of(
-                LOGIN_KEY, login,
-                PASSWORD_KEY, password
+                LOGIN_KEY.getValue(), login,
+                PASSWORD_KEY.getValue(), password
         );
         RequestBody requestBody = RequestBody.create(
-                new Gson().toJson(requestBodyParameters, new TypeToken<Map>(){}.getType()),
-                MediaType.get(CONTENT_TYPE)
+                new Gson().toJson(requestBodyParameters, new TypeToken<Map>() {}.getType()),
+                MediaType.get(CONTENT_TYPE_JSON.getValue())
         );
 
-        httpClient = new OkHttpClient();
-        request = new Request.Builder()
-                .url(LOGIN_REQUEST_ADDRESS)
-                .method(REQUEST_METHOD, requestBody)
-                .build();
-
-        try (Response response = httpClient.newCall(request).execute()) {
-
-            ResponseBody responseBody = response.body();
-            Map<String, Object> responseBodyAsMap = new Gson().fromJson(
-                    responseBody.string(),
-                    new TypeToken<HashMap<String, Object>>() {
-                    }.getType()
-            );
-
-            Log.d("TAG", "Function login returns: " + responseBodyAsMap.get("status"));
-            Log.d("TAG", "Function login returns: " + responseBodyAsMap.get("message"));
-
-            loginResult = Double.parseDouble(String.valueOf(responseBodyAsMap.get(LOGIN_STATUS_KEY)));
-        } catch (IOException | NullPointerException e){
-            e.printStackTrace();
-        }
-
-        return loginResult;
+        return sendHttpRequest(LOGIN_REQUEST_ADDRESS.getValue(), requestBody);
     }
 
     @Override
