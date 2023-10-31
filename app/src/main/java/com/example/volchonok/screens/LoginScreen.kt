@@ -1,6 +1,5 @@
 package com.example.volchonok.screens
 
-import android.widget.TextView
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -39,9 +38,11 @@ class LoginScreen(
 ) {
     private var usernameText: MutableState<String>? = null
     private var passwordText: MutableState<String>? = null
+    private var tryLogin: MutableState<Boolean>? = null
 
     @Composable
     fun Create() {
+        tryLogin = remember { mutableStateOf(false) }
         Column(
             Modifier
                 .fillMaxSize()
@@ -54,9 +55,40 @@ class LoginScreen(
                     .fillMaxWidth()
                     .fillMaxHeight(0.5f), contentAlignment = Alignment.Center
             ) { Logo() }
-            TextsInputs()
-            StartButton()
+            Column {
+                if (tryLogin!!.value) {
+                    CheckData()
+
+                }
+                Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom) {
+                    TextsInputs()
+                    StartButton()
+                }
+
+            }
         }
+    }
+
+    @Composable
+    private fun CheckData() {
+        val usernameText = usernameText?.value
+        val passwordText = passwordText?.value
+        if (usernameText.isNullOrEmpty() || passwordText.isNullOrEmpty()) return
+        when (getLoginResult(usernameText, passwordText)) {
+            200.0 -> toCoursesScreen()
+            -1000.0 -> MakeErrorText(stringResource(id = R.string.incorrect))
+            -2000.0 -> MakeErrorText(stringResource(id = R.string.unknown_error))
+        }
+    }
+
+    @Composable
+    private fun MakeErrorText(message: String) {
+        Text(
+            text = message,
+            style = MaterialTheme.typography.labelMedium,
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.error
+        )
     }
 
     @Composable
@@ -88,7 +120,7 @@ class LoginScreen(
 
     @Composable
     private fun TextsInputs() {
-        Column {
+        Column(Modifier.padding(bottom = 30.dp)) {
             val login = StylizedTextInput("login", stringResource(id = R.string.login))
             val password =
                 StylizedTextInput("password", stringResource(id = R.string.password), true)
@@ -102,30 +134,10 @@ class LoginScreen(
     @Composable
     private fun StartButton() {
         var enabled by remember { mutableStateOf(false) }
-        var showToast by remember { mutableStateOf(false) }
-        if (showToast) {
-            CheckData()
-            showToast = false
-        }
+
         enabled = usernameText!!.value.isNotEmpty() && passwordText!!.value.isNotEmpty()
         DefaultButton(enabled, stringResource(id = R.string.log_in).uppercase()) {
-            showToast = true
+            tryLogin?.value = true
         }
     }
-
-    @Composable
-    private fun CheckData() {
-        when (getLoginResult(usernameText!!.value, passwordText!!.value)) {
-            200.0 -> toCoursesScreen()
-            -1000.0 -> MakeToast(stringResource(id = R.string.incorrect))
-            -2000.0 -> MakeToast(stringResource(id = R.string.unknown_error))
-        }
-    }
-
-    @Composable
-    private fun MakeToast(message: String) {
-        Toast.makeText(LocalContext.current, message, Toast.LENGTH_SHORT).show()
-
-    }
-
 }

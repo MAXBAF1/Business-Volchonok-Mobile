@@ -31,6 +31,7 @@ private val lightColorScheme = lightColorScheme(
     onPrimaryContainer = LightBlue,
     background = Color.White,
     onBackground = Color.Black,
+    error = Error
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
