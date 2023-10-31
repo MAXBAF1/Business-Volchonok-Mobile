@@ -39,10 +39,12 @@ class LoginScreen(
     private var usernameText: MutableState<String>? = null
     private var passwordText: MutableState<String>? = null
     private var tryLogin: MutableState<Boolean>? = null
+    private var errorText: MutableState<String>? = null
 
     @Composable
     fun Create() {
         tryLogin = remember { mutableStateOf(false) }
+        errorText = remember { mutableStateOf("") }
         Column(
             Modifier
                 .fillMaxSize()
@@ -56,9 +58,10 @@ class LoginScreen(
                     .fillMaxHeight(0.5f), contentAlignment = Alignment.Center
             ) { Logo() }
             Column {
+                MakeErrorText(errorText!!.value)
                 if (tryLogin!!.value) {
                     CheckData()
-
+                    tryLogin?.value = false
                 }
                 Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom) {
                     TextsInputs()
@@ -74,10 +77,11 @@ class LoginScreen(
         val usernameText = usernameText?.value
         val passwordText = passwordText?.value
         if (usernameText.isNullOrEmpty() || passwordText.isNullOrEmpty()) return
+
         when (getLoginResult(usernameText, passwordText)) {
             200.0 -> toCoursesScreen()
-            -1000.0 -> MakeErrorText(stringResource(id = R.string.incorrect))
-            -2000.0 -> MakeErrorText(stringResource(id = R.string.unknown_error))
+            -1000.0 -> errorText?.value = stringResource(id = R.string.incorrect)
+            -2000.0 -> errorText?.value = stringResource(id = R.string.unknown_error)
         }
     }
 
