@@ -1,6 +1,5 @@
 package com.example.volchonok.screens.vidgets.others
 
-import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,58 +16,49 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.example.volchonok.data.AnswerData
+import com.example.volchonok.interfaces.IAnswersGroup
 
-class RadioAnswerGroup(private val list: List<AnswerData>) {
-    var selectedAnswer: MutableState<AnswerData?> = mutableStateOf(null)
-
+class RadioAnswersGroup(override val answers: SnapshotStateList<Boolean>, override val list: List<AnswerData>) : IAnswersGroup {
     @Composable
-    fun Create() {
-        val nullAnswer: AnswerData? = null
-        val (selectedAnswer, onOptionSelected) = remember { mutableStateOf(nullAnswer) }
-        this.selectedAnswer.value = selectedAnswer
-
+    override fun Create() {
         Column(
             Modifier
                 .selectableGroup()
                 .padding(top = 15.dp)
         ) {
             list.forEachIndexed { i, answer ->
-                RadioRow(answer, selectedAnswer, onOptionSelected, i == 0)
+                RadioRow(answer, i)
             }
         }
     }
 
     @Composable
-    private fun RadioRow(
-        answer: AnswerData,
-        selectedAnswer: AnswerData?,
-        onOptionSelected: (AnswerData) -> Unit,
-        isFirst: Boolean
-    ) {
+    private fun RadioRow(answer: AnswerData, index: Int) {
         val primary = MaterialTheme.colorScheme.primary
         val secondary = MaterialTheme.colorScheme.secondary
-        val color = if (answer == selectedAnswer) primary else secondary
+        val isSelected = answers[index]
+        val color = if (isSelected) primary else secondary
         Row(
             Modifier
-                .padding(top = if (isFirst) 0.dp else 10.dp)
+                .padding(top = if (index == 0) 0.dp else 10.dp)
                 .clip(CircleShape)
                 .fillMaxWidth()
-                .selectable(
-                    selected = (answer == selectedAnswer),
-                    onClick = { onOptionSelected(answer) })
+                .selectable(selected = isSelected, onClick = {
+                    List(answers.size) { i -> answers[i] = false}
+                    answers[index] = true
+                })
                 .border(1.dp, color, CircleShape)
                 .padding(15.dp, 12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             RadioButton(
-                selected = (answer == selectedAnswer),
-                onClick = null,
-                colors = RadioButtonDefaults.colors(
+                selected = isSelected, onClick = null, colors = RadioButtonDefaults.colors(
                     selectedColor = MaterialTheme.colorScheme.primary,
                     unselectedColor = MaterialTheme.colorScheme.secondary
                 )

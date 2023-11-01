@@ -68,7 +68,7 @@ class MainActivity : ComponentActivity() {
                                     "Вопрос 2", listOf(
                                         AnswerData("Ответ 4", false),
                                         AnswerData("Ответ 5", true),
-                                        AnswerData("Ответ 6", false)
+                                        AnswerData("Ответ 6", true)
                                     )
                                 ), QuestionData(
                                     "Вопрос 3", listOf(
