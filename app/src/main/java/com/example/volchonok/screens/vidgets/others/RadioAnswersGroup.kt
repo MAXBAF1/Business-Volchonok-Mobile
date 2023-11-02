@@ -17,6 +17,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,7 +25,12 @@ import androidx.compose.ui.unit.dp
 import com.example.volchonok.data.AnswerData
 import com.example.volchonok.interfaces.IAnswersGroup
 
-class RadioAnswersGroup(override val answers: SnapshotStateList<Boolean>, override val list: List<AnswerData>) : IAnswersGroup {
+class RadioAnswersGroup(
+    override val list: List<AnswerData>, override val isBtnEnabled: MutableState<Boolean>
+) : IAnswersGroup {
+    private val answers = (List(list.size) { false }).toMutableStateList()
+    override fun getAnswers(): SnapshotStateList<Boolean> = answers
+
     @Composable
     override fun Create() {
         Column(
@@ -38,6 +44,7 @@ class RadioAnswersGroup(override val answers: SnapshotStateList<Boolean>, overri
         }
     }
 
+
     @Composable
     private fun RadioRow(answer: AnswerData, index: Int) {
         val primary = MaterialTheme.colorScheme.primary
@@ -50,8 +57,9 @@ class RadioAnswersGroup(override val answers: SnapshotStateList<Boolean>, overri
                 .clip(CircleShape)
                 .fillMaxWidth()
                 .selectable(selected = isSelected, onClick = {
-                    List(answers.size) { i -> answers[i] = false}
+                    List(answers.size) { i -> answers[i] = false }
                     answers[index] = true
+                    isBtnEnabled.value = true
                 })
                 .border(1.dp, color, CircleShape)
                 .padding(15.dp, 12.dp),

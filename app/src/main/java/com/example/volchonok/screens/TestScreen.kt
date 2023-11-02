@@ -20,6 +20,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -34,15 +35,14 @@ import com.example.volchonok.screens.vidgets.others.RadioAnswersGroup
 class TestScreen(
     private val testData: TestData,
 ) {
-    private val answers: ArrayList<Array<MutableState<Boolean>>> = arrayListOf()
+    private val answers: ArrayList<SnapshotStateList<Boolean>> = arrayListOf()
     private var currAnswers = mutableStateListOf<Boolean>()
+    private var isBtnEnabled = mutableStateOf(false)
 
     @Composable
     fun Create() {
         val questionNumber = remember { mutableIntStateOf(0) }
         val currQuestion = testData.questions[questionNumber.intValue]
-        for (i in 1..currQuestion.answers.size)
-            currAnswers.add(false)
 
         Column(
             modifier = Modifier
@@ -68,37 +68,32 @@ class TestScreen(
                 color = MaterialTheme.colorScheme.onBackground
             )
             AnswersGroup(currQuestion)
-
-            val test = remember { mutableIntStateOf(currAnswers.count { it } )}
-            LaunchedEffect(test) {
-                Log.d("MyLog", test.intValue.toString())
-            }
-            val isEnabled = remember { mutableStateOf(currAnswers.count { it } > 0)}
-
-            AnswerButton(isEnabled.value, questionNumber)
+            AnswerButton(questionNumber)
         }
     }
 
     @Composable
     private fun AnswersGroup(currQuestion: QuestionData) {
         val answersGroup = if (currQuestion.answers.count { it.isCorrect } > 1) {
-            CheckBoxAnswersGroup(currAnswers, currQuestion.answers)
-        } else RadioAnswersGroup(currAnswers, currQuestion.answers)
+            CheckBoxAnswersGroup(currQuestion.answers, isBtnEnabled)
+        } else RadioAnswersGroup(currQuestion.answers, isBtnEnabled)
         answersGroup.Create()
+        currAnswers = answersGroup.getAnswers()
     }
 
     @Composable
-    private fun AnswerButton(isEnabled: Boolean, questionNumber: MutableIntState) {
+    private fun AnswerButton(questionNumber: MutableIntState) {
         Box(
             modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter
         ) {
             DefaultButton(
-                enabled = true,
+                enabled = isBtnEnabled.value,
                 text = stringResource(id = R.string.answer).uppercase()
             ) {
                 if (questionNumber.intValue < testData.questions.size) {
-                    //answers.add(currAnswers)
+                    answers.add(currAnswers)
                     questionNumber.intValue++
+                    isBtnEnabled.value = false
                 }
                 if (questionNumber.intValue == testData.questions.size) {
                     // todo toResultsScreen
