@@ -4,6 +4,7 @@ public enum ServiceStringValue {
     SERVER_ADDRESS("http://localhost:8080"),
     ACCESS_TOKEN_REQUEST_ADDRESS(SERVER_ADDRESS.value + "/api/v1/auth/refresh"),
     LOGIN_REQUEST_ADDRESS(SERVER_ADDRESS.value + "/api/v1/auth/login"),
+    USER_INFO_REQUEST_ADDRESS(SERVER_ADDRESS.value + "/api/v1/user/me"),
     SHARED_PREFERENCES_NAME("tokens"),
     REQUEST_METHOD_POST("POST"),
     REQUEST_METHOD_GET("GET"),

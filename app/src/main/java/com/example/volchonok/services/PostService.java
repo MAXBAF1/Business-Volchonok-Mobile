@@ -10,6 +10,7 @@ import static com.example.volchonok.services.enums.ServiceStringValue.SHARED_PRE
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -18,7 +19,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import okhttp3.Headers;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -26,32 +26,32 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import okhttp3.internal.http2.Header;
 
-public abstract class VolchonokService<Params, Progress, Result> extends AsyncTask<Params, Progress, Result> {
+public abstract class PostService<Params> extends AsyncTask<Params, Void, Double> {
 
-    protected OkHttpClient httpClient;
-    protected Request request;
-    protected Context ctx;
-    protected SharedPreferences sPref;
+    private OkHttpClient httpClient;
+    private Request request;
+    private Context ctx;
+    protected static SharedPreferences sPref;
 
-    protected VolchonokService(Context ctx) {
+    protected PostService(Context ctx) {
         this.ctx = ctx;
-        sPref = ctx.getSharedPreferences(
+        sPref = this.ctx.getSharedPreferences(
                 SHARED_PREFERENCES_NAME.getValue(), Context.MODE_PRIVATE);
     }
 
-    protected Map<String, Object> getJsonAsMap(String json) {
+    protected static Map<String, Object> getJsonAsMap(String json) {
         return new Gson().fromJson(json, new TypeToken<HashMap<String, Object>>() {}.getType());
     }
 
-    protected double sendHttpRequest(String requestAddress, RequestBody requestBody, Header... headers) {
+    protected Double sendHttpRequest(String requestAddress, RequestBody requestBody, Map<String, String> headers) {
         httpClient = new OkHttpClient();
 
         Request.Builder builder = new Request.Builder()
                 .url(requestAddress)
                 .method(REQUEST_METHOD_POST.getValue(), requestBody);
 
-        for (Header header : headers) {
-            builder.addHeader(header.name.toString(), header.value.toString());
+        for (Map.Entry<String, String> e : headers.entrySet()) {
+            builder.addHeader(e.getKey(), e.getValue());
         }
         request = builder.build();
 
@@ -67,6 +67,8 @@ public abstract class VolchonokService<Params, Progress, Result> extends AsyncTa
                 saveTokensToPreferences(responseBodyAsMap);
             }
 
+            Log.d("TAG", "sendHttpRequest: " + responseBodyAsMap.get(RESPONSE_STATUS_KEY.getValue()));
+
             return Double.parseDouble(
                     String.valueOf(responseBodyAsMap.get(RESPONSE_STATUS_KEY.getValue()))
             );
@@ -77,11 +79,11 @@ public abstract class VolchonokService<Params, Progress, Result> extends AsyncTa
         return Double.NaN;
     }
 
-    protected double sendHttpRequest(String requestAddress, Header... headers) {
-        return sendHttpRequest(requestAddress, null, headers);
+    protected Double sendHttpRequest(String requestAddress, RequestBody requestBody) {
+        return sendHttpRequest(requestAddress, requestBody, Map.of());
     }
 
-    protected void saveTokensToPreferences(Map<String, Object> responseBodyAsMap) {
+    public static void saveTokensToPreferences(Map<String, Object> responseBodyAsMap) {
         Map<String, Object> tokens = getJsonAsMap(
                 String.valueOf(responseBodyAsMap.get(RESPONSE_DATA_KEY.getValue()))
         );

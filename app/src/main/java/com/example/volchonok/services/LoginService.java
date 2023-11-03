@@ -1,28 +1,19 @@
 package com.example.volchonok.services;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
-import android.util.Log;
 
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
 import okhttp3.RequestBody;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 import static com.example.volchonok.services.enums.ServiceStringValue.*;
 
-public class LoginService extends VolchonokService<String, Void, Double>{
+public class LoginService extends PostService<String> {
 
     public LoginService(Context ctx) {
         super(ctx);

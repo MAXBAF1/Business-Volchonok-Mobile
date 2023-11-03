@@ -36,6 +36,9 @@ class ProfileScreen(
 ) {
     @Composable
     fun Create() {
+        //FIXME получение данных о пользователе, строка вида {key=value, key1=value1}
+        // Log.d("TAG", UserInfoService(LocalContext.current).execute().get())
+
         Column(modifier = Modifier.padding(start = 20.dp, end = 30.dp)) {
             TopAppBar()
             Column(
