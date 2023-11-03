@@ -6,9 +6,11 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.example.volchonok.data.AnswerData
 
 interface IAnswersGroup {
-    val answers: SnapshotStateList<Boolean>
     val list: List<AnswerData>
+    val isBtnEnabled: MutableState<Boolean>
 
     @Composable
     fun Create()
+
+    fun getAnswers(): SnapshotStateList<Boolean>
 }
