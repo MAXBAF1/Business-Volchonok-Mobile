@@ -34,6 +34,7 @@ import com.example.volchonok.screens.vidgets.others.RadioAnswersGroup
 
 class TestScreen(
     private val testData: TestData,
+    private val toResultsScreen: (Iterable<Iterable<Boolean>>) -> Unit
 ) {
     private val answers: ArrayList<SnapshotStateList<Boolean>> = arrayListOf()
     private var currAnswers = mutableStateListOf<Boolean>()
@@ -96,7 +97,7 @@ class TestScreen(
                     isBtnEnabled.value = false
                 }
                 if (questionNumber.intValue == testData.questions.size) {
-                    // todo toResultsScreen
+                    toResultsScreen(answers)
                 }
             }
         }

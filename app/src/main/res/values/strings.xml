@@ -49,4 +49,10 @@
     <!--Test screen-->
     <string name="choose_answer">Выберите верный ответ</string>
     <string name="answer">Ответить</string>
+
+    <!--TestResultsScreen-->
+    <string name="lets_check_answers">Давайте проверим ваши ответы</string>
+    <string name="your_answer">Ваш ответ</string>
+    <string name="complete">Завершить</string>
+    <string name="repeat_again">Повторить снова</string>
 </resources>

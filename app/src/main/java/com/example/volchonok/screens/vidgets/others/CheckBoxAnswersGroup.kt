@@ -24,7 +24,9 @@ import androidx.compose.ui.unit.dp
 import com.example.volchonok.data.AnswerData
 import com.example.volchonok.interfaces.IAnswersGroup
 
-class CheckBoxAnswersGroup(override val list: List<AnswerData>, override val isBtnEnabled: MutableState<Boolean>) : IAnswersGroup {
+class CheckBoxAnswersGroup(
+    override val list: List<AnswerData>, override val isBtnEnabled: MutableState<Boolean>
+) : IAnswersGroup {
     private val answers = (List(list.size) { false }).toMutableStateList()
     override fun getAnswers(): SnapshotStateList<Boolean> = answers
 
@@ -54,12 +56,10 @@ class CheckBoxAnswersGroup(override val list: List<AnswerData>, override val isB
                 .padding(top = if (index == 0) 0.dp else 10.dp)
                 .clip(CircleShape)
                 .fillMaxWidth()
-                .selectable(selected = checkedState,
-                    onClick = {
-                        answers[index] = !checkedState
-                        isBtnEnabled.value = answers.count { it } > 0
-                    }
-                )
+                .selectable(selected = checkedState, onClick = {
+                    answers[index] = !checkedState
+                    isBtnEnabled.value = answers.count { it } > 0
+                })
                 .border(1.dp, color, CircleShape)
                 .padding(15.dp, 12.dp),
             verticalAlignment = Alignment.CenterVertically

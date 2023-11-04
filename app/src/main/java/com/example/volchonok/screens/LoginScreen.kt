@@ -142,7 +142,7 @@ class LoginScreen(
         var enabled by remember { mutableStateOf(false) }
 
         enabled = usernameText!!.value.isNotEmpty() && passwordText!!.value.isNotEmpty()
-        DefaultButton(enabled, stringResource(id = R.string.log_in).uppercase()) {
+        DefaultButton(stringResource(id = R.string.log_in).uppercase(), enabled = enabled) {
             tryLogin?.value = true
         }
     }

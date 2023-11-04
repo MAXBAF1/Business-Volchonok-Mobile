@@ -58,7 +58,7 @@ class StylizedTextInput(
     @Composable
     private fun CreateTextField() {
         text = remember { mutableStateOf("") }
-        var passwordVisible = remember { mutableStateOf(false) }
+        val passwordVisible = remember { mutableStateOf(false) }
         val onBackgroundColor = MaterialTheme.colorScheme.onBackground
         val secondaryColor = MaterialTheme.colorScheme.secondary
         var borderColor by remember { mutableStateOf(secondaryColor) }
