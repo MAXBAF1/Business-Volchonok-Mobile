@@ -28,7 +28,10 @@ import com.example.volchonok.enums.ButtonType
 import com.example.volchonok.screens.vidgets.others.DefaultButton
 
 class TestResultsScreen(
-    private val questions: List<QuestionData>, private val answers: Iterable<Iterable<Boolean>>
+    private val questions: List<QuestionData>,
+    private val answers: Iterable<Iterable<Boolean>>,
+    private val onCompleteBtn: () -> Unit,
+    private val onRepeatBtn: () -> Unit,
 ) {
     @Composable
     fun Create() {
@@ -42,7 +45,11 @@ class TestResultsScreen(
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onBackground
             )
-            LazyColumn(Modifier.weight(1f).padding(top = 20.dp)) {
+            LazyColumn(
+                Modifier
+                    .weight(1f)
+                    .padding(top = 20.dp)
+            ) {
                 itemsIndexed(questions) { i, question ->
                     QuestionSection(question, answers.toList()[i].toList(), i == 0)
                 }
@@ -51,17 +58,15 @@ class TestResultsScreen(
                 stringResource(id = R.string.complete).uppercase(),
                 Modifier.padding(top = 15.dp),
                 true,
-            ) {
-
-            }
+                onClick = onCompleteBtn
+            )
             DefaultButton(
                 stringResource(id = R.string.repeat_again).uppercase(),
                 Modifier.padding(top = 10.dp),
                 true,
-                ButtonType.Outlined
-            ) {
-
-            }
+                ButtonType.Outlined,
+                onRepeatBtn
+            )
         }
     }
 

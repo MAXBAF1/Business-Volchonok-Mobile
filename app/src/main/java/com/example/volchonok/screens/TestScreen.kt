@@ -39,11 +39,16 @@ class TestScreen(
     private val answers: ArrayList<SnapshotStateList<Boolean>> = arrayListOf()
     private var currAnswers = mutableStateListOf<Boolean>()
     private var isBtnEnabled = mutableStateOf(false)
+    private var itsMultipleAnswersQuestion = mutableStateOf(false)
 
     @Composable
     fun Create() {
         val questionNumber = remember { mutableIntStateOf(0) }
         val currQuestion = testData.questions[questionNumber.intValue]
+        itsMultipleAnswersQuestion.value = currQuestion.answers.count { it.isCorrect } > 1
+        val chooseAnswerText = if (itsMultipleAnswersQuestion.value) {
+            R.string.choose_answers
+        } else R.string.choose_answer
 
         Column(
             modifier = Modifier
@@ -64,7 +69,7 @@ class TestScreen(
                 modifier = Modifier
                     .padding(top = 30.dp)
                     .fillMaxWidth(),
-                text = stringResource(id = R.string.choose_answer),
+                text = stringResource(id = chooseAnswerText),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onBackground
             )
@@ -75,7 +80,7 @@ class TestScreen(
 
     @Composable
     private fun AnswersGroup(currQuestion: QuestionData) {
-        val answersGroup = if (currQuestion.answers.count { it.isCorrect } > 1) {
+        val answersGroup = if (itsMultipleAnswersQuestion.value) {
             CheckBoxAnswersGroup(currQuestion.answers, isBtnEnabled)
         } else RadioAnswersGroup(currQuestion.answers, isBtnEnabled)
         answersGroup.Create()
@@ -93,11 +98,11 @@ class TestScreen(
             ) {
                 if (questionNumber.intValue < testData.questions.size) {
                     answers.add(currAnswers)
-                    questionNumber.intValue++
                     isBtnEnabled.value = false
-                }
-                if (questionNumber.intValue == testData.questions.size) {
-                    toResultsScreen(answers)
+
+                    if (questionNumber.intValue + 1 == testData.questions.size) {
+                        toResultsScreen(answers)
+                    } else questionNumber.intValue++
                 }
             }
         }

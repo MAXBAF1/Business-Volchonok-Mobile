@@ -48,6 +48,7 @@
 
     <!--Test screen-->
     <string name="choose_answer">Выберите верный ответ</string>
+    <string name="choose_answers">Выберите верные ответы</string>
     <string name="answer">Ответить</string>
 
     <!--TestResultsScreen-->
