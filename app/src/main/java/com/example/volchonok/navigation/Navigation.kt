@@ -56,7 +56,7 @@ class Navigation(private val userData: UserData, private val coursesList: ArrayL
         LoginScreen(toCoursesScreen = { navController!!.navigate(COURSES_SCREEN_ROUTE) },
             getLoginResult = { loginText, passwordText ->
                 val e = LoginService(ctx).execute(loginText, passwordText).get()
-                return@LoginScreen 200.0
+                return@LoginScreen e
             }).Create()
     }
 
