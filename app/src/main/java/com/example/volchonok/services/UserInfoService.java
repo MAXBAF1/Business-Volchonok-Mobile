@@ -15,6 +15,10 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.example.volchonok.data.UserData;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -29,7 +33,7 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import okhttp3.internal.http2.Header;
 
-public class UserInfoService extends AsyncTask<Void, Void, String> {
+public class UserInfoService extends AsyncTask<Void, Void, UserData> {
     protected OkHttpClient httpClient;
     protected Request request;
     protected Context ctx;
@@ -41,7 +45,7 @@ public class UserInfoService extends AsyncTask<Void, Void, String> {
         httpClient = new OkHttpClient();
     }
 
-    public String getUserInfo() {
+    public UserData getUserInfo() {
         String response = tryGetUserInfo();
 
         if (response == null) {
@@ -49,7 +53,8 @@ public class UserInfoService extends AsyncTask<Void, Void, String> {
             response = tryGetUserInfo();
         }
 
-        return response;
+
+        return new Gson().fromJson(response, UserData.class);
     }
 
     private String tryGetUserInfo() {
@@ -79,7 +84,7 @@ public class UserInfoService extends AsyncTask<Void, Void, String> {
     }
 
     @Override
-    protected String doInBackground(Void... voids) {
+    protected UserData doInBackground(Void... voids) {
         return getUserInfo();
     }
 }

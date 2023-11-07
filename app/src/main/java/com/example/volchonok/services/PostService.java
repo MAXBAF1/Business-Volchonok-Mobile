@@ -67,8 +67,6 @@ public abstract class PostService<Params> extends AsyncTask<Params, Void, Double
                 saveTokensToPreferences(responseBodyAsMap);
             }
 
-            Log.d("TAG", "sendHttpRequest: " + responseBodyAsMap.get(RESPONSE_STATUS_KEY.getValue()));
-
             return Double.parseDouble(
                     String.valueOf(responseBodyAsMap.get(RESPONSE_STATUS_KEY.getValue()))
             );

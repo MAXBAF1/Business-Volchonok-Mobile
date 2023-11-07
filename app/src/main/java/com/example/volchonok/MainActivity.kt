@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
 
 
     // Тестовые данные
-    private val userData = UserData("Пётр Иванов", R.drawable.wolf_icon, 5, "Almost Fluent")
+    private val userData = UserData(1, "petr_ivanov", "Пётр Иванов", R.drawable.wolf_icon, 5, "Almost Fluent")
     private val shortText = "Learn the basics of the language: make new friends, plan a family di"
     private val mediumText =
         "Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!"
