@@ -121,7 +121,9 @@ class TopAppBar(
         val borderColor = if (isLessonScreen) {
             MaterialTheme.colorScheme.onPrimary
         } else MaterialTheme.colorScheme.primary
-        Image(painter = painterResource(id = userData!!.avatar),
+        val defaultAvatar = ImageBitmap.imageResource(R.drawable.wolf_icon)
+
+        Image(bitmap = defaultAvatar, // FIXME get avatar
             contentDescription = "avatar",
             modifier = Modifier
                 .clip(CircleShape)

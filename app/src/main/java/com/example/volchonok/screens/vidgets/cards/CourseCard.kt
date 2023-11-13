@@ -108,7 +108,7 @@ class CourseCard(
             )
         ) {
             Text(
-                text = stringResource(id = R.string.sign_up_btn),
+                text = stringResource(id = R.string.continue_text),
                 color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.labelMedium,
                 //modifier = Modifier.padding(28.dp, 12.dp),
