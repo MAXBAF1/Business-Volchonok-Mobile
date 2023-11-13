@@ -15,8 +15,16 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
+import java.lang.invoke.TypeDescriptor;
+import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import okhttp3.OkHttpClient;
@@ -24,7 +32,6 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
-import okhttp3.internal.http2.Header;
 
 public abstract class PostService<Params> extends AsyncTask<Params, Void, Double> {
 
@@ -39,8 +46,27 @@ public abstract class PostService<Params> extends AsyncTask<Params, Void, Double
                 SHARED_PREFERENCES_NAME.getValue(), Context.MODE_PRIVATE);
     }
 
-    protected static Map<String, Object> getJsonAsMap(String json) {
-        return new Gson().fromJson(json, new TypeToken<HashMap<String, Object>>() {}.getType());
+    protected static Map<String, Object> getJsonAsMap(String json){
+        Map<String, Object> result = new HashMap<>();
+
+        try {
+            JSONObject obj = new JSONObject(json);
+
+            for (Iterator<String> it = obj.keys(); it.hasNext(); ) {
+                String key = it.next();
+                result.put(key, obj.get(key));
+            }
+        } catch (JSONException e) {
+            Log.e("TAG", "parser to map: " + json);
+            throw new RuntimeException(json);
+        }
+
+        return result;
+    }
+
+    protected static <T extends Object> List<T> getJsonAsList(String json) {
+        //TODO rebuild method with org.json.JSONArray and etc.
+        return new Gson().fromJson(json, new TypeToken<List<T>>() {}.getType());
     }
 
     protected Double sendHttpRequest(String requestAddress, RequestBody requestBody, Map<String, String> headers) {
@@ -71,6 +97,7 @@ public abstract class PostService<Params> extends AsyncTask<Params, Void, Double
                     String.valueOf(responseBodyAsMap.get(RESPONSE_STATUS_KEY.getValue()))
             );
         } catch (IOException | NullPointerException e) {
+            Log.d("TAG", "sendHttpRequest: " + Arrays.toString(e.getStackTrace()));
             e.printStackTrace();
         }
 
