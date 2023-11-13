@@ -37,7 +37,7 @@ class CourseInfoScreen(
 
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                 Column(Modifier.padding(30.dp, 0.dp)) {
-                    Greeting(userData.name)
+                    Greeting(userData.name.toString())
                     ModulesList()
                     Description()
                 }

@@ -3,8 +3,8 @@ package com.example.volchonok.data
 data class UserData(
     val id: Int,
     val login: String,
-    val name: String,
+    val name: String?,
     val avatarId: Int,
     val coins: Int,
-    val level: String
+    val level: String?
 )
