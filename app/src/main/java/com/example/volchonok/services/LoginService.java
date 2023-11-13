@@ -29,7 +29,7 @@ public class LoginService extends PostService<String> {
                 MediaType.get(CONTENT_TYPE_JSON.getValue())
         );
 
-        return sendHttpRequest(LOGIN_REQUEST_ADDRESS.getValue(), requestBody);
+        return sendPostRequestToURL(LOGIN_REQUEST_ADDRESS.getValue(), requestBody);
     }
 
     @Override
