@@ -1,8 +1,18 @@
 package com.example.volchonok.screens
 
-import android.util.Log
+import android.content.res.Resources
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
+import android.graphics.drawable.Drawable
+import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -17,35 +27,53 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.FilterQuality
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.painter.BitmapPainter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.drawable.toBitmap
+import androidx.core.graphics.drawable.toBitmapOrNull
 import com.example.volchonok.R
 import com.example.volchonok.data.CourseData
 import com.example.volchonok.data.UserData
-import com.example.volchonok.screens.vidgets.others.StylizedTextInput
-import com.example.volchonok.screens.vidgets.others.TopAppBar
 import com.example.volchonok.screens.vidgets.cards.CourseProgressCard
+import com.example.volchonok.screens.vidgets.others.StylizedTextInput
 import com.example.volchonok.services.UserInfoService
+import org.xmlpull.v1.XmlPullParser
 
 class ProfileScreen(
-    private val userData: UserData,
-    private val coursesList: Iterable<CourseData>,
-    private val onBackClick: () -> Unit
+    private val coursesList: Iterable<CourseData>, private val onBackClick: () -> Unit
 ) {
+    private lateinit var userData: UserData
+
     @Composable
     fun Create() {
-        //FIXME получение данных о пользователе, строка вида {key=value, key1=value1}
-        // Log.d("TAG", UserInfoService(LocalContext.current).execute().get())
+        userData = UserInfoService(LocalContext.current).execute().get()
 
         Column(modifier = Modifier.padding(start = 20.dp, end = 30.dp)) {
             TopAppBar()
             Column(
-                Modifier.padding(start = 10.dp).verticalScroll(rememberScrollState())
+                Modifier
+                    .padding(start = 10.dp)
+                    .verticalScroll(rememberScrollState())
             ) {
                 UserInfoRow()
                 CourseProgressCard(coursesList).Create()
@@ -57,11 +85,11 @@ class ProfileScreen(
 
     @Composable
     private fun TextInputs() {
-        StylizedTextInput("Лепинских Максим Игоревич", stringResource(id = R.string.fio)).Create()
+        StylizedTextInput("Лепинских Максим Игоревич", stringResource(id = R.string.fio), isEnabled = false).Create()
         StylizedTextInput("89501234567", stringResource(id = R.string.phone)).Create()
         StylizedTextInput("example@gmail.com", stringResource(id = R.string.mail)).Create()
-        StylizedTextInput("Екатеринбург", stringResource(id = R.string.address)).Create()
-        StylizedTextInput("1", stringResource(id = R.string.grade), isLast = true).Create()
+        StylizedTextInput("Екатеринбург", stringResource(id = R.string.address), isEnabled = false).Create()
+        StylizedTextInput("1", stringResource(id = R.string.grade), isEnabled = false, isLast = true).Create()
     }
 
     @Composable
@@ -90,7 +118,10 @@ class ProfileScreen(
 
     @Composable
     private fun TopAppBar() {
-        Row(Modifier.padding(top = 15.dp, bottom = 15.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            Modifier.padding(top = 15.dp, bottom = 15.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Button(
                 onClick = { onBackClick() },
                 shape = CircleShape,
@@ -121,17 +152,10 @@ class ProfileScreen(
     @Composable
     private fun UserInfoRow() {
         Row(Modifier.padding(top = 15.dp), verticalAlignment = Alignment.CenterVertically) {
-            Image(
-                painter = painterResource(id = userData.avatarId),
-                contentDescription = "avatar",
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .size(64.dp)
-                    .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape)
-            )
+            Avatar()
             Column(Modifier.padding(start = 15.dp)) {
                 Text(
-                    text = userData.name,
+                    text = userData.name.toString(),
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -142,6 +166,51 @@ class ProfileScreen(
                     color = MaterialTheme.colorScheme.onBackground
                 )
             }
+        }
+    }
+
+    @Composable
+    private fun Avatar() {
+        val defaultAvatar = ImageBitmap.imageResource(R.drawable.wolf_icon)
+        var bitmap: Bitmap? by remember { mutableStateOf(defaultAvatar.asAndroidBitmap()) }
+        val context = LocalContext.current
+
+        val launcher =
+            rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
+                val source = uri?.let { ImageDecoder.createSource(context.contentResolver, it) }
+                bitmap = source?.let { ImageDecoder.decodeBitmap(it) }
+            }
+
+        val editIconSize = 66
+        val editIcon = AppCompatResources.getDrawable(context, R.drawable.ic_edit)!!
+            .toBitmap(editIconSize, editIconSize).asImageBitmap()
+
+        bitmap?.let {
+            Image(
+                bitmap = it.asImageBitmap(),
+                contentDescription = "avatar",
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .size(64.dp)
+                    .clickable { launcher.launch("image/*") }
+                    .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape)
+                    .drawWithContent {
+                        drawContent()
+                        drawRect(
+                            color = Color(0f, 0f, 0f, 0.4f)
+                        )
+                        val iconSize = 24.dp.toPx()
+
+                        drawImage(
+                            image = editIcon,
+                            topLeft = Offset(
+                                (size.width - iconSize) / 2, (size.height - iconSize) / 2
+                            ),
+                        )
+                    },
+                contentScale = ContentScale.Crop,
+                alignment = Alignment.Center
+            )
         }
     }
 }

@@ -21,7 +21,7 @@ fun InfoHeader(title: String, description: String, progressText: String? = null)
         shape = RoundedCornerShape(0.dp, 0.dp, 20.dp, 20.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary)
     ) {
-        Column(Modifier.padding(30.dp, 15.dp)) {
+        Column(Modifier.padding(start = 30.dp, top = 15.dp, end = 30.dp, bottom = 30.dp)) {
             Row(
                 Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,

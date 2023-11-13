@@ -3,6 +3,7 @@ package com.example.volchonok.screens.vidgets.others
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
@@ -24,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -34,6 +36,7 @@ class StylizedTextInput(
     private val hint: String,
     private val titleText: String = "",
     private val isPasswordField: Boolean = false,
+    private val isEnabled: Boolean = true,
     private val isLast: Boolean = false
 ) {
     var text: MutableState<String>? = null
@@ -81,6 +84,7 @@ class StylizedTextInput(
                     text = hint, style = MaterialTheme.typography.labelSmall, color = secondaryColor
                 )
             },
+            enabled = isEnabled,
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = MaterialTheme.colorScheme.background,
                 focusedIndicatorColor = Color.Transparent
@@ -92,6 +96,13 @@ class StylizedTextInput(
             trailingIcon = {
                 if (isPasswordField) {
                     CreatePasswordIcon(passwordVisible)
+                } else if (isEnabled) {
+                    Icon(
+                        modifier = Modifier.size(18.dp),
+                        painter = painterResource(id = R.drawable.ic_edit_field),
+                        contentDescription = "ic_edit_field",
+                        tint = borderColor
+                    )
                 }
             })
         if (text!!.value.isNotEmpty()) borderColor = MaterialTheme.colorScheme.primary

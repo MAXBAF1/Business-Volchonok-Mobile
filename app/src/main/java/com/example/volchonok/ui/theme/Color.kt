@@ -9,6 +9,13 @@ val LightBlue = Color(0xFFd3ebfc)
 val Error = Color(0xFFE03939)
 
 
+
+
+
+
+
+
+
 val Orange = Color(0xFFFFC167)
 
 val Purple80 = Color(0xFFD0BCFF)

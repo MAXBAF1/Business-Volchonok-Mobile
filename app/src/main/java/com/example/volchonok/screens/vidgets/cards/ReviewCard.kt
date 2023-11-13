@@ -37,7 +37,7 @@ class ReviewCard(private val reviewData: ReviewData, private val isFirst: Boolea
                         contentDescription = "avatar"
                     )
                     Text(
-                        text = reviewData.userData.name,
+                        text = reviewData.userData.name.toString(),
                         modifier = Modifier.padding(start = 15.dp),
                         style = MaterialTheme.typography.titleSmall,
                         color = MaterialTheme.colorScheme.onBackground

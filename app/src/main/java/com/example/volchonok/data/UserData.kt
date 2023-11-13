@@ -8,5 +8,5 @@ data class UserData(
     val middlename: String,
     val avatar: Int,
     val coins: Int,
-    val level: String
+    val level: String?
 )

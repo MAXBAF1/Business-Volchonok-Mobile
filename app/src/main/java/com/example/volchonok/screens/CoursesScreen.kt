@@ -27,7 +27,7 @@ class CoursesScreen(
                     .padding(start = 30.dp, top = 0.dp, end = 30.dp, bottom = 15.dp)
                     .fillMaxSize()
             ) {
-                Greeting(userData.name)
+                Greeting(userData.name.toString())
                 CoursesList(coursesList)
             }
         }
