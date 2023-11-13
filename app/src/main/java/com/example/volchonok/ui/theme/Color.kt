@@ -10,8 +10,12 @@ val Error = Color(0xFFE03939)
 
 
 
-
-
+val BlueDarkMain = Color(0xFF39749E)
+val GrayDarkMain = Color(0xFF898989)
+val BlueDark = Color(0xFFBED9F3)
+val BackgroundDark = Color(0xFF232323)
+val OnBackgroundDark = Color(0xFFD9D9D9)
+val LightBlueDark = Color(0xFFd3ebfc)
 
 
 

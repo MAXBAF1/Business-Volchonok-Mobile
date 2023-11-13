@@ -19,7 +19,7 @@ import com.example.volchonok.screens.ProfileScreen
 import com.example.volchonok.screens.WelcomeScreen
 import com.example.volchonok.services.LoginService
 
-class Navigation(private val userData: UserData, private val coursesList: ArrayList<CourseData>) {
+class Navigation {
     private var navController: NavHostController? = null
     private var selectedCourse: CourseData? = null
     private var selectedModule: ModuleData? = null
@@ -62,7 +62,7 @@ class Navigation(private val userData: UserData, private val coursesList: ArrayL
 
     @Composable
     private fun CreateCoursesScreen() {
-        CoursesScreen(userData = userData, coursesList = coursesList, toCourseInfoScreen = {
+        CoursesScreen(toCourseInfoScreen = {
             selectedCourse = it
             navController!!.navigate(COURSE_INFO_SCREEN_ROUTE)
         }, toProfile = { navController!!.navigate(PROFILE_SCREEN_ROUTE) }).Create()
@@ -71,7 +71,7 @@ class Navigation(private val userData: UserData, private val coursesList: ArrayL
     @Composable
     private fun CreateCourseInfoScreen() {
         selectedCourse?.let { courseData ->
-            CourseInfoScreen(userData = userData, courseData = courseData, toLessonsScreen = {
+            CourseInfoScreen(courseData = courseData, toLessonsScreen = {
                 selectedModule = it
                 navController!!.navigate(LESSONS_SCREEN_ROUTE)
             }, toProfile = { navController!!.navigate(PROFILE_SCREEN_ROUTE) }).Create()
@@ -81,7 +81,7 @@ class Navigation(private val userData: UserData, private val coursesList: ArrayL
     @Composable
     private fun CreateLessonsScreen() {
         selectedModule?.let { moduleData ->
-            LessonsScreen(userData = userData,
+            LessonsScreen(
                 moduleData = moduleData,
                 onBackClick = { navController!!.popBackStack() },
                 toProfile = { navController!!.navigate(PROFILE_SCREEN_ROUTE) },
@@ -96,7 +96,6 @@ class Navigation(private val userData: UserData, private val coursesList: ArrayL
     private fun CreateLessonScreen() {
         selectedLesson?.let {
             LessonScreen(
-                userData = userData,
                 lessonData = it,
                 onBackClick = { navController!!.popBackStack() },
                 toProfile = { navController!!.navigate(PROFILE_SCREEN_ROUTE) },
@@ -106,7 +105,7 @@ class Navigation(private val userData: UserData, private val coursesList: ArrayL
 
     @Composable
     private fun CreateProfileScreen() {
-        ProfileScreen(coursesList, onBackClick = { navController!!.popBackStack() }).Create()
+        ProfileScreen(onBackClick = { navController!!.popBackStack() }).Create()
     }
 
     companion object {

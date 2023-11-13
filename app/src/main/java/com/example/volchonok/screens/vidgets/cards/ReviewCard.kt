@@ -33,11 +33,11 @@ class ReviewCard(private val reviewData: ReviewData, private val isFirst: Boolea
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Image(
                         modifier = Modifier.size(32.dp).clip(CircleShape),
-                        painter = painterResource(id = reviewData.userData.avatarId),
+                        painter = painterResource(id = reviewData.userData.avatar),
                         contentDescription = "avatar"
                     )
                     Text(
-                        text = reviewData.userData.name.toString(),
+                        text = "${reviewData.userData.lastName} ${reviewData.userData.firstName}",
                         modifier = Modifier.padding(start = 15.dp),
                         style = MaterialTheme.typography.titleSmall,
                         color = MaterialTheme.colorScheme.onBackground

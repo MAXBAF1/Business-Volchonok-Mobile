@@ -29,13 +29,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.volchonok.R
 import com.example.volchonok.data.UserData
+import com.example.volchonok.services.UserInfoService
 
 class TopAppBar(
-    private val userData: UserData,
+    private var userData: UserData? = null,
     private val toProfile: () -> Unit,
     private val isLessonScreen: Boolean = false,
     private val onBackClick: () -> Unit = {},
@@ -44,6 +48,9 @@ class TopAppBar(
 
     @Composable
     fun Create() {
+        if (userData == null)
+            userData = UserInfoService(LocalContext.current).execute().get()
+
         backgroundColor = if (isLessonScreen) {
             MaterialTheme.colorScheme.primary
         } else MaterialTheme.colorScheme.background
@@ -100,7 +107,7 @@ class TopAppBar(
                     modifier = Modifier.size(36.dp)
                 )
                 Text(
-                    userData.coins.toString(),
+                    userData!!.coins.toString(),
                     Modifier.padding(15.dp, 0.dp),
                     color = MaterialTheme.colorScheme.onPrimary,
                     style = MaterialTheme.typography.labelLarge
@@ -114,7 +121,7 @@ class TopAppBar(
         val borderColor = if (isLessonScreen) {
             MaterialTheme.colorScheme.onPrimary
         } else MaterialTheme.colorScheme.primary
-        Image(painter = painterResource(id = userData.avatarId),
+        Image(painter = painterResource(id = userData!!.avatar),
             contentDescription = "avatar",
             modifier = Modifier
                 .clip(CircleShape)

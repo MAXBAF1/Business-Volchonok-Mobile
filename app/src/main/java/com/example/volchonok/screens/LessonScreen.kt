@@ -14,7 +14,6 @@ import com.example.volchonok.screens.vidgets.others.TopAppBar
 import com.example.volchonok.screens.vidgets.others.InfoHeader
 
 class LessonScreen(
-    private val userData: UserData,
     private val lessonData: ILesson,
     private val onBackClick: () -> Unit,
     private val toProfile: () -> Unit,
@@ -31,7 +30,9 @@ class LessonScreen(
     @Composable
     fun Create() {
         Column {
-            TopAppBar(userData, toProfile, true, onBackClick).Create()
+            TopAppBar(
+                toProfile = toProfile, isLessonScreen = true, onBackClick = onBackClick
+            ).Create()
             InfoHeader(title = lessonData.name, description = lessonData.description)
 
             when (currentLessonScreen.value) {
