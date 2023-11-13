@@ -4,8 +4,6 @@ import static com.example.volchonok.services.enums.ServiceStringValue.*;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
-import android.util.Log;
 
 import com.example.volchonok.data.AnswerData;
 import com.example.volchonok.data.CourseData;
@@ -32,33 +30,28 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
-public class CourseService extends AsyncTask<Void, Void, List<CourseData>> {
-    protected OkHttpClient httpClient;
-    protected Request request;
-    protected Context ctx;
-    protected SharedPreferences sPref;
+public class CourseService extends GetService<Void, List<CourseData>> {
     protected Gson gson;
 
     public CourseService(Context ctx) {
-        this.ctx = ctx;
-        sPref = ctx.getSharedPreferences(SHARED_PREFERENCES_NAME.getValue(), Context.MODE_PRIVATE);
-        httpClient = new OkHttpClient();
+        super(ctx);
         gson = new Gson();
     }
 
     public List<CourseData> getCourses() { //FIXME get not all courses, by required
         List<CourseData> response = new ArrayList<>();
 
-        String courses = RESPONSE_TO_PATH(USER_COURSES_REQUEST_ADDRESS.getValue());
+        String courses = sendGetRequestToURL(USER_COURSES_REQUEST_ADDRESS.getValue());
 
         if (courses == null) {
             new RefreshTokenService(ctx).execute();
-            courses = RESPONSE_TO_PATH(USER_COURSES_REQUEST_ADDRESS.getValue());
+            courses = sendGetRequestToURL(USER_COURSES_REQUEST_ADDRESS.getValue());
         }
 
         int[] coursesId = gson.fromJson(courses, int[].class);
 
-        if (coursesId == null || coursesId.length == 0) return null;
+        if (coursesId == null || coursesId.length == 0)
+            return null;
 
         for (int courseId : coursesId) {
             fillCoursesData(response, courseId);
@@ -78,19 +71,19 @@ public class CourseService extends AsyncTask<Void, Void, List<CourseData>> {
                 new ReviewData(emptyUser, "")
         );
 
-        Map<String, Object> dataMap = PostService.getJsonAsMap(
-                RESPONSE_TO_PATH(COURSE_DATA_REQUEST_ADDRESS.getValue() + courseId)
+        Map<String, Object> dataMap = ServiceUtil.getJsonAsMap(
+                sendGetRequestToURL(COURSE_DATA_REQUEST_ADDRESS.getValue() + courseId)
         );
-        List<Double> modulesId = PostService.getJsonAsList(
-                RESPONSE_TO_PATH(COURSE_DATA_REQUEST_ADDRESS.getValue() + courseId + "/modules")
+        List<Integer> modulesId = ServiceUtil.getJsonAsList(
+                sendGetRequestToURL(COURSE_DATA_REQUEST_ADDRESS.getValue() + courseId + "/modules")
         );
 
         courseName = String.valueOf(dataMap.get(NAME_KEY.getValue()));
         courseDescription = String.valueOf(dataMap.get(DESCRIPTION_KEY.getValue()));
 
         if (modulesId != null) {
-            for (double moduleId : modulesId) {
-                modules.add(getModuleData((int) moduleId));
+            for (Integer moduleId : modulesId) {
+                modules.add(getModuleData(moduleId));
             }
         }
 
@@ -107,23 +100,23 @@ public class CourseService extends AsyncTask<Void, Void, List<CourseData>> {
         List<ILesson> notes = new ArrayList<>();
         List<ILesson> tests = new ArrayList<>();
 
-        Map<String, Object> moduleDataMap = PostService.getJsonAsMap(
-                RESPONSE_TO_PATH(MODULE_DATA_REQUEST_ADDRESS.getValue() + moduleId)
+        Map<String, Object> moduleDataMap = ServiceUtil.getJsonAsMap(
+                sendGetRequestToURL(MODULE_DATA_REQUEST_ADDRESS.getValue() + moduleId)
         );
-        List<Double> moduleNotesId = PostService.getJsonAsList(
-                RESPONSE_TO_PATH(MODULE_DATA_REQUEST_ADDRESS.getValue() + moduleId + "/lessons"));
-        List<Double> moduleTestsId = PostService.getJsonAsList(
-                RESPONSE_TO_PATH(MODULE_DATA_REQUEST_ADDRESS.getValue() + moduleId + "/tests"));
+        List<Integer> moduleNotesId = ServiceUtil.getJsonAsList(
+                sendGetRequestToURL(MODULE_DATA_REQUEST_ADDRESS.getValue() + moduleId + "/lessons"));
+        List<Integer> moduleTestsId = ServiceUtil.getJsonAsList(
+                sendGetRequestToURL(MODULE_DATA_REQUEST_ADDRESS.getValue() + moduleId + "/tests"));
 
-        if (moduleTestsId != null) {
-            for (double moduleNoteId : moduleNotesId) {
-                notes.add(getNoteData((int) moduleNoteId));
+        if (moduleTestsId.size() != 0) {
+            for (Integer moduleNoteId : moduleNotesId) {
+                notes.add(getNoteData(moduleNoteId));
             }
         }
 
-        if (moduleTestsId != null) {
-            for (double moduleTestId : moduleTestsId) {
-                tests.add(getTestData((int) moduleTestId));
+        if (moduleTestsId.size() != 0) {
+            for (Integer moduleTestId : moduleTestsId) {
+                tests.add(getTestData(moduleTestId));
             }
         }
 
@@ -136,42 +129,42 @@ public class CourseService extends AsyncTask<Void, Void, List<CourseData>> {
     }
 
     private NoteData getNoteData(int noteId) {
-        Map<String, Object> noteDataMap = PostService.getJsonAsMap(
-                RESPONSE_TO_PATH(LESSON_DATA_REQUEST_ADDRESS.getValue() + noteId));
+        Map<String, Object> noteDataMap = ServiceUtil.getJsonAsMap(
+                sendGetRequestToURL(LESSON_DATA_REQUEST_ADDRESS.getValue() + noteId));
 
         return new NoteData(
                 String.valueOf(noteDataMap.get("name")),
                 String.valueOf(noteDataMap.get("description")),
                 String.valueOf(noteDataMap.get("duration")),
-                getComplition(LESSONS_REQUEST_ADDRESS.getValue(), noteId),//TODO add request to user/lessons
+                isItemCompleted(LESSONS_REQUEST_ADDRESS.getValue(), noteId),
                 String.valueOf(noteDataMap.get("chat_text"))
         );
 
     }
 
     private TestData getTestData(int testId) {
-        Map<String, Object> testDataMap = PostService.getJsonAsMap(
-                RESPONSE_TO_PATH(TEST_DATA_REQUEST_ADDRESS.getValue() + testId));
+        Map<String, Object> testDataMap = ServiceUtil.getJsonAsMap(
+                sendGetRequestToURL(TEST_DATA_REQUEST_ADDRESS.getValue() + testId));
 
         List<QuestionData> questions = new ArrayList<>();
-        List<Double> testQuestions = PostService.getJsonAsList(RESPONSE_TO_PATH(TEST_DATA_REQUEST_ADDRESS.getValue() + testId + "/questions"));
+        List<Integer> testQuestions = ServiceUtil.getJsonAsList(sendGetRequestToURL(TEST_DATA_REQUEST_ADDRESS.getValue() + testId + "/questions"));
 
-        if (testQuestions == null)
+        if (testQuestions.size() == 0)
             return null;
 
-        testQuestions.forEach(e -> questions.add(getQuestionData(e.intValue())));
+        testQuestions.forEach(q -> questions.add(getQuestionData(q)));
 
         return new TestData(
                 String.valueOf(testDataMap.get("name")),
                 String.valueOf(testDataMap.get("description")),
                 String.valueOf(testDataMap.get("duration")),
-                getComplition(TESTS_REQUEST_ADDRESS.getValue(), testId),
+                isItemCompleted(TESTS_REQUEST_ADDRESS.getValue(), testId),
                 questions
         );
     }
 
     private QuestionData getQuestionData(int questionId) {
-        Map<String, Object> q = PostService.getJsonAsMap(RESPONSE_TO_PATH(QUESTION_DATA_REQUEST_ADDRESS.getValue() + questionId));
+        Map<String, Object> q = ServiceUtil.getJsonAsMap(sendGetRequestToURL(QUESTION_DATA_REQUEST_ADDRESS.getValue() + questionId));
 
         List<AnswerData> answers = new ArrayList<>();
         JSONArray answersArray = (JSONArray) q.get("answers");
@@ -195,38 +188,12 @@ public class CourseService extends AsyncTask<Void, Void, List<CourseData>> {
         );
     }
 
-    private boolean getComplition(String requestAddress, double noteId) {
-        List<String> completedNotes = PostService.getJsonAsList(
-                RESPONSE_TO_PATH(requestAddress));
+    private boolean isItemCompleted(String requestAddress, double noteId) {
+        List<String> completedItems = ServiceUtil.getJsonAsList(sendGetRequestToURL(requestAddress));
 
-        return completedNotes != null && completedNotes.contains(String.valueOf(noteId));
+        return completedItems.size() != 0 && completedItems.contains(String.valueOf(noteId));
     }
 
-    private String RESPONSE_TO_PATH(String path) {
-        request = new Request.Builder()
-                .url(path)
-                .method(REQUEST_METHOD_GET.getValue(), null)
-                .addHeader("Authorization", "Bearer " + sPref.getString(ACCESS_TOKEN_KEY.getValue(), ""))
-                .build();
-
-        try (Response response = httpClient.newCall(request).execute()) {
-
-            ResponseBody responseBody = response.body();
-            Map<String, Object> responseBodyAsMap = PostService.getJsonAsMap(responseBody.string());
-
-            double responseCode = Double.parseDouble(
-                    String.valueOf(responseBodyAsMap.get(RESPONSE_STATUS_KEY.getValue()))
-            );
-
-            if (Math.abs(responseCode - 200.0) < 1e6) {
-                return responseBodyAsMap.get(RESPONSE_DATA_KEY.getValue()).toString();
-            }
-        } catch (IOException | NullPointerException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
 
     @Override
     protected List<CourseData> doInBackground(Void... voids) {

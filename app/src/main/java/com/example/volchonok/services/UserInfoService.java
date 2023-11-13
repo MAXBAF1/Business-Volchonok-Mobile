@@ -68,7 +68,7 @@ public class UserInfoService extends AsyncTask<Void, Void, UserData> {
         try (Response response = httpClient.newCall(request).execute()) {
 
             ResponseBody responseBody = response.body();
-            Map<String, Object> responseBodyAsMap = PostService.getJsonAsMap(responseBody.string());
+            Map<String, Object> responseBodyAsMap = ServiceUtil.getJsonAsMap(responseBody.string());
 
             double responseCode = Double.parseDouble(
                     String.valueOf(responseBodyAsMap.get(RESPONSE_STATUS_KEY.getValue()))

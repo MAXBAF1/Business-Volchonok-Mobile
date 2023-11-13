@@ -4,14 +4,12 @@ import android.content.Context;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
-import okhttp3.internal.http2.Header;
 
 import static com.example.volchonok.services.enums.ServiceStringValue.*;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import java.util.HashMap;
 import java.util.Map;
 
 //only service class
@@ -22,7 +20,7 @@ public class RefreshTokenService extends PostService<Void> {
     }
 
     private double refresh() {
-        return sendHttpRequest(
+        return sendPostRequestToURL(
                 ACCESS_TOKEN_REQUEST_ADDRESS.getValue(),
                 RequestBody.create(
                         new Gson().toJson(
