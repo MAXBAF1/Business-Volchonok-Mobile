@@ -1,12 +1,8 @@
 package com.example.volchonok.screens
 
-import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
-import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.os.Build
-import android.provider.MediaStore
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.content.res.AppCompatResources
@@ -37,12 +33,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.imageResource
@@ -50,23 +43,22 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
-import androidx.core.graphics.drawable.toBitmapOrNull
 import com.example.volchonok.R
 import com.example.volchonok.data.CourseData
 import com.example.volchonok.data.UserData
 import com.example.volchonok.screens.vidgets.cards.CourseProgressCard
 import com.example.volchonok.screens.vidgets.others.StylizedTextInput
+import com.example.volchonok.services.CourseService
 import com.example.volchonok.services.UserInfoService
-import org.xmlpull.v1.XmlPullParser
 
-class ProfileScreen(
-    private val coursesList: Iterable<CourseData>, private val onBackClick: () -> Unit
-) {
+class ProfileScreen(private val onBackClick: () -> Unit) {
     private lateinit var userData: UserData
+    private lateinit var coursesList: Iterable<CourseData>
 
     @Composable
     fun Create() {
-        userData = UserInfoService(LocalContext.current).execute().get()
+        userData = UserInfoService(LocalContext.current).userInfo
+        coursesList = CourseService(LocalContext.current).courses
 
         Column(modifier = Modifier.padding(start = 20.dp, end = 30.dp)) {
             TopAppBar()
@@ -155,7 +147,7 @@ class ProfileScreen(
             Avatar()
             Column(Modifier.padding(start = 15.dp)) {
                 Text(
-                    text = userData.name.toString(),
+                    text = "${userData.lastName} ${userData.firstName}",
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.primary
                 )

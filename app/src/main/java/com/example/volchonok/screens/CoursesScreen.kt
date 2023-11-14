@@ -5,21 +5,28 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.volchonok.data.CourseData
 import com.example.volchonok.data.UserData
 import com.example.volchonok.screens.vidgets.cards.CourseCard
 import com.example.volchonok.screens.vidgets.others.Greeting
 import com.example.volchonok.screens.vidgets.others.TopAppBar
+import com.example.volchonok.services.CourseService
+import com.example.volchonok.services.UserInfoService
 
 class CoursesScreen(
-    private val userData: UserData,
-    private val coursesList: Iterable<CourseData>,
     private val toCourseInfoScreen: (CourseData) -> Unit,
     private val toProfile: () -> Unit
 ) {
+    private lateinit var userData: UserData
+    private lateinit var coursesList: Iterable<CourseData>
+
     @Composable
     fun Create() {
+        userData = UserInfoService(LocalContext.current).execute().get()
+        val drf = CourseService(LocalContext.current).execute().get()
+        coursesList = drf
         Column {
             TopAppBar(userData, toProfile).Create()
             Column(
@@ -27,7 +34,7 @@ class CoursesScreen(
                     .padding(start = 30.dp, top = 0.dp, end = 30.dp, bottom = 15.dp)
                     .fillMaxSize()
             ) {
-                Greeting(userData.name.toString())
+                Greeting("${userData.lastName} ${userData.firstName}")
                 CoursesList(coursesList)
             }
         }

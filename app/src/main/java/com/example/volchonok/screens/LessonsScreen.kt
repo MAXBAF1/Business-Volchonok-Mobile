@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.volchonok.R
@@ -25,18 +26,21 @@ import com.example.volchonok.screens.vidgets.others.InfoHeader
 import com.example.volchonok.screens.vidgets.others.TabRow
 import com.example.volchonok.screens.vidgets.others.TopAppBar
 import com.example.volchonok.screens.vidgets.cards.LessonCard
+import com.example.volchonok.services.UserInfoService
 
 class LessonsScreen(
-    private val userData: UserData,
     private val moduleData: ModuleData,
     private val onBackClick: () -> Unit,
     private val toProfile: () -> Unit,
     private val toLessonScreen: (ILesson) -> Unit,
 ) {
+
     @Composable
     fun Create() {
         Column {
-            TopAppBar(userData, toProfile, true, onBackClick).Create()
+            TopAppBar(
+                toProfile = toProfile, isLessonScreen = true, onBackClick = onBackClick
+            ).Create()
             val completedLessonCnt = moduleData.lessonNotes.count { it.isCompleted }
             val lessonsCtnText = "${completedLessonCnt}/${moduleData.lessonNotes.size} ${
                 stringResource(id = R.string.lessons_cnt)
