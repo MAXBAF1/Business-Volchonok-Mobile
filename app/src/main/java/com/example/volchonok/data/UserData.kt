@@ -7,4 +7,6 @@ data class UserData(
     val surname: String,
     val email: String,
     val coins: Int
-)
+) {
+    constructor(): this(1, "", "", "", "", 0)
+}

@@ -61,7 +61,7 @@ public class CourseService extends GetService<Pair<CourseDataAccessLevel, List<?
         String courseName, courseDescription;
         List<ModuleData> modules = new ArrayList<>();
         //FixMe
-        UserData emptyUser = new UserData(-1, "", "", "", "", -1, -1, "");
+        UserData emptyUser = new UserData(-1, "", "", "", "", -1);
         List<ReviewData> reviews = List.of(
                 new ReviewData(emptyUser, ""),
                 new ReviewData(emptyUser, ""),
@@ -205,11 +205,11 @@ public class CourseService extends GetService<Pair<CourseDataAccessLevel, List<?
 
     @Override
     protected List<CourseData> doInBackground(Pair<CourseDataAccessLevel, List<?>>... levels) {
-        if (levels.length != 1) throw new IllegalArgumentException("More than one arg!");
+        /*if (levels.length != 1) throw new IllegalArgumentException("More than one arg!");
 
         switch (levels[0].first) {
             //TODO...
-        }
+        }*/
         return getCourses();
     }
 }
