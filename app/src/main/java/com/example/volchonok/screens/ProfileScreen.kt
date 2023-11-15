@@ -62,7 +62,7 @@ class ProfileScreen(private val onBackClick: () -> Unit) {
         userData = UserInfoService(LocalContext.current).execute().get() //вызывать только так
         coursesList = CourseService(LocalContext.current).execute().get()
         // взять модули курса:
-        // CourseService(LocalContext.current).execute(Pair(CourseDataAccessLevel.MODULES_DATA, coursesList)).get()
+        // coursesList = CourseService(LocalContext.current).execute(Pair(CourseDataAccessLevel.MODULES_DATA, coursesList)).get()
         // по аналогии вызываешь с другими уровнями доступа к курсу
 
         Log.d("TAG", "user: $userData")
