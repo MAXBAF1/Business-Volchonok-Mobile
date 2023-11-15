@@ -34,7 +34,7 @@ class CoursesScreen(
                     .padding(start = 30.dp, top = 0.dp, end = 30.dp, bottom = 15.dp)
                     .fillMaxSize()
             ) {
-                Greeting("${userData.lastName} ${userData.firstName}")
+                Greeting("${userData.surname} ${userData.firstname}")
                 CoursesList(coursesList)
             }
         }

@@ -147,13 +147,13 @@ class ProfileScreen(private val onBackClick: () -> Unit) {
             Avatar()
             Column(Modifier.padding(start = 15.dp)) {
                 Text(
-                    text = "${userData.lastName} ${userData.firstName}",
+                    text = "${userData.surname} ${userData.firstname}",
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
                 Text(
                     modifier = Modifier.padding(top = 5.dp),
-                    text = "${stringResource(id = R.string.level)} ${userData.level}",
+                    text = "${stringResource(id = R.string.level)} 0",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onBackground
                 )

@@ -8,5 +8,5 @@ data class UserData(
     val email: String,
     val coins: Int
 ) {
-    constructor(): this(0, "", "", "", "", 0)
+    constructor(): this(1, "", "", "", "", 0)
 }
