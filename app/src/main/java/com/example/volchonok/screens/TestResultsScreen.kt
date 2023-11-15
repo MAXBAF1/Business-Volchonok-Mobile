@@ -125,7 +125,7 @@ class TestResultsScreen(
         ) {
             Text(
                 modifier = Modifier,
-                text = answerData.explanation,
+                text = answerData.text,//TODO change to explanation
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onBackground
             )

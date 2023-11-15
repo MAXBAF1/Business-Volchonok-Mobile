@@ -1,5 +1,6 @@
 package com.example.volchonok.screens
 
+import android.util.Pair
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -9,6 +10,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.volchonok.data.CourseData
 import com.example.volchonok.data.UserData
+import com.example.volchonok.enums.CourseDataAccessLevel
 import com.example.volchonok.screens.vidgets.cards.CourseCard
 import com.example.volchonok.screens.vidgets.others.Greeting
 import com.example.volchonok.screens.vidgets.others.TopAppBar
@@ -25,7 +27,7 @@ class CoursesScreen(
     @Composable
     fun Create() {
         userData = UserInfoService(LocalContext.current).execute().get()
-        val drf = CourseService(LocalContext.current).execute().get()
+        val drf = CourseService(LocalContext.current).execute(Pair(CourseDataAccessLevel.ONLY_COURSES_DATA, ArrayList<CourseData>())).get()
         coursesList = drf
         Column {
             TopAppBar(userData, toProfile).Create()
