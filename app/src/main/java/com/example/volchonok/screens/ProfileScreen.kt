@@ -3,6 +3,7 @@ package com.example.volchonok.screens
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.content.res.AppCompatResources
@@ -46,6 +47,7 @@ import androidx.core.graphics.drawable.toBitmap
 import com.example.volchonok.R
 import com.example.volchonok.data.CourseData
 import com.example.volchonok.data.UserData
+import com.example.volchonok.enums.CourseDataAccessLevel
 import com.example.volchonok.screens.vidgets.cards.CourseProgressCard
 import com.example.volchonok.screens.vidgets.others.StylizedTextInput
 import com.example.volchonok.services.CourseService
@@ -57,8 +59,14 @@ class ProfileScreen(private val onBackClick: () -> Unit) {
 
     @Composable
     fun Create() {
-        userData = UserInfoService(LocalContext.current).userInfo
-        coursesList = CourseService(LocalContext.current).courses
+        userData = UserInfoService(LocalContext.current).execute().get() //вызывать только так
+        coursesList = CourseService(LocalContext.current).execute().get()
+        // взять модули курса:
+        // CourseService(LocalContext.current).execute(Pair(CourseDataAccessLevel.MODULES_DATA, coursesList)).get()
+        // по аналогии вызываешь с другими уровнями доступа к курсу
+
+        Log.d("TAG", "user: $userData")
+        Log.d("TAG", "course: $coursesList")
 
         Column(modifier = Modifier.padding(start = 20.dp, end = 30.dp)) {
             TopAppBar()

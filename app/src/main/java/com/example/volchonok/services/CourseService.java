@@ -198,8 +198,9 @@ public class CourseService extends GetService<Pair<CourseDataAccessLevel, List<C
 
     @Override
     protected List<CourseData> doInBackground(Pair<CourseDataAccessLevel, List<CourseData>>... levels) {
+        if (levels.length == 0) return getCourses();
 
-        if (levels.length != 1)
+        if (levels.length > 1)
             throw new IllegalArgumentException("Только один аргумент!");
 
         List<CourseData> courses = levels[0].second;
