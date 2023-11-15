@@ -53,8 +53,6 @@ public class UserInfoService extends AsyncTask<Void, Void, UserData> {
             response = tryGetUserInfo();
         }
 
-        Log.d("TAG", "getUserInfo: " + response);
-
         return new Gson().fromJson(response, UserData.class);
     }
 

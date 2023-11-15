@@ -24,6 +24,7 @@ public enum ServiceStringValue {
     REFRESH_TOKEN_KEY("refresh_token"),
     RESPONSE_STATUS_KEY("status"),
     NAME_KEY("name"),
+    ID_KEY("id"),
     DESCRIPTION_KEY("description"),
     RESPONSE_DATA_KEY("data");
 
