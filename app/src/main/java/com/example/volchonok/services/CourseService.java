@@ -238,6 +238,14 @@ public class CourseService extends GetService<Pair<CourseDataAccessLevel, List<C
                         )
                 );
             }
+            case ALL_DATA -> {
+                courses = getCourses();
+
+                courses = doInBackground(new Pair<>(CourseDataAccessLevel.MODULES_DATA, courses));
+                courses = doInBackground(new Pair<>(CourseDataAccessLevel.NOTES_DATA, courses));
+                courses = doInBackground(new Pair<>(CourseDataAccessLevel.TESTS_DATA, courses));
+                courses = doInBackground(new Pair<>(CourseDataAccessLevel.QUESTIONS_DATA, courses));
+            }
         }
 
         return courses;
