@@ -1,5 +1,6 @@
 package com.example.volchonok.screens
 
+import android.util.Pair
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -17,22 +18,38 @@ import androidx.compose.ui.unit.dp
 import com.example.volchonok.R
 import com.example.volchonok.data.CourseData
 import com.example.volchonok.data.ModuleData
+import com.example.volchonok.data.NoteData
 import com.example.volchonok.data.UserData
+import com.example.volchonok.enums.CourseDataAccessLevel
 import com.example.volchonok.screens.vidgets.others.Greeting
 import com.example.volchonok.screens.vidgets.cards.ModuleCard
 import com.example.volchonok.screens.vidgets.cards.ReviewCard
 import com.example.volchonok.screens.vidgets.others.TopAppBar
+import com.example.volchonok.services.CourseService
 import com.example.volchonok.services.UserInfoService
 
 class CourseInfoScreen(
-    private val courseData: CourseData,
+    private var courseData: CourseData,
     private val toLessonsScreen: (ModuleData) -> Unit,
     private val toProfile: () -> Unit
 ) {
     private lateinit var userData: UserData
+
     @Composable
     fun Create() {
         userData = UserInfoService(LocalContext.current).execute().get()
+        courseData = CourseData(
+            0, "Название курса", listOf(
+                ModuleData(
+                    0,
+                    "Название модуля",
+                    "Описание модуля",
+                    listOf(NoteData(0, "Урок 1", "Описание урока", "30", false, listOf())),
+                    listOf()
+                )
+            ), "Описание курса", listOf()
+        )
+
         Column(
             Modifier.fillMaxSize()
         ) {

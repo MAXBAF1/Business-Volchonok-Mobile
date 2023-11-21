@@ -8,5 +8,5 @@ data class NoteData(
     override val description: String, //
     override val durationTime: String, //
     override val isCompleted: Boolean,
-    val text: String //
+    val text: List<String> //
 ) : ILesson

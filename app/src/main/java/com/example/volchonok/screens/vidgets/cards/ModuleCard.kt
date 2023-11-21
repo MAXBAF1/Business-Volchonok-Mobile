@@ -106,6 +106,7 @@ class ModuleCard(
                 .background(MaterialTheme.colorScheme.onPrimary)
                 .clickable { toLessonsScreen(moduleData) }
                 .padding(15.dp, 0.dp, 15.dp, 15.dp)
+                .fillMaxWidth()
         ) {
             moduleData.lessonNotes.forEach { LessonInfo(it) }
         }

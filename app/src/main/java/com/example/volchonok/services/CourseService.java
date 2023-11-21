@@ -119,7 +119,7 @@ public class CourseService extends GetService<Pair<CourseDataAccessLevel, List<C
                         String.valueOf(noteDataMap.get("description")),
                         String.valueOf(noteDataMap.get("duration")),
                         isItemCompleted(LESSONS_REQUEST_ADDRESS.getValue(), moduleLessonId),
-                        ""
+                        new ArrayList<>()
                 ));
             }
         }

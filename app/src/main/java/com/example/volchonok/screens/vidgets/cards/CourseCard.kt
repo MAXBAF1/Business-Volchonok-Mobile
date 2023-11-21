@@ -5,6 +5,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -63,7 +64,9 @@ class CourseCard(
                     )
                 }
                 Image(
-                    modifier = Modifier.size(280.dp).offset(x = 130.dp),
+                    modifier = Modifier
+                        .size(280.dp)
+                        .offset(x = 130.dp),
                     painter = painterResource(id = R.drawable.mic_wolf),
                     contentDescription = "mic_wolf image",
                     alignment = Alignment.TopEnd,
@@ -99,20 +102,22 @@ class CourseCard(
 
     @Composable
     private fun AddSignUpBtn() {
-        Button(
-            onClick = { toCourseInfoScreen(courseData) },
-            modifier = Modifier.padding(top = 30.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.onPrimary,
-                contentColor = MaterialTheme.colorScheme.primary
-            )
-        ) {
-            Text(
-                text = stringResource(id = R.string.continue_text),
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.labelMedium,
-                //modifier = Modifier.padding(28.dp, 12.dp),
-            )
+        Box(modifier = Modifier.fillMaxHeight(), contentAlignment = Alignment.BottomCenter) {
+            Button(
+                onClick = { toCourseInfoScreen(courseData) },
+                modifier = Modifier.padding(top = 30.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.onPrimary,
+                    contentColor = MaterialTheme.colorScheme.primary
+                )
+            ) {
+                Text(
+                    text = stringResource(id = R.string.continue_text),
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.labelMedium,
+                    //modifier = Modifier.padding(28.dp, 12.dp),
+                )
+            }
         }
     }
 }

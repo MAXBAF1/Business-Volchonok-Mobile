@@ -32,7 +32,7 @@
     <!--Course screen-->
     <string name="course_greeting">Привет,</string>
     <string name="what_learn">Что хочешь изучить?</string>
-    <string name="continue_text">Записаться</string>
+    <string name="continue_text">Продолжить</string>
 
     <!--Course info screen-->
     <string name="lessons_cnt">Уроков</string>

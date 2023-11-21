@@ -27,8 +27,7 @@ class CoursesScreen(
     @Composable
     fun Create() {
         userData = UserInfoService(LocalContext.current).execute().get()
-        val drf = CourseService(LocalContext.current).execute(Pair(CourseDataAccessLevel.ONLY_COURSES_DATA, ArrayList<CourseData>())).get()
-        coursesList = drf
+        coursesList = CourseService(LocalContext.current).execute(Pair(CourseDataAccessLevel.ONLY_COURSES_DATA, ArrayList<CourseData>())).get()
         Column {
             TopAppBar(userData, toProfile).Create()
             Column(

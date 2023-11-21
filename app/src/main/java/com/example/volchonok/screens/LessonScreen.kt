@@ -49,7 +49,9 @@ class LessonScreen(
                     }.Create()
                 }
 
-                LessonScreenType.NoteScreen -> NoteScreen(lessonData as NoteData).Create()
+                LessonScreenType.NoteScreen -> NoteScreen(
+                    lessonData as NoteData, onBackClick
+                ).Create()
             }
         }
     }
