@@ -25,12 +25,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.volchonok.R
+import com.example.volchonok.data.MessageData
 import com.example.volchonok.data.NoteData
+import com.example.volchonok.enums.AuthorType
 import com.example.volchonok.enums.MessageType
 import com.example.volchonok.screens.vidgets.others.DefaultButton
 import kotlinx.coroutines.delay
@@ -41,20 +43,40 @@ class NoteScreen(
 ) {
     private val note = NoteData( // Тестовые данные
         0, "Лекция", "Описание", "30", false, listOf(
-            "Let’s get lunch! How about pizza? \uD83C\uDF55",
-            "That sounds great! I’m in. What time works for you?",
-            "Let’s say 12pm if it’s fine with you?",
-            "Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!мLearn the basics of the langLearn the basics of the language: make new friends, plan a family dinner, go shopping and much more!Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!мLearn the basics of the langLearn the basics of the language: make new friends, plan a family dinner, go shopping and much more!Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!мLearn the basics of the lang"
+            MessageData(
+                "Let’s get lunch! How about pizza? \uD83C\uDF55",
+                AuthorType.Student,
+                MessageType.Text,
+                ""
+            ),
+            MessageData(
+                "That sounds great! I’m in. What time works for you?",
+                AuthorType.Wolf,
+                MessageType.Text,
+                ""
+            ),
+            MessageData(
+                "Let’s say 12pm if it’s fine with you?", AuthorType.Student, MessageType.Text, ""
+            ),
+            MessageData(
+                "Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!мLearn the basics of the langLearn the basics of the language: make new friends, plan a family dinner, go shopping and much more!Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!мLearn the basics of the langLearn the basics of the language: make new friends, plan a family dinner, go shopping and much more!Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!мLearn the basics of the lang",
+                AuthorType.Wolf,
+                MessageType.Text,
+                ""
+            ),
         )
     )
-    private val messageStates = List(note.text.size) { mutableStateOf(false) }
+
+
+    private val messageStates = List(note.messages.size) { mutableStateOf(false) }
     private var sendBtnShowed = mutableStateOf(true)
+    private var completeBtnShowed = mutableStateOf(false)
     private var lineLength = 0.dp
 
     @Composable
     fun Create() {
         val screenWidth = LocalConfiguration.current.screenWidthDp
-        lineLength = (screenWidth * 0.5).dp
+        lineLength = (screenWidth * 0.75).dp
 
         Column(
             Modifier
@@ -73,20 +95,23 @@ class NoteScreen(
         Column(
             modifier = modifier.verticalScroll(rememberScrollState())
         ) {
-            note.text.forEachIndexed { i, text ->
+            note.messages.forEachIndexed { i, message ->
                 if (messageStates[i].value) {
-                    if (i % 2 == 0) {
-                        Message(text, MessageType.Student, i == 0)
-                    } else {
-                        var showText by remember { mutableStateOf(false) }
+                    val isLast = i == messageStates.size - 1
+                    when (message.author) {
+                        AuthorType.Student -> Message(message, i == 0, isLast)
+                        AuthorType.Wolf -> {
+                            var showText by remember { mutableStateOf(false) }
 
-                        LaunchedEffect(showText) {
-                            delay(1000)
-                            showText = true
-                        }
-                        if (showText) {
-                            Message(text, MessageType.Wolf)
-                            sendBtnShowed.value = true
+                            LaunchedEffect(showText) {
+                                delay(1000)
+                                showText = true
+                            }
+                            if (showText) {
+                                Message(message, i == 0, isLast)
+                                if (isLast) completeBtnShowed.value = true
+                                else sendBtnShowed.value = true
+                            }
                         }
                     }
                 }
@@ -97,15 +122,15 @@ class NoteScreen(
     @Composable
     private fun SendMessageOrCompleteBtn() {
         var sendMessageIndex by remember { mutableIntStateOf(0) }
-        if (sendMessageIndex < note.text.size && sendBtnShowed.value) {
-            SendMessageBtn(note.text[sendMessageIndex]) {
+        if (sendMessageIndex < note.messages.size && sendBtnShowed.value) {
+            SendMessageBtn(note.messages[sendMessageIndex].text) {
                 sendBtnShowed.value = false
                 messageStates[sendMessageIndex++].value = true
-                if (sendMessageIndex < note.text.size) {
+                if (sendMessageIndex < note.messages.size) {
                     messageStates[sendMessageIndex++].value = true
                 }
             }
-        } else if (sendMessageIndex >= note.text.size && sendBtnShowed.value) {
+        } else if (completeBtnShowed.value) {
             DefaultButton(
                 text = stringResource(id = R.string.complete).uppercase(), onClick = onCompleteBtn
             )
@@ -113,34 +138,37 @@ class NoteScreen(
     }
 
     @Composable
-    private fun Message(text: String, messageType: MessageType, isFirst: Boolean = false) {
+    private fun Message(message: MessageData, isFirst: Boolean = false, isLast: Boolean = false) {
         val alignment: Alignment
+        val backgroundShape: Shape
         val backgroundColor: Color
         val textColor: Color
 
-        if (messageType == MessageType.Wolf) {
-            alignment = Alignment.CenterStart
-            backgroundColor = MaterialTheme.colorScheme.secondaryContainer
-            textColor = MaterialTheme.colorScheme.onSecondaryContainer
-        } else {
+        if (message.author == AuthorType.Student) {
             alignment = Alignment.CenterEnd
+            backgroundShape = RoundedCornerShape(20.dp, 20.dp, 0.dp, 20.dp)
             backgroundColor = MaterialTheme.colorScheme.primary
             textColor = MaterialTheme.colorScheme.onPrimary
+        } else {
+            alignment = Alignment.CenterStart
+            backgroundShape = RoundedCornerShape(20.dp, 20.dp, 20.dp, 0.dp)
+            backgroundColor = MaterialTheme.colorScheme.secondaryContainer
+            textColor = MaterialTheme.colorScheme.onSecondaryContainer
         }
 
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = if (isFirst) 30.dp else 20.dp),
+                .padding(top = if (isFirst) 30.dp else 20.dp, bottom = if (isLast) 30.dp else 0.dp),
             contentAlignment = alignment
         ) {
             Box(
                 modifier = Modifier
-                    .background(backgroundColor, RoundedCornerShape(20.dp))
+                    .background(backgroundColor, backgroundShape)
                     .padding(10.dp)
             ) {
                 Text(
-                    text = text,
+                    text = message.text,
                     modifier = Modifier.widthIn(max = lineLength),
                     style = MaterialTheme.typography.labelLarge,
                     color = textColor
