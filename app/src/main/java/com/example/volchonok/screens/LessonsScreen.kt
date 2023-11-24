@@ -59,9 +59,7 @@ class LessonsScreen(
         val pagerState = rememberPagerState { tabList.size }
 
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.onPrimary, RoundedCornerShape(20.dp))
+            modifier = Modifier.fillMaxSize()
         ) {
             TabRow(pagerState, tabList).Create()
             HorizontalPager(pagerState)

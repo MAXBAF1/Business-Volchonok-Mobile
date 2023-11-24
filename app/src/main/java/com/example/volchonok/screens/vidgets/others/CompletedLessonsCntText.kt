@@ -21,13 +21,13 @@ fun CompletedLessonsCntText(text: String) {
         modifier = Modifier
             .sizeIn(24.dp),
         shape = RoundedCornerShape(100),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onPrimary)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background)
     ) {
         Text(
             text = text,
             modifier = Modifier.padding(10.dp, 3.dp),
             style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.secondary,
+            color = MaterialTheme.colorScheme.outline,
             textAlign = TextAlign.Center
         )
     }

@@ -23,12 +23,16 @@ fun DefaultButton(
     buttonType: ButtonType = ButtonType.Filled,
     onClick: () -> Unit
 ) {
-    val containerColor = if (buttonType == ButtonType.Outlined) {
-        Color.Transparent
-    } else MaterialTheme.colorScheme.primary
-    val contentColor = if (buttonType == ButtonType.Outlined) {
-        MaterialTheme.colorScheme.primary
-    } else MaterialTheme.colorScheme.onPrimary
+    val containerColor: Color
+    val contentColor: Color
+
+    if (buttonType == ButtonType.Filled) {
+        containerColor = MaterialTheme.colorScheme.primary
+        contentColor = MaterialTheme.colorScheme.onPrimary
+    } else {
+        containerColor = Color.Transparent
+        contentColor = MaterialTheme.colorScheme.primary
+    }
 
     Button(
         modifier = modifier
@@ -39,12 +43,15 @@ fun DefaultButton(
         enabled = enabled,
         border = BorderStroke(
             1.dp,
-            if (buttonType == ButtonType.Outlined) MaterialTheme.colorScheme.primary else Color.Transparent
+            if (buttonType == ButtonType.Filled) Color.Transparent else MaterialTheme.colorScheme.primary
         ),
         colors = ButtonDefaults.buttonColors(
-            containerColor = containerColor, contentColor = contentColor
+            containerColor = containerColor,
+            contentColor = contentColor,
+            disabledContainerColor = MaterialTheme.colorScheme.secondary,
+            disabledContentColor = MaterialTheme.colorScheme.background
         )
     ) {
-        Text(text = text, style = MaterialTheme.typography.titleSmall, color = contentColor)
+        Text(text = text, style = MaterialTheme.typography.titleSmall)
     }
 }

@@ -65,7 +65,7 @@ class ModuleCard(
     private fun ModuleRow(onExpand: () -> Unit) {
         val cardColor = if (moduleData.lessonNotes.count { it.isCompleted } > 0) {
             MaterialTheme.colorScheme.primary
-        } else MaterialTheme.colorScheme.secondary
+        } else MaterialTheme.colorScheme.onTertiaryContainer
         val interactionSource = remember { MutableInteractionSource() }
 
         Row(
@@ -103,7 +103,7 @@ class ModuleCard(
     private fun LessonsList() {
         Column(
             Modifier
-                .background(MaterialTheme.colorScheme.onPrimary)
+                .background(MaterialTheme.colorScheme.tertiaryContainer)
                 .clickable { toLessonsScreen(moduleData) }
                 .padding(15.dp, 0.dp, 15.dp, 15.dp)
                 .fillMaxWidth()
@@ -125,7 +125,7 @@ class ModuleCard(
                     .fillMaxSize()
                     .wrapContentHeight(),
                 style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.secondary,
+                color = MaterialTheme.colorScheme.onTertiaryContainer,
                 textAlign = TextAlign.Center
             )
         }
@@ -136,7 +136,7 @@ class ModuleCard(
     private fun LessonInfo(lessonData: ILesson) {
         val checkMarkColor = if (lessonData.isCompleted) {
             MaterialTheme.colorScheme.primary
-        } else MaterialTheme.colorScheme.secondary
+        } else MaterialTheme.colorScheme.onTertiaryContainer
         Row(
             modifier = Modifier.padding(top = 15.dp),
             verticalAlignment = Alignment.CenterVertically

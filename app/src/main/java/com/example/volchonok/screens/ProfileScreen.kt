@@ -55,7 +55,7 @@ import com.example.volchonok.services.UserInfoService
 
 class ProfileScreen(private val onBackClick: () -> Unit) {
     private lateinit var userData: UserData
-    private lateinit var coursesList: Iterable<CourseData>
+    private lateinit var coursesList: List<CourseData>
 
     @Composable
     fun Create() {
@@ -68,13 +68,9 @@ class ProfileScreen(private val onBackClick: () -> Unit) {
         Log.d("TAG", "user: $userData")
         Log.d("TAG", "course: $coursesList")
 
-        Column(modifier = Modifier.padding(start = 20.dp, end = 30.dp)) {
+        Column {
             TopAppBar()
-            Column(
-                Modifier
-                    .padding(start = 10.dp)
-                    .verticalScroll(rememberScrollState())
-            ) {
+            Column(Modifier.verticalScroll(rememberScrollState())) {
                 UserInfoRow()
                 CourseProgressCard(coursesList).Create()
                 YourDataTexts()
@@ -85,41 +81,43 @@ class ProfileScreen(private val onBackClick: () -> Unit) {
 
     @Composable
     private fun TextInputs() {
-        StylizedTextInput("Лепинских Максим Игоревич", stringResource(id = R.string.fio), isEnabled = false).Create()
-        StylizedTextInput("89501234567", stringResource(id = R.string.phone)).Create()
-        StylizedTextInput("example@gmail.com", stringResource(id = R.string.mail)).Create()
-        StylizedTextInput("Екатеринбург", stringResource(id = R.string.address), isEnabled = false).Create()
-        StylizedTextInput("1", stringResource(id = R.string.grade), isEnabled = false, isLast = true).Create()
+        Column(modifier = Modifier.padding(start = 30.dp, end = 30.dp)) {
+            StylizedTextInput("Лепинских Максим Игоревич", stringResource(id = R.string.fio), isEnabled = false).Create()
+            StylizedTextInput("89501234567", stringResource(id = R.string.phone)).Create()
+            StylizedTextInput("example@gmail.com", stringResource(id = R.string.mail)).Create()
+            StylizedTextInput("Екатеринбург", stringResource(id = R.string.address), isEnabled = false).Create()
+            StylizedTextInput("1", stringResource(id = R.string.grade), isEnabled = false, isLast = true).Create()
+        }
     }
 
     @Composable
     private fun YourDataTexts() {
-        Text(
-            modifier = Modifier.padding(top = 30.dp),
-            text = stringResource(id = R.string.your_data),
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onBackground
-        )
+        Column(modifier = Modifier.padding(start = 30.dp, top = 30.dp, end = 30.dp)) {
+            Text(
+                text = stringResource(id = R.string.your_data),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onBackground
+            )
 
-        Row(modifier = Modifier.padding(top = 5.dp)) {
-            Text(
-                text = "${stringResource(id = R.string.fill_data)} ",
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-            Text(
-                text = stringResource(id = R.string.five_coins),
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onBackground
-            )
+            Row(modifier = Modifier.padding(top = 5.dp)) {
+                Text(
+                    text = "${stringResource(id = R.string.fill_data)} ",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                Text(
+                    text = stringResource(id = R.string.five_coins),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            }
         }
-
     }
 
     @Composable
     private fun TopAppBar() {
         Row(
-            Modifier.padding(top = 15.dp, bottom = 15.dp),
+            Modifier.padding(start = 20.dp, top = 15.dp, bottom = 15.dp, end = 30.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Button(
@@ -148,10 +146,9 @@ class ProfileScreen(private val onBackClick: () -> Unit) {
         }
     }
 
-
     @Composable
     private fun UserInfoRow() {
-        Row(Modifier.padding(top = 15.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(Modifier.padding(start = 30.dp, top = 15.dp, end = 30.dp), verticalAlignment = Alignment.CenterVertically) {
             Avatar()
             Column(Modifier.padding(start = 15.dp)) {
                 Text(

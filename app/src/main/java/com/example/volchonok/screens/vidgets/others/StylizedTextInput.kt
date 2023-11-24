@@ -63,7 +63,7 @@ class StylizedTextInput(
         text = remember { mutableStateOf("") }
         val passwordVisible = remember { mutableStateOf(false) }
         val onBackgroundColor = MaterialTheme.colorScheme.onBackground
-        val secondaryColor = MaterialTheme.colorScheme.secondary
+        val secondaryColor = MaterialTheme.colorScheme.outlineVariant
         var borderColor by remember { mutableStateOf(secondaryColor) }
 
         TextField(modifier = Modifier

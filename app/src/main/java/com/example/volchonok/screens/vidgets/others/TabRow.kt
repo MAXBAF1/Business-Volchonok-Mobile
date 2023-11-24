@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -20,7 +19,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -28,6 +26,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalFoundationApi::class)
 class TabRow(private val pagerState: PagerState, private val tabList: List<String>) {
     private var coroutineScope: CoroutineScope? = null
+
     @Composable
     fun Create() {
         coroutineScope = rememberCoroutineScope()
@@ -35,8 +34,8 @@ class TabRow(private val pagerState: PagerState, private val tabList: List<Strin
         Box(modifier = Modifier.padding(start = 30.dp, top = 30.dp, end = 30.dp)) {
             TabRow(modifier = Modifier
                 .border(3.dp, MaterialTheme.colorScheme.primary, CircleShape)
-                .padding(6.dp)
-                .clip(RoundedCornerShape(20.dp)),
+                .padding(6.dp),
+                containerColor = MaterialTheme.colorScheme.background,
                 selectedTabIndex = tabIndex,
                 indicator = { },
                 divider = { }) {
@@ -50,19 +49,17 @@ class TabRow(private val pagerState: PagerState, private val tabList: List<Strin
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
     private fun Tab(pagerState: PagerState, index: Int, text: String) {
-        val primary = MaterialTheme.colorScheme.primary
-        val onPrimary = MaterialTheme.colorScheme.onPrimary
-        val backgroundColor = remember { Animatable(primary) }
+        val selected = MaterialTheme.colorScheme.primary
+        val unselected = MaterialTheme.colorScheme.background
+        val containerColor = remember { Animatable(selected) }
         LaunchedEffect(key1 = pagerState.currentPage == index) {
-            backgroundColor.animateTo(if (pagerState.currentPage == index) primary else onPrimary)
+            containerColor.animateTo(if (pagerState.currentPage == index) selected else unselected)
         }
         Tab(
             modifier = Modifier
+                .clip(CircleShape)
                 .height(40.dp)
-                .background(
-                    backgroundColor.value, RoundedCornerShape(100)
-                )
-                .border(0.dp, Color.Transparent, CircleShape),
+                .background(containerColor.value, CircleShape),
             selected = pagerState.currentPage == index,
             onClick = {
                 coroutineScope?.launch {
@@ -70,8 +67,8 @@ class TabRow(private val pagerState: PagerState, private val tabList: List<Strin
                 }
             },
             text = { Text(text = text, style = MaterialTheme.typography.labelSmall) },
-            selectedContentColor = onPrimary,
-            unselectedContentColor = MaterialTheme.colorScheme.secondary
+            selectedContentColor = MaterialTheme.colorScheme.onPrimary,
+            unselectedContentColor = selected
         )
     }
 }

@@ -61,7 +61,9 @@ class LessonCard(
                     modifier = Modifier.padding(top = 15.dp),
                     text = "${lessonData.durationTime} ${stringResource(id = R.string.min)}",
                     style = MaterialTheme.typography.labelSmall,
-                    color = if (lessonData.isCompleted) cardColor!! else MaterialTheme.colorScheme.secondary
+                    color = if (lessonData.isCompleted) {
+                        cardColor!!
+                    } else MaterialTheme.colorScheme.onTertiaryContainer
                 )
             }
         }
