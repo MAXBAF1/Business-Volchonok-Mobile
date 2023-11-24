@@ -1,5 +1,6 @@
 package com.example.volchonok.navigation
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
@@ -62,6 +63,7 @@ class Navigation {
 
     @Composable
     private fun CreateCoursesScreen() {
+        Log.d("MyLog", "CreateCoursesScreen")
         CoursesScreen(toCourseInfoScreen = {
             selectedCourse = it
             navController!!.navigate(COURSE_INFO_SCREEN_ROUTE)

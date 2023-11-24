@@ -5,8 +5,12 @@ import androidx.compose.ui.graphics.Color
 val BlueMain = Color(0xFF4B94DD)
 val GrayMain = Color(0xFF898989)
 val Blue = Color(0xFFBED9F3)
+val BackgroundLight = Color.White
+val OnBackgroundLight = Color.Black
 val LightBlue = Color(0xFFd3ebfc)
 val Error = Color(0xFFE03939)
+val SecondaryContainerLight = Color(0xFFF1F1F1)
+val OnSecondaryContainerLight = OnBackgroundLight
 
 
 
@@ -16,8 +20,8 @@ val BlueDark = Color(0xFFBED9F3)
 val BackgroundDark = Color(0xFF232323)
 val OnBackgroundDark = Color(0xFFD9D9D9)
 val LightBlueDark = Color(0xFFd3ebfc)
-
-
+val SecondaryContainerDark = OnBackgroundDark
+val OnSecondaryContainerDark= BackgroundDark
 
 
 val Orange = Color(0xFFFFC167)

@@ -16,6 +16,20 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
+private val lightColorScheme = lightColorScheme(
+    primary = BlueMain,
+    secondary = GrayMain,
+    tertiary = Orange,
+    primaryContainer = Blue,
+    onPrimary = BackgroundLight,
+    onPrimaryContainer = LightBlue,
+    background = BackgroundLight,
+    onBackground = OnBackgroundLight,
+    secondaryContainer = SecondaryContainerLight,
+    onSecondaryContainer = OnSecondaryContainerLight,
+    error = Error
+)
+
 private val darkColorScheme = darkColorScheme(
     primary = BlueDarkMain,
     secondary = GrayDarkMain,
@@ -25,20 +39,11 @@ private val darkColorScheme = darkColorScheme(
     onPrimaryContainer = LightBlueDark,
     background = BackgroundDark,
     onBackground = OnBackgroundDark,
+    secondaryContainer = SecondaryContainerDark,
+    onSecondaryContainer = OnSecondaryContainerDark,
     error = Error
 )
 
-private val lightColorScheme = lightColorScheme(
-    primary = BlueMain,
-    secondary = GrayMain,
-    tertiary = Orange,
-    primaryContainer = Blue,
-    onPrimary = Color.White,
-    onPrimaryContainer = LightBlue,
-    background = Color.White,
-    onBackground = Color.Black,
-    error = Error
-)
 
 @Composable
 fun VolchonokTheme(

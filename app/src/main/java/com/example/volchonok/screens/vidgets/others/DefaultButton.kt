@@ -3,6 +3,7 @@ package com.example.volchonok.screens.vidgets.others
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -32,7 +33,7 @@ fun DefaultButton(
     Button(
         modifier = modifier
             .fillMaxWidth()
-            .height(60.dp),
+            .heightIn(min = 60.dp),
         onClick = { onClick() },
         shape = RoundedCornerShape(10.dp),
         enabled = enabled,
