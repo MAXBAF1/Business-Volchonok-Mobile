@@ -50,6 +50,9 @@ android {
 }
 
 dependencies {
+    // YouTube Player
+    implementation("androidx.webkit:webkit:1.4.0")
+
     // Password icons
     implementation("androidx.compose.material:material-icons-extended:1.5.4")
 

@@ -8,8 +8,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -25,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalConfiguration
@@ -36,6 +37,7 @@ import com.example.volchonok.data.NoteData
 import com.example.volchonok.enums.AuthorType
 import com.example.volchonok.enums.MessageType
 import com.example.volchonok.screens.vidgets.others.DefaultButton
+import com.example.volchonok.screens.vidgets.others.YoutubeVideoPlayer
 import kotlinx.coroutines.delay
 
 class NoteScreen(
@@ -65,6 +67,9 @@ class NoteScreen(
                 MessageType.Text,
                 ""
             ),
+            MessageData(
+                "Видео:", AuthorType.Wolf, MessageType.Video, "Jrg9KxGNeJY"
+            ),
         )
     )
 
@@ -72,13 +77,9 @@ class NoteScreen(
     private val messageStates = List(note.messages.size) { mutableStateOf(false) }
     private var sendBtnShowed = mutableStateOf(true)
     private var completeBtnShowed = mutableStateOf(false)
-    private var lineLength = 0.dp
 
     @Composable
     fun Create() {
-        val screenWidth = LocalConfiguration.current.screenWidthDp
-        lineLength = (screenWidth * 0.75).dp
-
         Column(
             Modifier
                 .fillMaxSize()
@@ -99,22 +100,62 @@ class NoteScreen(
             note.messages.forEachIndexed { i, message ->
                 if (messageStates[i].value) {
                     val isLast = i == messageStates.size - 1
-                    when (message.author) {
-                        AuthorType.Student -> Message(message, i == 0, isLast)
-                        AuthorType.Wolf -> {
-                            var showText by remember { mutableStateOf(false) }
+                    var showText by remember { mutableStateOf(false) }
+                    if (!isLast && note.messages[i + 1].author != AuthorType.Student) sendBtnShowed.value =
+                        false
 
-                            LaunchedEffect(showText) {
-                                delay(1000)
-                                showText = true
-                            }
-                            if (showText) {
-                                Message(message, i == 0, isLast)
-                                if (isLast) completeBtnShowed.value = true
-                                else sendBtnShowed.value = true
-                            }
+                    if (i == 0 || message.author == AuthorType.Student) {
+                        MessageManager(message, i == 0, isLast)
+                    } else {
+                        LaunchedEffect(showText) {
+                            delay(1000)
+                            showText = true
+                        }
+                        if (showText) {
+                            MessageManager(message, isLast = isLast)
                         }
                     }
+                    if (showText) {
+                        if (isLast) completeBtnShowed.value = true
+                        else sendBtnShowed.value = note.messages[i + 1].author == AuthorType.Student
+                    }
+                }
+            }
+        }
+    }
+
+    @Composable
+    private fun MessageManager(
+        message: MessageData, isFirst: Boolean = false, isLast: Boolean = false
+    ) {
+        val alignment: Alignment
+        val backgroundShape: Shape
+
+        if (message.author == AuthorType.Student) {
+            alignment = Alignment.CenterEnd
+            backgroundShape = RoundedCornerShape(20.dp, 20.dp, 2.dp, 20.dp)
+        } else {
+            alignment = Alignment.CenterStart
+            backgroundShape = RoundedCornerShape(20.dp, 20.dp, 20.dp, 2.dp)
+        }
+        val screenWidth = LocalConfiguration.current.screenWidthDp
+        val lineLength = (screenWidth * 0.75).dp
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = if (isFirst) 30.dp else 15.dp, bottom = if (isLast) 30.dp else 0.dp),
+            contentAlignment = alignment
+        ) {
+            Box(
+                modifier = Modifier
+                    .widthIn(max = lineLength)
+                    .clip(backgroundShape)
+            ) {
+                when (message.type) {
+                    MessageType.Text -> TextMessage(message)
+                    MessageType.Video -> YoutubeVideoPlayer(message.url)
+                    MessageType.Picture -> {}
                 }
             }
         }
@@ -127,9 +168,8 @@ class NoteScreen(
             SendMessageBtn(note.messages[sendMessageIndex].text) {
                 sendBtnShowed.value = false
                 messageStates[sendMessageIndex++].value = true
-                if (sendMessageIndex < note.messages.size) {
-                    messageStates[sendMessageIndex++].value = true
-                }
+                while (sendMessageIndex < note.messages.size && note.messages[sendMessageIndex].author == AuthorType.Wolf) messageStates[sendMessageIndex++].value =
+                    true
             }
         } else if (completeBtnShowed.value) {
             DefaultButton(
@@ -139,42 +179,26 @@ class NoteScreen(
     }
 
     @Composable
-    private fun Message(message: MessageData, isFirst: Boolean = false, isLast: Boolean = false) {
-        val alignment: Alignment
-        val backgroundShape: Shape
-        val backgroundColor: Color
+    private fun TextMessage(message: MessageData) {
         val textColor: Color
+        val backgroundColor: Color
 
         if (message.author == AuthorType.Student) {
-            alignment = Alignment.CenterEnd
-            backgroundShape = RoundedCornerShape(20.dp, 20.dp, 2.dp, 20.dp)
             backgroundColor = MaterialTheme.colorScheme.primary
             textColor = MaterialTheme.colorScheme.onPrimary
         } else {
-            alignment = Alignment.CenterStart
-            backgroundShape = RoundedCornerShape(20.dp, 20.dp, 20.dp, 2.dp)
             backgroundColor = MaterialTheme.colorScheme.secondaryContainer
             textColor = MaterialTheme.colorScheme.onSecondaryContainer
         }
 
         Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = if (isFirst) 30.dp else 20.dp, bottom = if (isLast) 30.dp else 0.dp),
-            contentAlignment = alignment
+                .background(backgroundColor)
+                .padding(10.dp)
         ) {
-            Box(
-                modifier = Modifier
-                    .background(backgroundColor, backgroundShape)
-                    .padding(10.dp)
-            ) {
-                Text(
-                    text = message.text,
-                    modifier = Modifier.widthIn(max = lineLength),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = textColor
-                )
-            }
+            Text(
+                text = message.text, style = MaterialTheme.typography.labelLarge, color = textColor
+            )
         }
     }
 
@@ -188,7 +212,6 @@ class NoteScreen(
         ) {
             Text(
                 text = text,
-                modifier = Modifier.widthIn(max = lineLength),
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onBackground
             )
