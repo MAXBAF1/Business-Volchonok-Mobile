@@ -10,11 +10,25 @@ import com.example.volchonok.R
 
 // Set of Material typography styles to start with
 val Typography = Typography(
+    displayLarge = TextStyle(
+        fontFamily = FontFamily(Font(R.font.enthalpy298_regular)),
+        fontWeight = FontWeight.Normal,
+        fontSize = 42.sp,
+        lineHeight = 54.sp,
+        letterSpacing = 0.5.sp
+    ),
+    displayMedium = TextStyle(
+        fontFamily = FontFamily(Font(R.font.sweet_mavka_script)),
+        fontWeight = FontWeight.Normal,
+        fontSize = 24.sp,
+        lineHeight = 36.sp,
+        letterSpacing = 0.5.sp
+    ),
     titleLarge = TextStyle(
         fontFamily = FontFamily(Font(R.font.enthalpy298_regular)),
         fontWeight = FontWeight.Normal,
         fontSize = 36.sp,
-        lineHeight = 54.sp,
+        lineHeight = 42.sp,
         letterSpacing = 0.5.sp
     ),
     titleMedium = TextStyle(

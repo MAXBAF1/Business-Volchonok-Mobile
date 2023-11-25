@@ -16,7 +16,9 @@ import com.example.volchonok.screens.CoursesScreen
 import com.example.volchonok.screens.LessonScreen
 import com.example.volchonok.screens.LessonsScreen
 import com.example.volchonok.screens.LoginScreen
+import com.example.volchonok.screens.NetworkErrorScreen
 import com.example.volchonok.screens.ProfileScreen
+import com.example.volchonok.screens.SplashScreen
 import com.example.volchonok.screens.WelcomeScreen
 import com.example.volchonok.services.LoginService
 
@@ -31,8 +33,10 @@ class Navigation {
         navController = rememberNavController()
 
         NavHost(
-            navController = navController!!, startDestination = WELCOME_SCREEN_ROUTE
+            navController = navController!!, startDestination = SPLASH_SCREEN_ROUTE
         ) {
+            composable(NETWORK_ERROR_SCREEN_ROUTE) { CreateNetworkErrorScreen() }
+            composable(SPLASH_SCREEN_ROUTE) { CreateSplashScreen() }
             composable(WELCOME_SCREEN_ROUTE) { CreateWelcomeScreen() }
             composable(LOGIN_SCREEN_ROUTE) { CreateLoginScreen() }
             composable(COURSES_SCREEN_ROUTE) { CreateCoursesScreen() }
@@ -41,6 +45,22 @@ class Navigation {
             composable(LESSON_SCREEN_ROUTE) { CreateLessonScreen() }
             composable(PROFILE_SCREEN_ROUTE) { CreateProfileScreen() }
         }
+    }
+
+    @Composable
+    private fun CreateNetworkErrorScreen() {
+        NetworkErrorScreen().Create()
+    }
+
+    @Composable
+    private fun CreateSplashScreen() {
+        SplashScreen(toNetworkErrorScreen = {
+            navController!!.navigate(NETWORK_ERROR_SCREEN_ROUTE)
+        }, toWelcomeScreen = {
+            navController!!.navigate(WELCOME_SCREEN_ROUTE)
+        }, toCoursesScreen = {
+            navController!!.navigate(COURSES_SCREEN_ROUTE)
+        }).Create()
     }
 
     @Composable
@@ -83,8 +103,7 @@ class Navigation {
     @Composable
     private fun CreateLessonsScreen() {
         selectedModule?.let { moduleData ->
-            LessonsScreen(
-                moduleData = moduleData,
+            LessonsScreen(moduleData = moduleData,
                 onBackClick = { navController!!.popBackStack() },
                 toProfile = { navController!!.navigate(PROFILE_SCREEN_ROUTE) },
                 toLessonScreen = {
@@ -111,6 +130,8 @@ class Navigation {
     }
 
     companion object {
+        const val NETWORK_ERROR_SCREEN_ROUTE = "NETWORK_ERROR"
+        const val SPLASH_SCREEN_ROUTE = "SPLASH_SCREEN"
         const val WELCOME_SCREEN_ROUTE = "WELCOME_SCREEN"
         const val LOGIN_SCREEN_ROUTE = "LOGIN_SCREEN"
         const val COURSES_SCREEN_ROUTE = "COURSES_SCREEN"

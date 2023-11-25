@@ -1,5 +1,6 @@
 package com.example.volchonok.ui.theme
 
+import android.view.Surface
 import androidx.compose.ui.graphics.Color
 
 val BlueMain = Color(0xFF4B94DD)
@@ -15,6 +16,7 @@ val TertiaryContainerLight = BackgroundLight
 val OnTertiaryContainerLight = Color(0xFF898989)
 val OutlineLight = OnTertiaryContainerLight
 val OutlineVariantLight = OnTertiaryContainerLight
+val SurfaceLight = Color(0xFFA5CAEE)
 
 
 val BlueDarkMain = Color(0xFF39749E)
@@ -29,6 +31,6 @@ val TertiaryContainerDark = Color(0xFF30373B)
 val OnTertiaryContainerDark = Color(0xFF4E5860)
 val OutlineDark = OnBackgroundDark
 val OutlineVariantDark = OnTertiaryContainerLight
-
+val SurfaceDark = Color(0xFFA5CAEE)
 
 val Orange = Color(0xFFFFC167)

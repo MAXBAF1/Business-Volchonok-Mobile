@@ -31,6 +31,7 @@ private val lightColorScheme = lightColorScheme(
     onTertiaryContainer = OnTertiaryContainerLight,
     outline = OutlineLight,
     outlineVariant = OutlineVariantLight,
+    surface = SurfaceLight,
     error = Error
 )
 
@@ -49,6 +50,7 @@ private val darkColorScheme = darkColorScheme(
     onTertiaryContainer = OnTertiaryContainerDark,
     outline = OutlineDark,
     outlineVariant = OutlineVariantDark,
+    surface = SurfaceDark,
     error = Error
 )
 
