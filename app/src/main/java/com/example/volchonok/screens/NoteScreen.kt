@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.example.volchonok.R
 import com.example.volchonok.data.MessageData
@@ -68,7 +69,7 @@ class NoteScreen(
                 ""
             ),
             MessageData(
-                "Видео:", AuthorType.Wolf, MessageType.Video, "Jrg9KxGNeJY"
+                "Jubilee Gardens", AuthorType.Wolf, MessageType.Video, "Jrg9KxGNeJY"
             ),
         )
     )
@@ -130,12 +131,15 @@ class NoteScreen(
     ) {
         val alignment: Alignment
         val backgroundShape: Shape
+        val backgroundColor: Color
 
         if (message.author == AuthorType.Student) {
-            alignment = Alignment.CenterEnd
             backgroundShape = RoundedCornerShape(20.dp, 20.dp, 2.dp, 20.dp)
+            alignment = Alignment.CenterEnd
+            backgroundColor = MaterialTheme.colorScheme.primary
         } else {
             alignment = Alignment.CenterStart
+            backgroundColor = MaterialTheme.colorScheme.secondaryContainer
             backgroundShape = RoundedCornerShape(20.dp, 20.dp, 20.dp, 2.dp)
         }
         val screenWidth = LocalConfiguration.current.screenWidthDp
@@ -151,13 +155,26 @@ class NoteScreen(
                 modifier = Modifier
                     .widthIn(max = lineLength)
                     .clip(backgroundShape)
+                    .background(backgroundColor)
             ) {
                 when (message.type) {
                     MessageType.Text -> TextMessage(message)
-                    MessageType.Video -> YoutubeVideoPlayer(message.url)
+                    MessageType.Video -> Video(message)
                     MessageType.Picture -> {}
                 }
             }
+        }
+    }
+
+    @Composable
+    private fun Video(message: MessageData) {
+        Column {
+            YoutubeVideoPlayer(message.url)
+            Text(
+                modifier = Modifier.padding(10.dp),
+                text = message.text,
+                style = MaterialTheme.typography.titleSmall
+            )
         }
     }
 
@@ -168,8 +185,9 @@ class NoteScreen(
             SendMessageBtn(note.messages[sendMessageIndex].text) {
                 sendBtnShowed.value = false
                 messageStates[sendMessageIndex++].value = true
-                while (sendMessageIndex < note.messages.size && note.messages[sendMessageIndex].author == AuthorType.Wolf) messageStates[sendMessageIndex++].value =
-                    true
+                while (sendMessageIndex < note.messages.size && note.messages[sendMessageIndex].author == AuthorType.Wolf) {
+                    messageStates[sendMessageIndex++].value = true
+                }
             }
         } else if (completeBtnShowed.value) {
             DefaultButton(
@@ -180,26 +198,16 @@ class NoteScreen(
 
     @Composable
     private fun TextMessage(message: MessageData) {
-        val textColor: Color
-        val backgroundColor: Color
-
-        if (message.author == AuthorType.Student) {
-            backgroundColor = MaterialTheme.colorScheme.primary
-            textColor = MaterialTheme.colorScheme.onPrimary
+        val textColor: Color = if (message.author == AuthorType.Student) {
+            MaterialTheme.colorScheme.onPrimary
         } else {
-            backgroundColor = MaterialTheme.colorScheme.secondaryContainer
-            textColor = MaterialTheme.colorScheme.onSecondaryContainer
+            MaterialTheme.colorScheme.onSecondaryContainer
         }
 
-        Box(
-            modifier = Modifier
-                .background(backgroundColor)
-                .padding(10.dp)
-        ) {
-            Text(
-                text = message.text, style = MaterialTheme.typography.labelLarge, color = textColor
-            )
-        }
+        Text(
+            modifier = Modifier.padding(10.dp),
+            text = message.text, style = MaterialTheme.typography.labelLarge, color = textColor
+        )
     }
 
     @Composable
