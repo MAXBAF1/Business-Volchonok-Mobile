@@ -63,4 +63,8 @@
     <string name="your_answer">Ваш ответ</string>
     <string name="complete">Завершить</string>
     <string name="repeat_again">Повторить снова</string>
+
+
+    <!--Note screen-->
+    <string name="read">Прочитано</string>
 </resources>

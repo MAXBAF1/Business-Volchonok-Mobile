@@ -76,8 +76,8 @@ class NoteScreen(
 
 
     private val messageStates = List(note.messages.size) { mutableStateOf(false) }
-    private var sendBtnShowed = mutableStateOf(true)
-    private var completeBtnShowed = mutableStateOf(false)
+    private var sendBtnShowed = mutableStateOf(!note.isCompleted)
+    private var completeBtnShowed = mutableStateOf(note.isCompleted)
 
     @Composable
     fun Create() {
@@ -99,7 +99,9 @@ class NoteScreen(
             modifier = modifier.verticalScroll(rememberScrollState())
         ) {
             note.messages.forEachIndexed { i, message ->
-                if (messageStates[i].value) {
+                if (note.isCompleted) {
+                    MessageManager(message, i == 0, i == messageStates.size - 1)
+                } else if (messageStates[i].value) {
                     val isLast = i == messageStates.size - 1
                     var showText by remember { mutableStateOf(false) }
                     if (!isLast && note.messages[i + 1].author != AuthorType.Student) sendBtnShowed.value =
@@ -191,7 +193,8 @@ class NoteScreen(
             }
         } else if (completeBtnShowed.value) {
             DefaultButton(
-                text = stringResource(id = R.string.complete).uppercase(), onClick = onCompleteBtn
+                text = stringResource(id = if (note.isCompleted) R.string.read else R.string.complete).uppercase(),
+                onClick = onCompleteBtn
             )
         }
     }
@@ -206,7 +209,9 @@ class NoteScreen(
 
         Text(
             modifier = Modifier.padding(10.dp),
-            text = message.text, style = MaterialTheme.typography.labelLarge, color = textColor
+            text = message.text,
+            style = MaterialTheme.typography.labelLarge,
+            color = textColor
         )
     }
 
