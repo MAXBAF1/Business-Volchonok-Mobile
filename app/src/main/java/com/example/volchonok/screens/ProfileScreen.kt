@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.util.Log
+import android.util.Pair
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.content.res.AppCompatResources
@@ -45,6 +46,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import com.example.volchonok.R
+import com.example.volchonok.RemoteInfoStorage
 import com.example.volchonok.data.CourseData
 import com.example.volchonok.data.UserData
 import com.example.volchonok.enums.CourseDataAccessLevel
@@ -59,14 +61,34 @@ class ProfileScreen(private val onBackClick: () -> Unit) {
 
     @Composable
     fun Create() {
-        userData = UserInfoService(LocalContext.current).execute().get() //вызывать только так
-        coursesList = CourseService(LocalContext.current).execute().get()
-        // взять модули курса:
-        // coursesList = CourseService(LocalContext.current).execute(Pair(CourseDataAccessLevel.MODULES_DATA, coursesList)).get()
-        // по аналогии вызываешь с другими уровнями доступа к курсу
+        val context = LocalContext.current
+        userData = UserInfoService(context).execute().get()
+        coursesList = RemoteInfoStorage.getCoursesData(context)
 
-        Log.d("TAG", "user: $userData")
-        Log.d("TAG", "course: $coursesList")
+        if (RemoteInfoStorage.getCoursesData(context)[0].modules.isEmpty()) {
+            RemoteInfoStorage.setCoursesData(
+                CourseService(context)
+                    .execute(
+                        Pair(
+                            CourseDataAccessLevel.MODULES_DATA,
+                            RemoteInfoStorage.getCoursesData(context)
+                        )
+                    )
+                    .get()
+            )
+        }
+        if (RemoteInfoStorage.getCoursesData(context)[0].modules[0].lessonNotes.isEmpty()) {
+            RemoteInfoStorage.setCoursesData(
+                CourseService(context)
+                    .execute(
+                        Pair(
+                            CourseDataAccessLevel.NOTES_DATA,
+                            RemoteInfoStorage.getCoursesData(context)
+                        )
+                    )
+                    .get()
+            )
+        }
 
         Column {
             TopAppBar()

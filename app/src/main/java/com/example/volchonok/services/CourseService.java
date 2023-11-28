@@ -8,13 +8,16 @@ import android.util.Pair;
 
 import com.example.volchonok.data.AnswerData;
 import com.example.volchonok.data.CourseData;
+import com.example.volchonok.data.MessageData;
 import com.example.volchonok.data.ModuleData;
 import com.example.volchonok.data.NoteData;
 import com.example.volchonok.data.QuestionData;
 import com.example.volchonok.data.ReviewData;
 import com.example.volchonok.data.TestData;
 import com.example.volchonok.data.UserData;
+import com.example.volchonok.enums.AuthorType;
 import com.example.volchonok.enums.CourseDataAccessLevel;
+import com.example.volchonok.enums.MessageType;
 import com.example.volchonok.interfaces.ILesson;
 import com.google.gson.Gson;
 
@@ -24,19 +27,21 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 public class CourseService extends GetService<Pair<CourseDataAccessLevel, List<CourseData>>, List<CourseData>> {
-    protected Gson gson;
-    private Map<String, List<String>> completedItems = new HashMap<>();
+    protected final Gson gson;
+    private final Map<String, List<String>> completedItems;
 
     public CourseService(Context ctx) {
         super(ctx);
+        completedItems = new HashMap<>();
         gson = new Gson();
     }
 
-    public List<CourseData> getCourses() { //FIXME get not all courses, by required
+    public List<CourseData> getCourses() {
         List<CourseData> response = new ArrayList<>();
 
         String courses = sendGetRequestToURL(USER_COURSES_REQUEST_ADDRESS.getValue());
@@ -82,9 +87,6 @@ public class CourseService extends GetService<Pair<CourseDataAccessLevel, List<C
     }
 
     private void fillModulesData(List<ModuleData> modules, int courseId) {
-        List<ILesson> notes = new ArrayList<>();
-        List<ILesson> tests = new ArrayList<>();
-
         Map<String, Object> moduleDataMap = ServiceUtil.getJsonAsMap(
                 sendGetRequestToURL(MODULE_DATA_REQUEST_ADDRESS.getValue() + courseId)
         );
@@ -98,13 +100,13 @@ public class CourseService extends GetService<Pair<CourseDataAccessLevel, List<C
                     moduleId,
                     "name", //String.valueOf(moduleDataMap.get("name")),
                     "desc",       //String.valueOf(moduleDataMap.get("description")),
-                    notes,
-                    tests
+                    new ArrayList<>(),
+                    new ArrayList<>()
             ));
         }
     }
 
-    private void fillNotesData(List<ILesson> notes, int courseId) {
+    private void fillNotesData(List<ILesson> notes, int courseId){
         List<Integer> moduleLessonsId = ServiceUtil.getJsonAsList(
                 sendGetRequestToURL(MODULE_DATA_REQUEST_ADDRESS.getValue() + courseId + "/lessons"));
 
@@ -113,13 +115,44 @@ public class CourseService extends GetService<Pair<CourseDataAccessLevel, List<C
                 Map<String, Object> noteDataMap = ServiceUtil.getJsonAsMap(
                         sendGetRequestToURL(LESSON_DATA_REQUEST_ADDRESS.getValue() + moduleLessonId));
 
+                List<MessageData> messages = new ArrayList<>();
+
+                try {
+                    JSONObject chatText = new JSONObject(String.valueOf(noteDataMap.get("chat_text")));
+                    JSONArray messageArray = chatText.getJSONArray("list");
+                    for (int i = 0; i < messageArray.length(); i++) {
+                        JSONObject currentMessage = messageArray.getJSONObject(i);
+
+                        String author = currentMessage.getString("author");
+                        String type = currentMessage.getString("type");
+
+                        messages.add(new MessageData(
+                                currentMessage.getString("text"),
+
+                                author.equals(AuthorType.STUDENT.getDesc())
+                                        ? AuthorType.STUDENT
+                                        : AuthorType.WOLF,
+
+                                type.equals(MessageType.TEXT.getDesc())
+                                        ? MessageType.TEXT
+                                        : type.equals(MessageType.VIDEO.getDesc())
+                                        ? MessageType.VIDEO
+                                        : MessageType.PICTURE,
+
+                                currentMessage.getString("url")
+                        ));
+                    }
+                } catch (JSONException e) {
+                    Log.d("TAG", "json exception: " + noteDataMap.get("chat_text"), e);
+                }
+
                 notes.add(new NoteData(
                         Integer.parseInt(String.valueOf(noteDataMap.get("lesson_id"))),
                         String.valueOf(noteDataMap.get("name")),
                         String.valueOf(noteDataMap.get("description")),
                         String.valueOf(noteDataMap.get("duration")),
-                        isItemCompleted(LESSONS_REQUEST_ADDRESS.getValue(), moduleLessonId),
-                        new ArrayList<>()
+                        isItemCompleted(LESSONS_REQUEST_ADDRESS.getValue(), Double.valueOf(moduleLessonId)),
+                        messages
                 ));
             }
         }
@@ -139,7 +172,7 @@ public class CourseService extends GetService<Pair<CourseDataAccessLevel, List<C
                         String.valueOf(testDataMap.get("name")),
                         String.valueOf(testDataMap.get("description")),
                         String.valueOf(testDataMap.get("duration")),
-                        isItemCompleted(TESTS_REQUEST_ADDRESS.getValue(), moduleTestId),
+                        isItemCompleted(TESTS_REQUEST_ADDRESS.getValue(), Double.valueOf(moduleTestId)),
                         new ArrayList<>()
                 ));
             }
@@ -161,6 +194,8 @@ public class CourseService extends GetService<Pair<CourseDataAccessLevel, List<C
 
                 List<AnswerData> answers = new ArrayList<>();
                 JSONArray answersArray = (JSONArray) q.get("answers");
+
+                Log.d("TAG", "q: " + q);
 
                 for (int i = 0; i < (answersArray != null ? answersArray.length() : 0); i++) {
                     try {
@@ -184,7 +219,7 @@ public class CourseService extends GetService<Pair<CourseDataAccessLevel, List<C
         }
     }
 
-    private boolean isItemCompleted(String requestAddress, double noteId) {
+    private boolean isItemCompleted(String requestAddress, Double noteId) {
         if (!completedItems.containsKey(requestAddress))
             completedItems.put(
                     requestAddress,
@@ -192,7 +227,7 @@ public class CourseService extends GetService<Pair<CourseDataAccessLevel, List<C
             );
 
         return completedItems.containsKey(requestAddress)
-                && completedItems.get(requestAddress).contains(String.valueOf(noteId));
+                && completedItems.get(requestAddress).contains(noteId.intValue());
     }
 
 
@@ -216,9 +251,10 @@ public class CourseService extends GetService<Pair<CourseDataAccessLevel, List<C
             }
             case NOTES_DATA -> {
                 courses.forEach(course ->
-                        course.getModules().forEach(module ->
-                                fillNotesData(module.getLessonNotes(), course.getId())
-                        )
+                    course.getModules().forEach(module -> {
+                            fillNotesData(module.getLessonNotes(), course.getId());
+                        }
+                    )
                 );
             }
             case TESTS_DATA -> {
@@ -240,7 +276,6 @@ public class CourseService extends GetService<Pair<CourseDataAccessLevel, List<C
             }
             case ALL_DATA -> {
                 courses = getCourses();
-
                 courses = doInBackground(new Pair<>(CourseDataAccessLevel.MODULES_DATA, courses));
                 courses = doInBackground(new Pair<>(CourseDataAccessLevel.NOTES_DATA, courses));
                 courses = doInBackground(new Pair<>(CourseDataAccessLevel.TESTS_DATA, courses));

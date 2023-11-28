@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -30,7 +29,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.example.volchonok.R
 import com.example.volchonok.data.MessageData
@@ -46,32 +44,34 @@ class NoteScreen(
     private val onCompleteBtn: () -> Unit,
 ) {
     private val note = NoteData( // Тестовые данные
-        0, "Лекция", "Описание", "30", false, listOf(
-            MessageData(
-                "Let’s get lunch! How about pizza? \uD83C\uDF55",
-                AuthorType.Student,
-                MessageType.Text,
-                ""
-            ),
-            MessageData(
-                "That sounds great! I’m in. What time works for you?",
-                AuthorType.Wolf,
-                MessageType.Text,
-                ""
-            ),
-            MessageData(
-                "Let’s say 12pm if it’s fine with you?", AuthorType.Student, MessageType.Text, ""
-            ),
-            MessageData(
-                "Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!мLearn the basics of the langLearn the basics of the language: make new friends, plan a family dinner, go shopping and much more!Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!мLearn the basics of the langLearn the basics of the language: make new friends, plan a family dinner, go shopping and much more!Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!мLearn the basics of the lang",
-                AuthorType.Wolf,
-                MessageType.Text,
-                ""
-            ),
-            MessageData(
-                "Jubilee Gardens", AuthorType.Wolf, MessageType.Video, "Jrg9KxGNeJY"
-            ),
-        )
+        0, "Лекция", "Описание", "30", false, noteData.messages
+//        listOf(
+//            MessageData(
+//                "Let’s get lunch! How about pizza? \uD83C\uDF55",
+//                AuthorType.STUDENT,
+//                MessageType.TEXT,
+//                ""
+//            ),
+//            MessageData(
+//                "That sounds great! I’m in. What time works for you?",
+//                AuthorType.WOLF,
+//                MessageType.TEXT,
+//                ""
+//            ),
+//            MessageData(
+//                "Let’s say 12pm if it’s fine with you?", AuthorType.STUDENT, MessageType.TEXT, ""
+//            ),
+//            MessageData(
+//                "Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!мLearn the basics of the langLearn the basics of the language: make new friends, plan a family dinner, go shopping and much more!Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!мLearn the basics of the langLearn the basics of the language: make new friends, plan a family dinner, go shopping and much more!Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!мLearn the basics of the lang",
+//                AuthorType.WOLF,
+//                MessageType.TEXT,
+//                ""
+//            ),
+//            MessageData(
+//                "Jubilee Gardens", AuthorType.WOLF, MessageType.VIDEO, "Jrg9KxGNeJY"
+//            ),
+//        )
+
     )
 
 
@@ -104,10 +104,10 @@ class NoteScreen(
                 } else if (messageStates[i].value) {
                     val isLast = i == messageStates.size - 1
                     var showText by remember { mutableStateOf(false) }
-                    if (!isLast && note.messages[i + 1].author != AuthorType.Student) sendBtnShowed.value =
+                    if (!isLast && note.messages[i + 1].author != AuthorType.STUDENT) sendBtnShowed.value =
                         false
 
-                    if (i == 0 || message.author == AuthorType.Student) {
+                    if (i == 0 || message.author == AuthorType.STUDENT) {
                         MessageManager(message, i == 0, isLast)
                     } else {
                         LaunchedEffect(showText) {
@@ -120,7 +120,7 @@ class NoteScreen(
                     }
                     if (showText) {
                         if (isLast) completeBtnShowed.value = true
-                        else sendBtnShowed.value = note.messages[i + 1].author == AuthorType.Student
+                        else sendBtnShowed.value = note.messages[i + 1].author == AuthorType.STUDENT
                     }
                 }
             }
@@ -135,7 +135,7 @@ class NoteScreen(
         val backgroundShape: Shape
         val backgroundColor: Color
 
-        if (message.author == AuthorType.Student) {
+        if (message.author == AuthorType.STUDENT) {
             backgroundShape = RoundedCornerShape(20.dp, 20.dp, 2.dp, 20.dp)
             alignment = Alignment.CenterEnd
             backgroundColor = MaterialTheme.colorScheme.primary
@@ -160,9 +160,9 @@ class NoteScreen(
                     .background(backgroundColor)
             ) {
                 when (message.type) {
-                    MessageType.Text -> TextMessage(message)
-                    MessageType.Video -> Video(message)
-                    MessageType.Picture -> {}
+                    MessageType.TEXT -> TextMessage(message)
+                    MessageType.VIDEO -> Video(message)
+                    MessageType.PICTURE -> {}
                 }
             }
         }
@@ -187,7 +187,7 @@ class NoteScreen(
             SendMessageBtn(note.messages[sendMessageIndex].text) {
                 sendBtnShowed.value = false
                 messageStates[sendMessageIndex++].value = true
-                while (sendMessageIndex < note.messages.size && note.messages[sendMessageIndex].author == AuthorType.Wolf) {
+                while (sendMessageIndex < note.messages.size && note.messages[sendMessageIndex].author == AuthorType.WOLF) {
                     messageStates[sendMessageIndex++].value = true
                 }
             }
@@ -201,7 +201,7 @@ class NoteScreen(
 
     @Composable
     private fun TextMessage(message: MessageData) {
-        val textColor: Color = if (message.author == AuthorType.Student) {
+        val textColor: Color = if (message.author == AuthorType.STUDENT) {
             MaterialTheme.colorScheme.onPrimary
         } else {
             MaterialTheme.colorScheme.onSecondaryContainer

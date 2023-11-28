@@ -1,5 +1,6 @@
 package com.example.volchonok.screens
 
+import android.util.Log
 import android.util.Pair
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +13,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.example.volchonok.RemoteInfoStorage.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -26,7 +28,6 @@ import com.example.volchonok.screens.vidgets.cards.ModuleCard
 import com.example.volchonok.screens.vidgets.cards.ReviewCard
 import com.example.volchonok.screens.vidgets.others.TopAppBar
 import com.example.volchonok.services.CourseService
-import com.example.volchonok.services.UserInfoService
 
 class CourseInfoScreen(
     private var courseData: CourseData,
@@ -37,18 +38,36 @@ class CourseInfoScreen(
 
     @Composable
     fun Create() {
-        userData = UserInfoService(LocalContext.current).execute().get()
-        courseData = CourseData(
-            0, "Название курса", listOf(
-                ModuleData(
-                    0,
-                    "Название модуля",
-                    "Описание модуля",
-                    listOf(NoteData(0, "Урок 1", "Описание урока", "30", false, listOf())),
-                    listOf()
-                )
-            ), "Описание курса", listOf()
-        )
+        val context = LocalContext.current
+        userData = getUserData(context)
+
+        if (getCoursesData(context)[0].modules.isEmpty()) {
+            setCoursesData(
+                CourseService(context)
+                    .execute(Pair(CourseDataAccessLevel.MODULES_DATA, getCoursesData(context)))
+                    .get()
+            )
+        }
+
+        if (getCoursesData(context)[0].modules[0].lessonNotes.isEmpty()) {
+            setCoursesData(
+                CourseService(context)
+                    .execute(Pair(CourseDataAccessLevel.NOTES_DATA, getCoursesData(context)))
+                    .get()
+            )
+        }
+        courseData = getCoursesData(context)[0]
+//        courseData = CourseData(
+//            0, "Название курса", listOf(
+//                ModuleData(
+//                    0,
+//                    "Название модуля",
+//                    "Описание модуля",
+//                    listOf(NoteData(0, "Урок 1", "Описание урока", "30", false, listOf())),
+//                    listOf()
+//                )
+//            ), "Описание курса", listOf()
+//        )
 
         Column(
             Modifier.fillMaxSize()

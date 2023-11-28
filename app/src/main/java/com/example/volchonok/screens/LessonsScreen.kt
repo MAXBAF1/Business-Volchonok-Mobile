@@ -1,5 +1,6 @@
 package com.example.volchonok.screens
 
+import android.util.Pair
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -18,14 +19,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.volchonok.R
+import com.example.volchonok.RemoteInfoStorage
+import com.example.volchonok.RemoteInfoStorage.getCoursesData
+import com.example.volchonok.RemoteInfoStorage.setCoursesData
 import com.example.volchonok.data.TestData
 import com.example.volchonok.data.ModuleData
 import com.example.volchonok.data.UserData
+import com.example.volchonok.enums.CourseDataAccessLevel
 import com.example.volchonok.interfaces.ILesson
 import com.example.volchonok.screens.vidgets.others.InfoHeader
 import com.example.volchonok.screens.vidgets.others.TabRow
 import com.example.volchonok.screens.vidgets.others.TopAppBar
 import com.example.volchonok.screens.vidgets.cards.LessonCard
+import com.example.volchonok.services.CourseService
 import com.example.volchonok.services.UserInfoService
 
 class LessonsScreen(
@@ -37,10 +43,18 @@ class LessonsScreen(
 
     @Composable
     fun Create() {
+        val context = LocalContext.current
+
         Column {
             TopAppBar(
                 toProfile = toProfile, isLessonScreen = true, onBackClick = onBackClick
             ).Create()
+
+            if (moduleData.lessonTests.isEmpty())
+                setCoursesData(CourseService(context)
+                    .execute(Pair(CourseDataAccessLevel.TESTS_DATA, getCoursesData(context)))
+                    .get())
+
             val completedLessonCnt = moduleData.lessonNotes.count { it.isCompleted }
             val lessonsCtnText = "${completedLessonCnt}/${moduleData.lessonNotes.size} ${
                 stringResource(id = R.string.lessons_cnt)

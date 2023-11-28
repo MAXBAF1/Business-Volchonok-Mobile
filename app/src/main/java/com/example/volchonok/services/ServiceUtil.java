@@ -15,6 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -33,7 +34,7 @@ public class ServiceUtil {
                 result.put(key, obj.get(key));
             }
         } catch (JSONException e) {
-            throw new RuntimeException(json);
+            Log.e("TAG", "getJsonAsMap; JSON: " + json);
         }
 
         return result;
