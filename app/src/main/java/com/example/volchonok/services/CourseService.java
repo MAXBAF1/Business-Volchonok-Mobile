@@ -195,8 +195,6 @@ public class CourseService extends GetService<Pair<CourseDataAccessLevel, List<C
                 List<AnswerData> answers = new ArrayList<>();
                 JSONArray answersArray = (JSONArray) q.get("answers");
 
-                Log.d("TAG", "q: " + q);
-
                 for (int i = 0; i < (answersArray != null ? answersArray.length() : 0); i++) {
                     try {
                         JSONObject answer = answersArray.getJSONObject(i);

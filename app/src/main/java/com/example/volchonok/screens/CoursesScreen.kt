@@ -1,9 +1,13 @@
 package com.example.volchonok.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -22,11 +26,15 @@ class CoursesScreen(
     private val toProfile: () -> Unit
 ) {
     private lateinit var userData: UserData
+    private lateinit var courses: MutableList<CourseData>
 
     @Composable
     fun Create() {
         val context = LocalContext.current
         userData = getUserData(context)
+        courses = remember {
+            getCoursesData(context, CourseDataAccessLevel.ONLY_COURSES_DATA)
+        }
 
         Column {
             TopAppBar(userData, toProfile).Create()
@@ -36,7 +44,7 @@ class CoursesScreen(
                     .fillMaxSize()
             ) {
                 Greeting("${userData.surname} ${userData.firstname}")
-                CoursesList(getCoursesData(context))
+                CoursesList(courses)
             }
         }
     }

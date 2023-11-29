@@ -36,22 +36,7 @@ class LessonScreen(
 
     @Composable
     fun Create() {
-        val context = LocalContext.current
-
-        if ((getCoursesData(context)[0].modules[0].lessonTests[0] as TestData).questions.isEmpty()) {
-            RemoteInfoStorage.setCoursesData(
-                CourseService(context)
-                    .execute(
-                        Pair(
-                            CourseDataAccessLevel.QUESTIONS_DATA,
-                            getCoursesData(context)
-                        )
-                    )
-                    .get()
-            )
-        }
-
-        answers = (getCoursesData(context)[0].modules[0].lessonTests[0] as TestData)
+        answers = (getCoursesData(LocalContext.current, CourseDataAccessLevel.QUESTIONS_DATA)[0].modules[0].lessonTests[0] as TestData)
             .questions
             .map { q -> q.answers.map { it.isCorrect } }
 

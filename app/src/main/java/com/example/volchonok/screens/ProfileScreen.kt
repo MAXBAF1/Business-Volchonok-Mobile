@@ -63,32 +63,7 @@ class ProfileScreen(private val onBackClick: () -> Unit) {
     fun Create() {
         val context = LocalContext.current
         userData = UserInfoService(context).execute().get()
-        coursesList = RemoteInfoStorage.getCoursesData(context)
-
-        if (RemoteInfoStorage.getCoursesData(context)[0].modules.isEmpty()) {
-            RemoteInfoStorage.setCoursesData(
-                CourseService(context)
-                    .execute(
-                        Pair(
-                            CourseDataAccessLevel.MODULES_DATA,
-                            RemoteInfoStorage.getCoursesData(context)
-                        )
-                    )
-                    .get()
-            )
-        }
-        if (RemoteInfoStorage.getCoursesData(context)[0].modules[0].lessonNotes.isEmpty()) {
-            RemoteInfoStorage.setCoursesData(
-                CourseService(context)
-                    .execute(
-                        Pair(
-                            CourseDataAccessLevel.NOTES_DATA,
-                            RemoteInfoStorage.getCoursesData(context)
-                        )
-                    )
-                    .get()
-            )
-        }
+        coursesList = RemoteInfoStorage.getCoursesData(context, CourseDataAccessLevel.NOTES_DATA)
 
         Column {
             TopAppBar()
