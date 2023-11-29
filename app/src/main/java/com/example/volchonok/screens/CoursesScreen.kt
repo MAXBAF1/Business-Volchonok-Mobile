@@ -20,6 +20,9 @@ import com.example.volchonok.screens.vidgets.others.Greeting
 import com.example.volchonok.screens.vidgets.others.TopAppBar
 import com.example.volchonok.services.CourseService
 import com.example.volchonok.services.UserInfoService
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class CoursesScreen(
     private val toCourseInfoScreen: (CourseData) -> Unit,
@@ -35,6 +38,18 @@ class CoursesScreen(
         courses = remember {
             getCoursesData(context, CourseDataAccessLevel.ONLY_COURSES_DATA)
         }
+
+        if (!checkCourseDataLevel(CourseDataAccessLevel.MODULES_DATA))
+            LaunchedEffect(Unit) {
+                launch {
+                    withContext(Dispatchers.IO) {
+                        getCoursesData(context, CourseDataAccessLevel.MODULES_DATA)
+                        getCoursesData(context, CourseDataAccessLevel.NOTES_DATA)
+                        getCoursesData(context, CourseDataAccessLevel.TESTS_DATA)
+                        getCoursesData(context, CourseDataAccessLevel.QUESTIONS_DATA)
+                    }
+                }
+            }
 
         Column {
             TopAppBar(userData, toProfile).Create()
