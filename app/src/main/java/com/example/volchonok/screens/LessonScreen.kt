@@ -36,11 +36,12 @@ class LessonScreen(
 
     @Composable
     fun Create() {
-        answers = (getCoursesData(LocalContext.current, CourseDataAccessLevel.QUESTIONS_DATA)[0].modules[0].lessonTests[0] as TestData)
+        answers = (getCoursesData(
+            LocalContext.current,
+            CourseDataAccessLevel.QUESTIONS_DATA
+        )[0].modules[0].lessonTests[0] as TestData)
             .questions
             .map { q -> q.answers.map { it.isCorrect } }
-
-        Log.d("TAG", "answers: $answers")
 
         Column {
             TopAppBar(
@@ -50,16 +51,30 @@ class LessonScreen(
 
             when (currentLessonScreen.value) {
                 LessonScreenType.TestResultsScreen -> {
-                    TestResultsScreen((lessonData as TestData).questions, answers!!, onBackClick) {
-                        currentLessonScreen.value = LessonScreenType.TestScreen
-                    }.Create()
+                    if (RemoteInfoStorage.checkCourseDataLevel(CourseDataAccessLevel.TESTS_DATA)) {
+                        TestResultsScreen(
+                            (lessonData as TestData).questions,
+                            answers!!,
+                            onBackClick
+                        ) {
+                            currentLessonScreen.value = LessonScreenType.TestScreen
+                        }.Create()
+                    } else {
+                        Log.d("TAG", "Данные грузятся!")
+                        //TODO: @Max разобраться, как делать вывод на экран сообщение, что данные подгружаются
+                    }
                 }
 
                 LessonScreenType.TestScreen -> {
-                    TestScreen(lessonData as TestData) {
-                        currentLessonScreen.value = LessonScreenType.TestResultsScreen
-                        answers = it
-                    }.Create()
+                    if (RemoteInfoStorage.checkCourseDataLevel(CourseDataAccessLevel.TESTS_DATA)) {
+                        TestScreen(lessonData as TestData) {
+                            currentLessonScreen.value = LessonScreenType.TestResultsScreen
+                            answers = it
+                        }.Create()
+                    } else {
+                        Log.d("TAG", "Данные грузятся!")
+                        //TODO: @Max разобраться, как делать вывод на экран сообщение, что данные подгружаются
+                    }
                 }
 
                 LessonScreenType.NoteScreen -> NoteScreen(

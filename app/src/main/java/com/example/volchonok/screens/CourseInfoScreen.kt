@@ -26,6 +26,9 @@ import com.example.volchonok.screens.vidgets.cards.ModuleCard
 import com.example.volchonok.screens.vidgets.cards.ReviewCard
 import com.example.volchonok.screens.vidgets.others.Greeting
 import com.example.volchonok.screens.vidgets.others.TopAppBar
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class CourseInfoScreen(
     private var courseData: CourseData,
@@ -39,12 +42,15 @@ class CourseInfoScreen(
         val context = LocalContext.current
         userData = getUserData(context)
 
-        LaunchedEffect(Unit) {
-            getCoursesData(context, CourseDataAccessLevel.MODULES_DATA)[0]
-        }
-        LaunchedEffect(Unit) {
-            courseData = getCoursesData(context, CourseDataAccessLevel.NOTES_DATA)[0]
-        }
+//        LaunchedEffect(Unit) {
+//            launch {
+//                getCoursesData(context, CourseDataAccessLevel.MODULES_DATA)
+//
+//                courseData = withContext(Dispatchers.IO) {
+//                    getCoursesData(context, CourseDataAccessLevel.NOTES_DATA)[0]
+//                }
+//            }
+//        }
 
         Column(
             Modifier.fillMaxSize()

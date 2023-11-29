@@ -7,9 +7,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.volchonok.RemoteInfoStorage.checkCourseDataLevel
 import com.example.volchonok.data.CourseData
 import com.example.volchonok.data.ModuleData
-import com.example.volchonok.data.UserData
+import com.example.volchonok.enums.CourseDataAccessLevel
 import com.example.volchonok.interfaces.ILesson
 import com.example.volchonok.screens.CourseInfoScreen
 import com.example.volchonok.screens.CoursesScreen
@@ -93,40 +94,60 @@ class Navigation {
     @Composable
     private fun CreateCourseInfoScreen() {
         selectedCourse?.let { courseData ->
-            CourseInfoScreen(courseData = courseData, toLessonsScreen = {
-                selectedModule = it
-                navController!!.navigate(LESSONS_SCREEN_ROUTE)
-            }, toProfile = { navController!!.navigate(PROFILE_SCREEN_ROUTE) }).Create()
+            if (checkCourseDataLevel(CourseDataAccessLevel.NOTES_DATA)) {
+                CourseInfoScreen(courseData = courseData, toLessonsScreen = {
+                    selectedModule = it
+                    navController!!.navigate(LESSONS_SCREEN_ROUTE)
+                }, toProfile = { navController!!.navigate(PROFILE_SCREEN_ROUTE) }).Create()
+            } else {
+                Log.d("TAG", "Данные грузятся!")
+                //TODO: @Max разобраться, как делать вывод на экран сообщение, что данные подгружаются
+            }
         }
     }
 
     @Composable
     private fun CreateLessonsScreen() {
         selectedModule?.let { moduleData ->
-            LessonsScreen(moduleData = moduleData,
-                onBackClick = { navController!!.popBackStack() },
-                toProfile = { navController!!.navigate(PROFILE_SCREEN_ROUTE) },
-                toLessonScreen = {
-                    selectedLesson = it
-                    navController!!.navigate(LESSON_SCREEN_ROUTE)
-                }).Create()
+            if (checkCourseDataLevel(CourseDataAccessLevel.NOTES_DATA)) {
+                LessonsScreen(moduleData = moduleData,
+                    onBackClick = { navController!!.popBackStack() },
+                    toProfile = { navController!!.navigate(PROFILE_SCREEN_ROUTE) },
+                    toLessonScreen = {
+                        selectedLesson = it
+                        navController!!.navigate(LESSON_SCREEN_ROUTE)
+                    }).Create()
+            } else {
+                Log.d("TAG", "Данные грузятся!")
+                //TODO: @Max разобраться, как делать вывод на экран сообщение, что данные подгружаются
+            }
         }
     }
 
     @Composable
     private fun CreateLessonScreen() {
         selectedLesson?.let {
-            LessonScreen(
-                lessonData = it,
-                onBackClick = { navController!!.popBackStack() },
-                toProfile = { navController!!.navigate(PROFILE_SCREEN_ROUTE) },
-            ).Create()
+            if (checkCourseDataLevel(CourseDataAccessLevel.NOTES_DATA)) {
+                LessonScreen(
+                    lessonData = it,
+                    onBackClick = { navController!!.popBackStack() },
+                    toProfile = { navController!!.navigate(PROFILE_SCREEN_ROUTE) },
+                ).Create()
+            } else {
+                Log.d("TAG", "Данные грузятся!")
+                //TODO: @Max разобраться, как делать вывод на экран сообщение, что данные подгружаются
+            }
         }
     }
 
     @Composable
     private fun CreateProfileScreen() {
-        ProfileScreen(onBackClick = { navController!!.popBackStack() }).Create()
+        if (checkCourseDataLevel(CourseDataAccessLevel.NOTES_DATA)) {
+            ProfileScreen(onBackClick = { navController!!.popBackStack() }).Create()
+        } else {
+            Log.d("TAG", "Данные грузятся!")
+            //TODO: @Max разобраться, как делать вывод на экран сообщение, что данные подгружаются
+        }
     }
 
     companion object {

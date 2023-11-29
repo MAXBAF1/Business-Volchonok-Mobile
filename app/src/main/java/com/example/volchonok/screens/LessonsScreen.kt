@@ -37,14 +37,10 @@ class LessonsScreen(
 
     @Composable
     fun Create() {
-        val context = LocalContext.current
-
         Column {
             TopAppBar(
                 toProfile = toProfile, isLessonScreen = true, onBackClick = onBackClick
             ).Create()
-
-            getCoursesData(context, CourseDataAccessLevel.TESTS_DATA)
 
             val completedLessonCnt = moduleData.lessonNotes.count { it.isCompleted }
             val lessonsCtnText = "${completedLessonCnt}/${moduleData.lessonNotes.size} ${

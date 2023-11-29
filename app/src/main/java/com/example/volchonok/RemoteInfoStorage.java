@@ -20,7 +20,6 @@ import java.util.concurrent.locks.Lock;
 public class RemoteInfoStorage {
     private static UserData userData;
     private static List<CourseData> coursesData;
-    private static final Object locker = new Object();
 
     static {
         coursesData = new ArrayList<>();
@@ -42,26 +41,24 @@ public class RemoteInfoStorage {
     }
 
     public static List<CourseData> getCoursesData(Context context, CourseDataAccessLevel level) {
-        synchronized (RemoteInfoStorage.class) {
-            Log.d("TAG", "-----------check: " + !checkCourseDataLevel(level) + " " + level);
-            if (!checkCourseDataLevel(level)) {
-                try {
-                    coursesData = (List<CourseData>) new CourseService(context)
-                            .execute(new Pair(level, coursesData))
-                            .get();
-                } catch (InterruptedException | ExecutionException e) {
-                    Log.d("TAG", "updateCoursesData error: ", e);
-                }
+        boolean isLevelAllow = checkCourseDataLevel(level);
+        if (!isLevelAllow) {
+            try {
+                coursesData = (List<CourseData>) new CourseService(context)
+                        .execute(new Pair(level, coursesData))
+                        .get();
+            } catch (InterruptedException | ExecutionException e) {
+                Log.d("TAG", "updateCoursesData error: ", e);
             }
-            return coursesData;
         }
+        return coursesData;
     }
 
     public static void setCoursesData(List<CourseData> coursesData) {
         RemoteInfoStorage.coursesData = coursesData;
     }
 
-    private static synchronized boolean checkCourseDataLevel(CourseDataAccessLevel level) {
+    public static boolean checkCourseDataLevel(CourseDataAccessLevel level) {
         switch (level) {
             case ONLY_COURSES_DATA -> {
                 return coursesData.size() != 0;
