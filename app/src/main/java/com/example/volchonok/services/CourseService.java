@@ -26,8 +26,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -87,28 +87,29 @@ public class CourseService extends GetService<Pair<CourseDataAccessLevel, List<C
     }
 
     private void fillModulesData(List<ModuleData> modules, int courseId) {
-        Map<String, Object> moduleDataMap = ServiceUtil.getJsonAsMap(
-                sendGetRequestToURL(MODULE_DATA_REQUEST_ADDRESS.getValue() + courseId)
-        );
 
         List<Integer> modulesId = ServiceUtil.getJsonAsList(
                 sendGetRequestToURL(COURSE_DATA_REQUEST_ADDRESS.getValue() + courseId + "/modules")
         );
 
         for (Integer moduleId : modulesId) {
+            Map<String, Object> moduleDataMap = ServiceUtil.getJsonAsMap(
+                    sendGetRequestToURL(MODULE_DATA_REQUEST_ADDRESS.getValue() + moduleId)
+            );
+
             modules.add(new ModuleData(
                     moduleId,
-                    "name", //String.valueOf(moduleDataMap.get("name")),
-                    "desc",       //String.valueOf(moduleDataMap.get("description")),
+                    String.valueOf(moduleDataMap.get("name")),
+                    String.valueOf(moduleDataMap.get("description")),
                     new ArrayList<>(),
                     new ArrayList<>()
             ));
         }
     }
 
-    private void fillNotesData(List<ILesson> notes, int courseId){
+    private void fillNotesData(List<ILesson> notes, int moduleId) {
         List<Integer> moduleLessonsId = ServiceUtil.getJsonAsList(
-                sendGetRequestToURL(MODULE_DATA_REQUEST_ADDRESS.getValue() + courseId + "/lessons"));
+                sendGetRequestToURL(MODULE_DATA_REQUEST_ADDRESS.getValue() + moduleId + "/lessons"));
 
         if (moduleLessonsId.size() != 0) {
             for (Integer moduleLessonId : moduleLessonsId) {
@@ -151,16 +152,16 @@ public class CourseService extends GetService<Pair<CourseDataAccessLevel, List<C
                         String.valueOf(noteDataMap.get("name")),
                         String.valueOf(noteDataMap.get("description")),
                         String.valueOf(noteDataMap.get("duration")),
-                        isItemCompleted(LESSONS_REQUEST_ADDRESS.getValue(), Double.valueOf(moduleLessonId)),
+                        isItemCompleted(COMPLETED_LESSONS_REQUEST_ADDRESS.getValue(), Double.valueOf(moduleLessonId)),
                         messages
                 ));
             }
         }
     }
 
-    private void fillTestsData(List<ILesson> tests, int courseId) {
+    private void fillTestsData(List<ILesson> tests, int lessonId) {
         List<Integer> moduleTestsId = ServiceUtil.getJsonAsList(
-                sendGetRequestToURL(MODULE_DATA_REQUEST_ADDRESS.getValue() + courseId + "/tests"));
+                sendGetRequestToURL(LESSON_DATA_REQUEST_ADDRESS.getValue() + lessonId + "/tests"));
 
         if (moduleTestsId.size() != 0) {
             for (Integer moduleTestId : moduleTestsId) {
@@ -172,7 +173,7 @@ public class CourseService extends GetService<Pair<CourseDataAccessLevel, List<C
                         String.valueOf(testDataMap.get("name")),
                         String.valueOf(testDataMap.get("description")),
                         String.valueOf(testDataMap.get("duration")),
-                        isItemCompleted(TESTS_REQUEST_ADDRESS.getValue(), Double.valueOf(moduleTestId)),
+                        isItemCompleted(COMPLETED_TESTS_REQUEST_ADDRESS.getValue(), Double.valueOf(moduleTestId)),
                         new ArrayList<>()
                 ));
             }
@@ -249,16 +250,18 @@ public class CourseService extends GetService<Pair<CourseDataAccessLevel, List<C
             }
             case NOTES_DATA -> {
                 courses.forEach(course ->
-                    course.getModules().forEach(module -> {
-                            fillNotesData(module.getLessonNotes(), course.getId());
-                        }
-                    )
+                        course.getModules().forEach(module -> {
+                                    fillNotesData(module.getLessonNotes(), module.getId());
+                                }
+                        )
                 );
             }
             case TESTS_DATA -> {
                 courses.forEach(course ->
                         course.getModules().forEach(module ->
-                                fillTestsData(module.getLessonTests(), course.getId())
+                                module.getLessonNotes().forEach(note ->
+                                        fillTestsData(module.getLessonTests(), ((NoteData)note).getId())
+                                )
                         )
                 );
             }
@@ -267,7 +270,7 @@ public class CourseService extends GetService<Pair<CourseDataAccessLevel, List<C
                         course.getModules().forEach(module ->
                                 module.getLessonTests().forEach(test -> {
                                     TestData testData = (TestData) test;
-                                    fillQuestionsData(testData.getQuestions(), testData.getId());
+                                    fillQuestionsData(testData.getQuestions(), ((TestData) test).getId());
                                 })
                         )
                 );

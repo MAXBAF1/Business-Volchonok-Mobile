@@ -15,6 +15,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.example.volchonok.RemoteInfoStorage;
 import com.example.volchonok.data.UserData;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -57,6 +58,11 @@ public class UserInfoService extends AsyncTask<Void, Void, UserData> {
     }
 
     private String tryGetUserInfo() {
+        UserData userData = RemoteInfoStorage.getUserData();
+        if (userData != null) {
+            return new Gson().toJson(userData);
+        }
+
         request = new Request.Builder()
                 .url(USER_INFO_REQUEST_ADDRESS.getValue())
                 .method(REQUEST_METHOD_GET.getValue(), null)
@@ -67,6 +73,8 @@ public class UserInfoService extends AsyncTask<Void, Void, UserData> {
 
             ResponseBody responseBody = response.body();
             Map<String, Object> responseBodyAsMap = ServiceUtil.getJsonAsMap(responseBody.string());
+
+            Log.d("TAG", "response body: " + responseBodyAsMap);
 
             double responseCode = Double.parseDouble(
                     String.valueOf(responseBodyAsMap.get(RESPONSE_STATUS_KEY.getValue()))

@@ -1,5 +1,6 @@
 package com.example.volchonok.screens.vidgets.cards
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -115,7 +116,9 @@ class ModuleCard(
     @Composable
     private fun InfoCircle() {
         Card(
-            modifier = Modifier.padding(start = 10.dp).size(24.dp),
+            modifier = Modifier
+                .padding(start = 10.dp)
+                .size(24.dp),
             shape = CircleShape,
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onPrimary)
         ) {

@@ -25,14 +25,7 @@ public class RemoteInfoStorage {
         coursesData = new ArrayList<>();
     }
 
-    public static UserData getUserData(Context context) {
-        try {
-            if (userData == null)
-                userData = new UserInfoService(context).execute().get();
-        } catch (InterruptedException | ExecutionException e) {
-            userData = new UserData();
-        }
-
+    public static UserData getUserData() {
         return userData;
     }
 

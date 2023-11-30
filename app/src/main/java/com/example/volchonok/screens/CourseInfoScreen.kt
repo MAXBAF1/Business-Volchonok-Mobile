@@ -1,5 +1,6 @@
 package com.example.volchonok.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -16,6 +17,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.volchonok.R
+import com.example.volchonok.RemoteInfoStorage
 import com.example.volchonok.RemoteInfoStorage.getCoursesData
 import com.example.volchonok.RemoteInfoStorage.getUserData
 import com.example.volchonok.data.CourseData
@@ -26,6 +28,7 @@ import com.example.volchonok.screens.vidgets.cards.ModuleCard
 import com.example.volchonok.screens.vidgets.cards.ReviewCard
 import com.example.volchonok.screens.vidgets.others.Greeting
 import com.example.volchonok.screens.vidgets.others.TopAppBar
+import com.example.volchonok.services.UserInfoService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -35,22 +38,15 @@ class CourseInfoScreen(
     private val toLessonsScreen: (ModuleData) -> Unit,
     private val toProfile: () -> Unit
 ) {
-    private lateinit var userData: UserData
+    private var userData: UserData? = null
 
     @Composable
     fun Create() {
         val context = LocalContext.current
-        userData = getUserData(context)
-
-//        LaunchedEffect(Unit) {
-//            launch {
-//                getCoursesData(context, CourseDataAccessLevel.MODULES_DATA)
-//
-//                courseData = withContext(Dispatchers.IO) {
-//                    getCoursesData(context, CourseDataAccessLevel.NOTES_DATA)[0]
-//                }
-//            }
-//        }
+        userData = getUserData()
+        if (userData == null) {
+            RemoteInfoStorage.setUserData(UserInfoService(context).execute().get())
+        }
 
         Column(
             Modifier.fillMaxSize()
@@ -59,7 +55,7 @@ class CourseInfoScreen(
 
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                 Column(Modifier.padding(30.dp, 0.dp)) {
-                    Greeting("${userData.surname} ${userData.firstname}")
+                    Greeting("${userData?.surname} ${userData?.firstname}")
                     ModulesList()
                     Description()
                 }
@@ -73,7 +69,9 @@ class CourseInfoScreen(
     @Composable
     fun ModulesList() {
         Column(modifier = Modifier.padding(top = 15.dp)) {
-            courseData.modules.forEach { ModuleCard(it, toLessonsScreen).Add() }
+            courseData.modules.forEach {
+                ModuleCard(it, toLessonsScreen).Add()
+            }
         }
     }
 

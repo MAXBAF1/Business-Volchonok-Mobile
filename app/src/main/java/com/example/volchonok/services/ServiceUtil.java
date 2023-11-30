@@ -25,7 +25,7 @@ public class ServiceUtil {
 
     protected static Map<String, Object> getJsonAsMap(String json){
         Map<String, Object> result = new HashMap<>();
-
+        if (json.isEmpty()) return result;
         try {
             JSONObject obj = new JSONObject(json);
 

@@ -31,7 +31,7 @@ import okhttp3.ResponseBody;
 
 public abstract class PostService<Params> extends AbstractService<Params, Double> {
 
-    protected PostService(Context ctx) {
+    public PostService(Context ctx) {
         super(ctx);
     }
 

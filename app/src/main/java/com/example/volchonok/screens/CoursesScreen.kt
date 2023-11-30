@@ -18,8 +18,9 @@ import com.example.volchonok.enums.CourseDataAccessLevel
 import com.example.volchonok.screens.vidgets.cards.CourseCard
 import com.example.volchonok.screens.vidgets.others.Greeting
 import com.example.volchonok.screens.vidgets.others.TopAppBar
-import com.example.volchonok.services.CourseService
+import com.example.volchonok.services.CompleteCourseService
 import com.example.volchonok.services.UserInfoService
+import com.example.volchonok.services.enums.ServiceStringValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -28,13 +29,17 @@ class CoursesScreen(
     private val toCourseInfoScreen: (CourseData) -> Unit,
     private val toProfile: () -> Unit
 ) {
-    private lateinit var userData: UserData
+    private var userData: UserData? = null
     private lateinit var courses: MutableList<CourseData>
 
     @Composable
     fun Create() {
         val context = LocalContext.current
-        userData = getUserData(context)
+
+        userData = getUserData()
+        if (userData == null) {
+            setUserData(UserInfoService(context).execute().get())
+        }
         courses = remember {
             getCoursesData(context, CourseDataAccessLevel.ONLY_COURSES_DATA)
         }
@@ -44,9 +49,21 @@ class CoursesScreen(
                 launch {
                     withContext(Dispatchers.IO) {
                         getCoursesData(context, CourseDataAccessLevel.MODULES_DATA)
+                        Log.d("TAG", "Create: modules was downloaded")
                         getCoursesData(context, CourseDataAccessLevel.NOTES_DATA)
+                        Log.d("TAG", "Create: notes was downloaded")
                         getCoursesData(context, CourseDataAccessLevel.TESTS_DATA)
+                        Log.d("TAG", "Create: tests was downloaded")
                         getCoursesData(context, CourseDataAccessLevel.QUESTIONS_DATA)
+                        Log.d("TAG", "Create: questions was downloaded")
+                        Log.d(
+                            "TAG", "Create: ${
+                                CompleteCourseService(
+                                    ServiceStringValue.COMPLETED_LESSONS_REQUEST_ADDRESS,
+                                    context
+                                ).execute(5).get()
+                            }"
+                        )
                     }
                 }
             }
@@ -58,7 +75,7 @@ class CoursesScreen(
                     .padding(start = 30.dp, top = 0.dp, end = 30.dp, bottom = 15.dp)
                     .fillMaxSize()
             ) {
-                Greeting("${userData.surname} ${userData.firstname}")
+                Greeting("${userData?.surname} ${userData?.firstname}")
                 CoursesList(courses)
             }
         }
