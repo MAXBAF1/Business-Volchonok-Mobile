@@ -1,6 +1,5 @@
 package com.example.volchonok.screens
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -28,10 +27,6 @@ import com.example.volchonok.screens.vidgets.cards.ModuleCard
 import com.example.volchonok.screens.vidgets.cards.ReviewCard
 import com.example.volchonok.screens.vidgets.others.Greeting
 import com.example.volchonok.screens.vidgets.others.TopAppBar
-import com.example.volchonok.services.UserInfoService
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class CourseInfoScreen(
     private var courseData: CourseData,
@@ -69,9 +64,7 @@ class CourseInfoScreen(
     @Composable
     fun ModulesList() {
         Column(modifier = Modifier.padding(top = 15.dp)) {
-            courseData.modules.forEach {
-                ModuleCard(it, toLessonsScreen).Add()
-            }
+            courseData.modules.forEach { ModuleCard(it, toLessonsScreen).Add() }
         }
     }
 

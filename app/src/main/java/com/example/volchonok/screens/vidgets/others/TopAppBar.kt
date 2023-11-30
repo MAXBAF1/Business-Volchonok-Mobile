@@ -127,9 +127,9 @@ class TopAppBar(
             contentDescription = "avatar",
             modifier = Modifier
                 .clip(CircleShape)
-                .clickable { toProfile() }
                 .size(36.dp)
-                .border(2.dp, borderColor, CircleShape))
+                .border(2.dp, borderColor, CircleShape)
+                .clickable { toProfile() })
 
     }
 }

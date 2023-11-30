@@ -11,14 +11,23 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridState
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -26,6 +35,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -43,6 +53,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import com.example.volchonok.R
@@ -51,6 +62,7 @@ import com.example.volchonok.data.CourseData
 import com.example.volchonok.data.UserData
 import com.example.volchonok.enums.CourseDataAccessLevel
 import com.example.volchonok.screens.vidgets.cards.CourseProgressCard
+import com.example.volchonok.screens.vidgets.others.DefaultButton
 import com.example.volchonok.screens.vidgets.others.StylizedTextInput
 import com.example.volchonok.services.CourseService
 import com.example.volchonok.services.UserInfoService
@@ -58,6 +70,14 @@ import com.example.volchonok.services.UserInfoService
 class ProfileScreen(private val onBackClick: () -> Unit) {
     private lateinit var userData: UserData
     private lateinit var coursesList: List<CourseData>
+
+    private var showAvatarDialog = mutableStateOf(false)
+    private var selectedAvatarNumber = mutableIntStateOf(0) // FIXME Индекс аватарки с БД
+    private var tappedAvatarNumber = 0
+    private val avatars = arrayOf(
+        R.drawable.wolf_icon, R.drawable.suit_wolf, R.drawable.mic_wolf, R.drawable.party_wolf
+    )
+    private val avatarsStates = List(avatars.size) { mutableStateOf(false) }
 
     @Composable
     fun Create() {
@@ -79,11 +99,17 @@ class ProfileScreen(private val onBackClick: () -> Unit) {
     @Composable
     private fun TextInputs() {
         Column(modifier = Modifier.padding(start = 30.dp, end = 30.dp)) {
-            StylizedTextInput("Лепинских Максим Игоревич", stringResource(id = R.string.fio), isEnabled = false).Create()
+            StylizedTextInput(
+                "Лепинских Максим Игоревич", stringResource(id = R.string.fio), isEnabled = false
+            ).Create()
             StylizedTextInput("89501234567", stringResource(id = R.string.phone)).Create()
             StylizedTextInput("example@gmail.com", stringResource(id = R.string.mail)).Create()
-            StylizedTextInput("Екатеринбург", stringResource(id = R.string.address), isEnabled = false).Create()
-            StylizedTextInput("1", stringResource(id = R.string.grade), isEnabled = false, isLast = true).Create()
+            StylizedTextInput(
+                "Екатеринбург", stringResource(id = R.string.address), isEnabled = false
+            ).Create()
+            StylizedTextInput(
+                "1", stringResource(id = R.string.grade), isEnabled = false, isLast = true
+            ).Create()
         }
     }
 
@@ -145,7 +171,10 @@ class ProfileScreen(private val onBackClick: () -> Unit) {
 
     @Composable
     private fun UserInfoRow() {
-        Row(Modifier.padding(start = 30.dp, top = 15.dp, end = 30.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            Modifier.padding(start = 30.dp, top = 15.dp, end = 30.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Avatar()
             Column(Modifier.padding(start = 15.dp)) {
                 Text(
@@ -165,46 +194,98 @@ class ProfileScreen(private val onBackClick: () -> Unit) {
 
     @Composable
     private fun Avatar() {
-        val defaultAvatar = ImageBitmap.imageResource(R.drawable.wolf_icon)
-        var bitmap: Bitmap? by remember { mutableStateOf(defaultAvatar.asAndroidBitmap()) }
-        val context = LocalContext.current
-
-        val launcher =
-            rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
-                val source = uri?.let { ImageDecoder.createSource(context.contentResolver, it) }
-                bitmap = source?.let { ImageDecoder.decodeBitmap(it) }
-            }
-
+        avatarsStates[selectedAvatarNumber.intValue].value = true
         val editIconSize = 66
-        val editIcon = AppCompatResources.getDrawable(context, R.drawable.ic_edit)!!
+        val editIcon = AppCompatResources.getDrawable(LocalContext.current, R.drawable.ic_edit)!!
             .toBitmap(editIconSize, editIconSize).asImageBitmap()
 
-        bitmap?.let {
-            Image(
-                bitmap = it.asImageBitmap(),
-                contentDescription = "avatar",
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .size(64.dp)
-                    .clickable { launcher.launch("image/*") }
-                    .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape)
-                    .drawWithContent {
-                        drawContent()
-                        drawRect(
-                            color = Color(0f, 0f, 0f, 0.4f)
-                        )
-                        val iconSize = 24.dp.toPx()
+        Image(
+            painterResource(id = avatars[selectedAvatarNumber.intValue]),
+            contentDescription = "avatar",
+            modifier = Modifier
+                .clip(CircleShape)
+                .size(64.dp)
+                .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape)
+                .clickable { showAvatarDialog.value = true }
+                .drawWithContent {
+                    drawContent()
+                    drawRect(
+                        color = Color(0f, 0f, 0f, 0.4f)
+                    )
+                    val iconSize = 24.dp.toPx()
 
-                        drawImage(
-                            image = editIcon,
-                            topLeft = Offset(
-                                (size.width - iconSize) / 2, (size.height - iconSize) / 2
-                            ),
-                        )
-                    },
-                contentScale = ContentScale.Crop,
-                alignment = Alignment.Center
-            )
+                    drawImage(
+                        image = editIcon,
+                        topLeft = Offset(
+                            (size.width - iconSize) / 2, (size.height - iconSize) / 2
+                        ),
+                    )
+                },
+            contentScale = ContentScale.Crop,
+            alignment = Alignment.Center
+        )
+
+        if (showAvatarDialog.value) AvatarDialog()
+    }
+
+    @Composable
+    private fun AvatarDialog() {
+        AlertDialog(text = {
+            Column {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 30.dp),
+                    text = stringResource(id = R.string.choose_avatar),
+                    style = MaterialTheme.typography.titleMedium,
+                    textAlign = TextAlign.Center,
+                )
+                AvatarsList()
+            }
+        }, containerColor = MaterialTheme.colorScheme.background, onDismissRequest = {
+            avatarsStates.forEach { it.value = false }
+            showAvatarDialog.value = false
+        }, confirmButton = {
+            DefaultButton(text = stringResource(id = R.string.save), Modifier.padding(top = 6.dp)) {
+                selectedAvatarNumber.intValue = tappedAvatarNumber
+                showAvatarDialog.value = false
+            }
+        })
+    }
+
+    @Composable
+    private fun AvatarsList() {
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(3),
+            verticalArrangement = Arrangement.spacedBy(space = 15.dp),
+            horizontalArrangement = Arrangement.spacedBy(space = 5.dp),
+        ) {
+            itemsIndexed(avatars) { i, avatar ->
+                CreateAvatar(i, avatar)
+            }
         }
+    }
+
+    @Composable
+    private fun CreateAvatar(index: Int, avatarId: Int) {
+        val borderColor = if (avatarsStates[index].value) {
+            MaterialTheme.colorScheme.primary
+        } else MaterialTheme.colorScheme.secondaryContainer
+
+        Image(
+            painterResource(id = avatarId),
+            contentDescription = "avatar",
+            modifier = Modifier
+                .aspectRatio(1f)
+                .clip(CircleShape)
+                .border(2.dp, borderColor, CircleShape)
+                .clickable {
+                    avatarsStates.forEach { it.value = false }
+                    avatarsStates[index].value = true
+                    tappedAvatarNumber = index
+                },
+            contentScale = ContentScale.Crop,
+            alignment = Alignment.Center
+        )
     }
 }

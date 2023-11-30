@@ -7,7 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.volchonok.RemoteInfoStorage.checkCourseDataLevel
+import com.example.volchonok.RemoteInfoStorage
 import com.example.volchonok.data.CourseData
 import com.example.volchonok.data.ModuleData
 import com.example.volchonok.enums.CourseDataAccessLevel
@@ -77,8 +77,7 @@ class Navigation {
 
         LoginScreen(toCoursesScreen = { navController!!.navigate(COURSES_SCREEN_ROUTE) },
             getLoginResult = { loginText, passwordText ->
-                val e = LoginService(ctx).execute(loginText, passwordText).get()
-                return@LoginScreen e
+                return@LoginScreen LoginService(ctx).execute(loginText, passwordText).get()
             }).Create()
     }
 
@@ -94,7 +93,7 @@ class Navigation {
     @Composable
     private fun CreateCourseInfoScreen() {
         selectedCourse?.let { courseData ->
-            if (checkCourseDataLevel(CourseDataAccessLevel.NOTES_DATA)) {
+            if (RemoteInfoStorage.checkCourseDataLevel(CourseDataAccessLevel.NOTES_DATA)) {
                 CourseInfoScreen(courseData = courseData, toLessonsScreen = {
                     selectedModule = it
                     navController!!.navigate(LESSONS_SCREEN_ROUTE)
@@ -109,7 +108,7 @@ class Navigation {
     @Composable
     private fun CreateLessonsScreen() {
         selectedModule?.let { moduleData ->
-            if (checkCourseDataLevel(CourseDataAccessLevel.NOTES_DATA)) {
+            if (RemoteInfoStorage.checkCourseDataLevel(CourseDataAccessLevel.NOTES_DATA)) {
                 LessonsScreen(moduleData = moduleData,
                     onBackClick = { navController!!.popBackStack() },
                     toProfile = { navController!!.navigate(PROFILE_SCREEN_ROUTE) },
@@ -127,7 +126,7 @@ class Navigation {
     @Composable
     private fun CreateLessonScreen() {
         selectedLesson?.let {
-            if (checkCourseDataLevel(CourseDataAccessLevel.NOTES_DATA)) {
+            if (RemoteInfoStorage.checkCourseDataLevel(CourseDataAccessLevel.NOTES_DATA)) {
                 LessonScreen(
                     lessonData = it,
                     onBackClick = { navController!!.popBackStack() },
@@ -142,7 +141,7 @@ class Navigation {
 
     @Composable
     private fun CreateProfileScreen() {
-        if (checkCourseDataLevel(CourseDataAccessLevel.NOTES_DATA)) {
+        if (RemoteInfoStorage.checkCourseDataLevel(CourseDataAccessLevel.NOTES_DATA)) {
             ProfileScreen(onBackClick = { navController!!.popBackStack() }).Create()
         } else {
             Log.d("TAG", "Данные грузятся!")

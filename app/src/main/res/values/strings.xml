@@ -25,6 +25,8 @@
 
     <!--Profile screen-->
     <string name="profile">Профиль</string>
+    <string name="choose_avatar">Выбор фото профиля</string>
+    <string name="save">Сохранить</string>
     <string name="level">Level:</string>
     <string name="modules_cnt">Модулей</string>
     <string name="your_data">Ваши данные:</string>
@@ -63,7 +65,6 @@
     <string name="your_answer">Ваш ответ</string>
     <string name="complete">Завершить</string>
     <string name="repeat_again">Повторить снова</string>
-
 
     <!--Note screen-->
     <string name="read">Прочитано</string>

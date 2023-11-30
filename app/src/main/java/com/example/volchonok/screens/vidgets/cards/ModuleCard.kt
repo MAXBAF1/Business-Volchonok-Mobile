@@ -38,8 +38,7 @@ import com.example.volchonok.interfaces.ILesson
 import com.example.volchonok.screens.vidgets.others.CompletedLessonsCntText
 
 class ModuleCard(
-    private val moduleData: ModuleData,
-    private val toLessonsScreen: (ModuleData) -> Unit
+    private val moduleData: ModuleData, private val toLessonsScreen: (ModuleData) -> Unit
 ) {
     @Composable
     fun Add() {
@@ -64,9 +63,10 @@ class ModuleCard(
 
     @Composable
     private fun ModuleRow(onExpand: () -> Unit) {
-        val cardColor = if (moduleData.lessonNotes.count { it.isCompleted } > 0) {
-            MaterialTheme.colorScheme.primary
-        } else MaterialTheme.colorScheme.onTertiaryContainer
+        val cardColor =
+            if (moduleData.lessonNotes.count { it.isCompleted } == moduleData.lessonNotes.size) {
+                MaterialTheme.colorScheme.primary
+            } else MaterialTheme.colorScheme.onTertiaryContainer
         val interactionSource = remember { MutableInteractionSource() }
 
         Row(
@@ -107,8 +107,7 @@ class ModuleCard(
                 .background(MaterialTheme.colorScheme.tertiaryContainer)
                 .clickable { toLessonsScreen(moduleData) }
                 .padding(15.dp, 0.dp, 15.dp, 15.dp)
-                .fillMaxWidth()
-        ) {
+                .fillMaxWidth()) {
             moduleData.lessonNotes.forEach { LessonInfo(it) }
         }
     }
@@ -141,8 +140,7 @@ class ModuleCard(
             MaterialTheme.colorScheme.primary
         } else MaterialTheme.colorScheme.onTertiaryContainer
         Row(
-            modifier = Modifier.padding(top = 15.dp),
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier.padding(top = 15.dp), verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
                 modifier = Modifier
