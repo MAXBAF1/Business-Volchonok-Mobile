@@ -76,11 +76,16 @@ class NoteScreen(
 
 
     private val messageStates = List(note.messages.size) { mutableStateOf(false) }
+    private var sendMessageIndex = mutableIntStateOf(0)
     private var sendBtnShowed = mutableStateOf(!note.isCompleted)
     private var completeBtnShowed = mutableStateOf(note.isCompleted)
 
     @Composable
     fun Create() {
+        while (sendMessageIndex.intValue < note.messages.size && note.messages[sendMessageIndex.intValue].author == AuthorType.WOLF) {
+            messageStates[sendMessageIndex.intValue++].value = true
+        }
+
         Column(
             Modifier
                 .fillMaxSize()
@@ -103,10 +108,11 @@ class NoteScreen(
                     MessageManager(message, i == 0, i == messageStates.size - 1)
                 } else if (messageStates[i].value) {
                     val isLast = i == messageStates.size - 1
-                    var showText by remember { mutableStateOf(false) }
-                    if (!isLast && note.messages[i + 1].author != AuthorType.STUDENT) sendBtnShowed.value =
-                        false
+                    if (!isLast && note.messages[i + 1].author != AuthorType.STUDENT) {
+                        sendBtnShowed.value = false
+                    }
 
+                    var showText by remember { mutableStateOf(false) }
                     if (i == 0 || message.author == AuthorType.STUDENT) {
                         MessageManager(message, i == 0, isLast)
                     } else {
@@ -182,14 +188,10 @@ class NoteScreen(
 
     @Composable
     private fun SendMessageOrCompleteBtn() {
-        var sendMessageIndex by remember { mutableIntStateOf(0) }
-        if (sendMessageIndex < note.messages.size && sendBtnShowed.value) {
-            SendMessageBtn(note.messages[sendMessageIndex].text) {
+        if (sendMessageIndex.intValue < note.messages.size && sendBtnShowed.value) {
+            SendMessageBtn(note.messages[sendMessageIndex.intValue].text) {
                 sendBtnShowed.value = false
-                messageStates[sendMessageIndex++].value = true
-                while (sendMessageIndex < note.messages.size && note.messages[sendMessageIndex].author == AuthorType.WOLF) {
-                    messageStates[sendMessageIndex++].value = true
-                }
+                messageStates[sendMessageIndex.intValue++].value = true
             }
         } else if (completeBtnShowed.value) {
             DefaultButton(

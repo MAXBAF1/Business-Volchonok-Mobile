@@ -10,25 +10,19 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.volchonok.R
-import com.example.volchonok.RemoteInfoStorage.getCoursesData
-import com.example.volchonok.RemoteInfoStorage.getUserData
+import com.example.volchonok.RemoteInfoStorage
 import com.example.volchonok.data.CourseData
 import com.example.volchonok.data.ModuleData
 import com.example.volchonok.data.UserData
-import com.example.volchonok.enums.CourseDataAccessLevel
 import com.example.volchonok.screens.vidgets.cards.ModuleCard
 import com.example.volchonok.screens.vidgets.cards.ReviewCard
 import com.example.volchonok.screens.vidgets.others.Greeting
 import com.example.volchonok.screens.vidgets.others.TopAppBar
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class CourseInfoScreen(
     private var courseData: CourseData,
@@ -40,7 +34,7 @@ class CourseInfoScreen(
     @Composable
     fun Create() {
         val context = LocalContext.current
-        userData = getUserData(context)
+        userData = RemoteInfoStorage.getUserData(context)
 
 //        LaunchedEffect(Unit) {
 //            launch {
