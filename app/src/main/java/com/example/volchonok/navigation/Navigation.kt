@@ -22,6 +22,7 @@ import com.example.volchonok.screens.ProfileScreen
 import com.example.volchonok.screens.SplashScreen
 import com.example.volchonok.screens.WelcomeScreen
 import com.example.volchonok.services.LoginService
+import com.example.volchonok.utils.ShowToast
 
 class Navigation {
     private var navController: NavHostController? = null
@@ -94,13 +95,14 @@ class Navigation {
     private fun CreateCourseInfoScreen() {
         selectedCourse?.let { courseData ->
             if (RemoteInfoStorage.checkCourseDataLevel(CourseDataAccessLevel.NOTES_DATA)) {
+                Log.d("TAGG", "Переход")
                 CourseInfoScreen(courseData = courseData, toLessonsScreen = {
                     selectedModule = it
                     navController!!.navigate(LESSONS_SCREEN_ROUTE)
                 }, toProfile = { navController!!.navigate(PROFILE_SCREEN_ROUTE) }).Create()
             } else {
-                Log.d("TAG", "Данные грузятся!")
-                //TODO: @Max разобраться, как делать вывод на экран сообщение, что данные подгружаются
+                Log.d("TAGG", "Данные грузятся!")
+                ShowToast()
             }
         }
     }
@@ -118,7 +120,7 @@ class Navigation {
                     }).Create()
             } else {
                 Log.d("TAG", "Данные грузятся!")
-                //TODO: @Max разобраться, как делать вывод на экран сообщение, что данные подгружаются
+                ShowToast()
             }
         }
     }
@@ -134,7 +136,7 @@ class Navigation {
                 ).Create()
             } else {
                 Log.d("TAG", "Данные грузятся!")
-                //TODO: @Max разобраться, как делать вывод на экран сообщение, что данные подгружаются
+                ShowToast()
             }
         }
     }
@@ -145,7 +147,7 @@ class Navigation {
             ProfileScreen(onBackClick = { navController!!.popBackStack() }).Create()
         } else {
             Log.d("TAG", "Данные грузятся!")
-            //TODO: @Max разобраться, как делать вывод на экран сообщение, что данные подгружаются
+            ShowToast()
         }
     }
 
