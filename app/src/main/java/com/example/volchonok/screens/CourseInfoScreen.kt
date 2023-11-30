@@ -27,6 +27,7 @@ import com.example.volchonok.screens.vidgets.cards.ModuleCard
 import com.example.volchonok.screens.vidgets.cards.ReviewCard
 import com.example.volchonok.screens.vidgets.others.Greeting
 import com.example.volchonok.screens.vidgets.others.TopAppBar
+import com.example.volchonok.services.UserInfoService
 
 class CourseInfoScreen(
     private var courseData: CourseData,
