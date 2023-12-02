@@ -48,7 +48,7 @@ class CheckBoxAnswersGroup(
         answer: AnswerData, index: Int
     ) {
         val primary = MaterialTheme.colorScheme.primary
-        val secondary = MaterialTheme.colorScheme.secondary
+        val secondary = MaterialTheme.colorScheme.outline
         val checkedState = answers[index]
         val color = if (checkedState) primary else secondary
         Row(
@@ -66,8 +66,8 @@ class CheckBoxAnswersGroup(
         ) {
             Checkbox(
                 checked = checkedState, onCheckedChange = null, colors = CheckboxDefaults.colors(
-                    checkedColor = MaterialTheme.colorScheme.primary,
-                    uncheckedColor = MaterialTheme.colorScheme.secondary
+                    checkedColor = primary,
+                    uncheckedColor = secondary
                 )
             )
             Text(

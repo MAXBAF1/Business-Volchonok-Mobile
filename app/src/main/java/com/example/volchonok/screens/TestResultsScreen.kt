@@ -10,7 +10,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -38,25 +40,27 @@ class TestResultsScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(30.dp),
+                .padding(start = 30.dp, top = 0.dp, end = 30.dp, bottom = 30.dp),
         ) {
-            Text(
-                text = stringResource(id = R.string.lets_check_answers),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-            LazyColumn(
+            Column(
                 Modifier
+                    .fillMaxSize()
                     .weight(1f)
-                    .padding(top = 20.dp)
+                    .verticalScroll(rememberScrollState())
             ) {
-                itemsIndexed(questions) { i, question ->
-                    QuestionSection(question, answers.toList()[i].toList(), i == 0)
+                Text(
+                    modifier = Modifier.padding(top = 30.dp),
+                    text = stringResource(id = R.string.lets_check_answers),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                questions.forEachIndexed { i, question ->
+                    QuestionSection(question, answers.toList()[i].toList(), i == questions.size - 1)
                 }
             }
             DefaultButton(
                 stringResource(id = R.string.complete).uppercase(),
-                Modifier.padding(top = 15.dp),
+                Modifier,
                 true,
                 onClick = onCompleteBtn
             )
@@ -72,28 +76,32 @@ class TestResultsScreen(
 
     @Composable
     private fun QuestionSection(
-        question: QuestionData, userAnswers: List<Boolean>, isFirst: Boolean = false
+        question: QuestionData, userAnswers: List<Boolean>, isEnd: Boolean = false
     ) {
         Text(
-            modifier = Modifier.padding(top = if (isFirst) 0.dp else 20.dp),
+            modifier = Modifier.padding(top = 20.dp),
             text = question.text,
             style = MaterialTheme.typography.titleSmall,
             color = MaterialTheme.colorScheme.onBackground
         )
         for (j in question.answers.indices) {
             if (userAnswers[j]) {
-                Answer(question.answers[j])
+                Answer(question.answers[j],question.answers[j].isCorrect && isEnd)
             }
         }
         for (j in question.answers.indices) {
             if (question.answers[j].isCorrect && !userAnswers[j]) {
-                Answer(question.answers[j], true)
+                Answer(question.answers[j], isEnd, true)
             }
         }
     }
 
     @Composable
-    private fun Answer(answerData: AnswerData, itsAdditional: Boolean = false) {
+    private fun Answer(
+        answerData: AnswerData,
+        isEnd: Boolean = false,
+        itsAdditional: Boolean = false
+    ) {
         val color = if (answerData.isCorrect) {
             MaterialTheme.colorScheme.primary
         } else MaterialTheme.colorScheme.error
@@ -119,7 +127,7 @@ class TestResultsScreen(
         }
         Box(
             modifier = Modifier
-                .padding(top = 8.dp)
+                .padding(top = 8.dp, bottom = if (isEnd) 20.dp else 0.dp)
                 .border(1.dp, color, RoundedCornerShape(20.dp))
                 .padding(10.dp, 15.dp)
         ) {

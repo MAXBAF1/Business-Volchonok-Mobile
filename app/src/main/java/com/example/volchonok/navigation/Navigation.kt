@@ -93,6 +93,7 @@ class Navigation {
 
     @Composable
     private fun CreateCourseInfoScreen() {
+
         selectedCourse?.let { courseData ->
             if (RemoteInfoStorage.checkCourseDataLevel(CourseDataAccessLevel.NOTES_DATA)) {
                 Log.d("TAGG", "Переход")

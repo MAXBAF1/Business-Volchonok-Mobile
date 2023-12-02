@@ -6,12 +6,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
@@ -40,18 +38,28 @@ class CourseProgressCard(private val coursesList: List<CourseData>) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 15.dp),
+            horizontalArrangement = Arrangement.Center,
         ) {
             itemsIndexed(coursesList) { i, course ->
-                CreateCard(course, i == 0, i == coursesList.size - 1)
+                CreateCard(
+                    if (coursesList.size == 1) Modifier.fillParentMaxWidth() else Modifier.width(300.dp),
+                    course,
+                    i == 0,
+                    i == coursesList.size - 1
+                )
             }
         }
     }
 
     @Composable
-    private fun CreateCard(course: CourseData, isFirst: Boolean = false, isLast: Boolean = false) {
+    private fun CreateCard(
+        modifier: Modifier,
+        course: CourseData,
+        isFirst: Boolean = false,
+        isLast: Boolean = false
+    ) {
         Card(
-            modifier = Modifier
-                .width(300.dp)
+            modifier = modifier
                 .padding(start = if (isFirst) 30.dp else 15.dp, end = if (isLast) 30.dp else 0.dp),
             shape = RoundedCornerShape(20.dp),
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary)

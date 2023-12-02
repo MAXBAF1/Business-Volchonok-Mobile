@@ -50,7 +50,7 @@ class StylizedTextInput(
     @Composable
     private fun CreateTitle() {
         Text(
-            modifier = Modifier.padding(top = 30.dp),
+            modifier = Modifier.padding(top = 20.dp),
             text = titleText,
             style = MaterialTheme.typography.titleSmall,
             color = MaterialTheme.colorScheme.onBackground
@@ -68,7 +68,7 @@ class StylizedTextInput(
 
         TextField(modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 15.dp, bottom = if (isLast) 15.dp else 0.dp)
+            .padding(top = 15.dp, bottom = if (isLast) 30.dp else 0.dp)
             .clip(RoundedCornerShape(20.dp))
             .border(1.dp, borderColor, RoundedCornerShape(20.dp))
             .onFocusChanged {

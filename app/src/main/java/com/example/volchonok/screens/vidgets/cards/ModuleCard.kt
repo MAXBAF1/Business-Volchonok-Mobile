@@ -63,10 +63,11 @@ class ModuleCard(
 
     @Composable
     private fun ModuleRow(onExpand: () -> Unit) {
-        val cardColor =
-            if (moduleData.lessonNotes.count { it.isCompleted } == moduleData.lessonNotes.size) {
-                MaterialTheme.colorScheme.primary
-            } else MaterialTheme.colorScheme.onTertiaryContainer
+        val cardColor = if (moduleData.lessonNotes.isNotEmpty() &&
+            moduleData.lessonNotes.count { it.isCompleted } == moduleData.lessonNotes.size
+        ) {
+            MaterialTheme.colorScheme.primary
+        } else MaterialTheme.colorScheme.onTertiaryContainer
         val interactionSource = remember { MutableInteractionSource() }
 
         Row(

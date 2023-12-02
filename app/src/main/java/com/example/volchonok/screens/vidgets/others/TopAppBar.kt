@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import com.example.volchonok.R
 import com.example.volchonok.data.UserData
 import com.example.volchonok.services.UserInfoService
+import com.example.volchonok.utils.bottomBorder
 
 class TopAppBar(
     private var userData: UserData? = null,
@@ -48,8 +49,7 @@ class TopAppBar(
 
     @Composable
     fun Create() {
-        if (userData == null)
-            userData = UserInfoService(LocalContext.current).execute().get()
+        if (userData == null) userData = UserInfoService(LocalContext.current).execute().get()
 
         backgroundColor = if (isLessonScreen) {
             MaterialTheme.colorScheme.primary
@@ -63,7 +63,7 @@ class TopAppBar(
                     top = 15.dp,
                     end = 30.dp,
                     bottom = 15.dp
-                ),
+                )                ,
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {

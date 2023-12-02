@@ -18,7 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -40,50 +40,17 @@ import com.example.volchonok.screens.vidgets.others.YoutubeVideoPlayer
 import kotlinx.coroutines.delay
 
 class NoteScreen(
-    private val noteData: NoteData,
+    private val note: NoteData,
     private val onCompleteBtn: () -> Unit,
 ) {
-    private val note = NoteData( // Тестовые данные
-        0, "Лекция", "Описание", "30", false, noteData.messages
-//        listOf(
-//            MessageData(
-//                "Let’s get lunch! How about pizza? \uD83C\uDF55",
-//                AuthorType.STUDENT,
-//                MessageType.TEXT,
-//                ""
-//            ),
-//            MessageData(
-//                "That sounds great! I’m in. What time works for you?",
-//                AuthorType.WOLF,
-//                MessageType.TEXT,
-//                ""
-//            ),
-//            MessageData(
-//                "Let’s say 12pm if it’s fine with you?", AuthorType.STUDENT, MessageType.TEXT, ""
-//            ),
-//            MessageData(
-//                "Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!мLearn the basics of the langLearn the basics of the language: make new friends, plan a family dinner, go shopping and much more!Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!мLearn the basics of the langLearn the basics of the language: make new friends, plan a family dinner, go shopping and much more!Learn the basics of the language: make new friends, plan a family dinner, go shopping and much more!мLearn the basics of the lang",
-//                AuthorType.WOLF,
-//                MessageType.TEXT,
-//                ""
-//            ),
-//            MessageData(
-//                "Jubilee Gardens", AuthorType.WOLF, MessageType.VIDEO, "Jrg9KxGNeJY"
-//            ),
-//        )
-
-    )
-
-
-    private val messageStates = List(note.messages.size) { mutableStateOf(false) }
-    private var sendMessageIndex = mutableIntStateOf(0)
-    private var sendBtnShowed = mutableStateOf(!note.isCompleted)
-    private var completeBtnShowed = mutableStateOf(note.isCompleted)
+    private val msgStates = mutableStateListOf<Boolean>()
+    private var sendBtnShowed = mutableStateOf(false)
 
     @Composable
     fun Create() {
-        while (sendMessageIndex.intValue < note.messages.size && note.messages[sendMessageIndex.intValue].author == AuthorType.WOLF) {
-            messageStates[sendMessageIndex.intValue++].value = true
+        note.messages.forEachIndexed { i, message ->
+            if (i == 0 && message.author == AuthorType.WOLF) msgStates.add(true)
+            else msgStates.add(false)
         }
 
         Column(
@@ -100,33 +67,16 @@ class NoteScreen(
 
     @Composable
     private fun MessageList(modifier: Modifier) {
-        Column(
-            modifier = modifier.verticalScroll(rememberScrollState())
-        ) {
+        Column(modifier = modifier.verticalScroll(rememberScrollState())) {
             note.messages.forEachIndexed { i, message ->
-                if (note.isCompleted) {
-                    MessageManager(message, i == 0, i == messageStates.size - 1)
-                } else if (messageStates[i].value) {
-                    val isLast = i == messageStates.size - 1
-                    if (!isLast && note.messages[i + 1].author != AuthorType.STUDENT) {
-                        sendBtnShowed.value = false
-                    }
+                if (note.isCompleted || msgStates[i]) {
+                    Message(message, i == 0, i == msgStates.size - 1)
 
-                    var showText by remember { mutableStateOf(false) }
-                    if (i == 0 || message.author == AuthorType.STUDENT) {
-                        MessageManager(message, i == 0, isLast)
-                    } else {
-                        LaunchedEffect(showText) {
-                            delay(1000)
-                            showText = true
-                        }
-                        if (showText) {
-                            MessageManager(message, isLast = isLast)
-                        }
-                    }
-                    if (showText) {
-                        if (isLast) completeBtnShowed.value = true
-                        else sendBtnShowed.value = note.messages[i + 1].author == AuthorType.STUDENT
+                    val nextMsgIndex = msgStates.lastIndexOf(true) + 1
+                    if (nextMsgIndex < note.messages.size) {
+                        val nextMsgAuthor = note.messages[nextMsgIndex].author
+                        sendBtnShowed.value = nextMsgAuthor == AuthorType.STUDENT
+                        msgStates[nextMsgIndex] = nextMsgAuthor == AuthorType.WOLF
                     }
                 }
             }
@@ -134,9 +84,25 @@ class NoteScreen(
     }
 
     @Composable
-    private fun MessageManager(
-        message: MessageData, isFirst: Boolean = false, isLast: Boolean = false
-    ) {
+    private fun SendMessageOrCompleteBtn() {
+        val nextMsgIndex = msgStates.lastIndexOf(true) + 1
+        if (!note.isCompleted && sendBtnShowed.value) {
+            SendMessageBtn(note.messages[nextMsgIndex].text) {
+                sendBtnShowed.value = false
+                msgStates[nextMsgIndex] = true
+            }
+        }
+
+        if (note.isCompleted || nextMsgIndex >= note.messages.size) {
+            DefaultButton(
+                text = stringResource(id = if (note.isCompleted) R.string.read else R.string.complete).uppercase(),
+                onClick = onCompleteBtn
+            )
+        }
+    }
+
+    @Composable
+    private fun Message(message: MessageData, isFirst: Boolean = false, isLast: Boolean = false) {
         val alignment: Alignment
         val backgroundShape: Shape
         val backgroundColor: Color
@@ -167,39 +133,13 @@ class NoteScreen(
             ) {
                 when (message.type) {
                     MessageType.TEXT -> TextMessage(message)
-                    MessageType.VIDEO -> Video(message)
+                    MessageType.VIDEO -> VideoMessage(message)
                     MessageType.PICTURE -> {}
                 }
             }
         }
     }
 
-    @Composable
-    private fun Video(message: MessageData) {
-        Column {
-            YoutubeVideoPlayer(message.url)
-            Text(
-                modifier = Modifier.padding(10.dp),
-                text = message.text,
-                style = MaterialTheme.typography.titleSmall
-            )
-        }
-    }
-
-    @Composable
-    private fun SendMessageOrCompleteBtn() {
-        if (sendMessageIndex.intValue < note.messages.size && sendBtnShowed.value) {
-            SendMessageBtn(note.messages[sendMessageIndex.intValue].text) {
-                sendBtnShowed.value = false
-                messageStates[sendMessageIndex.intValue++].value = true
-            }
-        } else if (completeBtnShowed.value) {
-            DefaultButton(
-                text = stringResource(id = if (note.isCompleted) R.string.read else R.string.complete).uppercase(),
-                onClick = onCompleteBtn
-            )
-        }
-    }
 
     @Composable
     private fun TextMessage(message: MessageData) {
@@ -215,6 +155,20 @@ class NoteScreen(
             style = MaterialTheme.typography.labelLarge,
             color = textColor
         )
+    }
+
+    @Composable
+    private fun VideoMessage(message: MessageData) {
+        Column {
+            YoutubeVideoPlayer(message.url)
+            if (message.text.isNotEmpty()) {
+                Text(
+                    modifier = Modifier.padding(10.dp),
+                    text = message.text,
+                    style = MaterialTheme.typography.titleSmall
+                )
+            }
+        }
     }
 
     @Composable
