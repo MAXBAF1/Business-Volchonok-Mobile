@@ -22,6 +22,7 @@ import com.example.volchonok.screens.ProfileScreen
 import com.example.volchonok.screens.SplashScreen
 import com.example.volchonok.screens.WelcomeScreen
 import com.example.volchonok.services.LoginService
+import com.example.volchonok.services.UserInfoService
 import com.example.volchonok.utils.ShowToast
 
 class Navigation {
@@ -144,8 +145,12 @@ class Navigation {
 
     @Composable
     private fun CreateProfileScreen() {
+        val userData = RemoteInfoStorage.getUserData()
+        if (userData == null) {
+            RemoteInfoStorage.setUserData(UserInfoService(LocalContext.current).execute().get())
+        }
         if (RemoteInfoStorage.checkCourseDataLevel(CourseDataAccessLevel.NOTES_DATA)) {
-            ProfileScreen(onBackClick = { navController!!.popBackStack() }).Create()
+            ProfileScreen(onBackClick = { navController!!.popBackStack() }, userData).Create()
         } else {
             Log.d("TAG", "Данные грузятся!")
             ShowToast()
