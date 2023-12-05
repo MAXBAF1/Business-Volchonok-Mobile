@@ -1,6 +1,7 @@
 package com.example.volchonok.screens
 
 import android.util.Log
+import kotlin.Pair
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -18,6 +19,7 @@ import com.example.volchonok.enums.CourseDataAccessLevel
 import com.example.volchonok.screens.vidgets.cards.CourseCard
 import com.example.volchonok.screens.vidgets.others.Greeting
 import com.example.volchonok.screens.vidgets.others.TopAppBar
+import com.example.volchonok.services.ChooseAnswerService
 import com.example.volchonok.services.CompleteCourseService
 import com.example.volchonok.services.UserInfoService
 import com.example.volchonok.services.enums.ServiceStringValue
@@ -48,6 +50,8 @@ class CoursesScreen(
             LaunchedEffect(Unit) {
                 launch {
                     withContext(Dispatchers.IO) {
+//                        ChooseAnswerService(context).executeChooseAnswers(3, mapOf(Pair(3, listOf(8)), Pair(10, listOf(12))))
+
                         val start = System.currentTimeMillis()
                         getCoursesData(context, CourseDataAccessLevel.MODULES_DATA)
                         Log.d("TAG", "Create: modules was downloaded")
