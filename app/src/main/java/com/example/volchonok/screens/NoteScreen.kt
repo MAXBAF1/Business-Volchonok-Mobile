@@ -44,7 +44,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class NoteScreen(
-    private val noteId: Int, // TODO для выполнения урока
     private val note: NoteData,
     private val onCompleteBtn: () -> Unit,
 ) {
@@ -112,7 +111,7 @@ class NoteScreen(
                             CompleteCourseService(
                                 ServiceStringValue.COMPLETED_NOTES_REQUEST_ADDRESS,
                                 ctx
-                            ).execute(noteId).get()
+                            ).execute(note.id).get()
                         }
                     }
                 }

@@ -29,7 +29,7 @@ class RadioAnswersGroup(
     override val list: List<AnswerData>, override val isBtnEnabled: MutableState<Boolean>
 ) : IAnswersGroup {
     private val answers = (List(list.size) { false }).toMutableStateList()
-    override fun getAnswers(): SnapshotStateList<Boolean> = answers
+    //override fun getAnswers(): SnapshotStateList<Boolean> = answers
 
     @Composable
     override fun Create() {
@@ -57,7 +57,11 @@ class RadioAnswersGroup(
                 .clip(CircleShape)
                 .fillMaxWidth()
                 .selectable(selected = isSelected, onClick = {
-                    List(answers.size) { i -> answers[i] = false }
+                    List(answers.size) { i ->
+                        list[i].wasChooseByUser = false
+                        answers[i] = false
+                    }
+                    list[index].wasChooseByUser = true
                     answers[index] = true
                     isBtnEnabled.value = true
                 })

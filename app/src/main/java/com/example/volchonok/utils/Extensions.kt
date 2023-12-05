@@ -8,6 +8,9 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 fun Modifier.bottomBorder(strokeWidth: Dp, color: Color) = composed(
     factory = {

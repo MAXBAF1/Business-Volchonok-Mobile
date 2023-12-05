@@ -199,8 +199,7 @@ class ProfileScreen(private val onBackClick: () -> Unit) {
         val editIcon = AppCompatResources.getDrawable(LocalContext.current, R.drawable.ic_edit)!!
             .toBitmap(editIconSize, editIconSize).asImageBitmap()
 
-        Image(
-            painterResource(id = avatars[selectedAvatarNumber.intValue]),
+        Image(painterResource(id = avatars[selectedAvatarNumber.intValue]),
             contentDescription = "avatar",
             modifier = Modifier
                 .clip(CircleShape)
@@ -246,7 +245,9 @@ class ProfileScreen(private val onBackClick: () -> Unit) {
             avatarsStates.forEach { it.value = false }
             showAvatarDialog.value = false
         }, confirmButton = {
-            DefaultButton(text = stringResource(id = R.string.save), Modifier.padding(top = 6.dp)) {
+            DefaultButton(
+                text = stringResource(id = R.string.save).uppercase(), Modifier.padding(top = 6.dp)
+            ) {
                 selectedAvatarNumber.intValue = tappedAvatarNumber
                 showAvatarDialog.value = false
             }

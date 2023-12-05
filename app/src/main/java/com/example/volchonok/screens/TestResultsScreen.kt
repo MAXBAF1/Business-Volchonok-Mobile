@@ -27,15 +27,14 @@ import androidx.compose.ui.unit.dp
 import com.example.volchonok.R
 import com.example.volchonok.data.AnswerData
 import com.example.volchonok.data.QuestionData
+import com.example.volchonok.data.TestData
 import com.example.volchonok.enums.ButtonType
 import com.example.volchonok.screens.vidgets.others.DefaultButton
 import com.example.volchonok.services.CompleteCourseService
 import com.example.volchonok.services.enums.ServiceStringValue
 
 class TestResultsScreen(
-    private val testId: Int, //TODO для сохранения прогресса теста в бд
-    private val questions: List<QuestionData>,
-    private val answers: Iterable<Iterable<Boolean>>,
+    private val testData: TestData,
     private val onCompleteBtn: () -> Unit,
     private val onRepeatBtn: () -> Unit,
 ) {
@@ -58,8 +57,8 @@ class TestResultsScreen(
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onBackground
                 )
-                questions.forEachIndexed { i, question ->
-                    QuestionSection(question, answers.toList()[i].toList(), i == questions.size - 1)
+                testData.questions.forEachIndexed { i, question ->
+                    QuestionSection(question, i == testData.questions.size - 1)
                 }
             }
             DefaultButton(
@@ -77,14 +76,13 @@ class TestResultsScreen(
             )
         }
 
-        CompleteCourseService(ServiceStringValue.COMPLETED_TESTS_REQUEST_ADDRESS, LocalContext.current)
-            .execute(testId).get()
+        CompleteCourseService(
+            ServiceStringValue.COMPLETED_TESTS_REQUEST_ADDRESS, LocalContext.current
+        ).execute(testData.id).get()
     }
 
     @Composable
-    private fun QuestionSection(
-        question: QuestionData, userAnswers: List<Boolean>, isEnd: Boolean = false
-    ) {
+    private fun QuestionSection(question: QuestionData, isEnd: Boolean = false) {
         Text(
             modifier = Modifier.padding(top = 20.dp),
             text = question.text,
@@ -92,12 +90,12 @@ class TestResultsScreen(
             color = MaterialTheme.colorScheme.onBackground
         )
         for (j in question.answers.indices) {
-            if (userAnswers[j]) {
-                Answer(question.answers[j],question.answers[j].isCorrect && isEnd)
+            if (question.answers[j].wasChooseByUser) {
+                Answer(question.answers[j], question.answers[j].isCorrect && isEnd)
             }
         }
         for (j in question.answers.indices) {
-            if (question.answers[j].isCorrect && !userAnswers[j]) {
+            if (question.answers[j].isCorrect && !question.answers[j].wasChooseByUser) {
                 Answer(question.answers[j], isEnd, true)
             }
         }
@@ -105,9 +103,7 @@ class TestResultsScreen(
 
     @Composable
     private fun Answer(
-        answerData: AnswerData,
-        isEnd: Boolean = false,
-        itsAdditional: Boolean = false
+        answerData: AnswerData, isEnd: Boolean = false, itsAdditional: Boolean = false
     ) {
         val color = if (answerData.isCorrect) {
             MaterialTheme.colorScheme.primary

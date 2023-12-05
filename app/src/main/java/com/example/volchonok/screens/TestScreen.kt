@@ -34,10 +34,8 @@ import com.example.volchonok.screens.vidgets.others.RadioAnswersGroup
 
 class TestScreen(
     private val testData: TestData,
-    private val toResultsScreen: (Iterable<Iterable<Boolean>>) -> Unit
+    private val toResultsScreen: () -> Unit
 ) {
-    private val answers: ArrayList<SnapshotStateList<Boolean>> = arrayListOf()
-    private var currAnswers = mutableStateListOf<Boolean>()
     private var isBtnEnabled = mutableStateOf(false)
     private var itsMultipleAnswersQuestion = mutableStateOf(false)
 
@@ -84,7 +82,6 @@ class TestScreen(
             CheckBoxAnswersGroup(currQuestion.answers, isBtnEnabled)
         } else RadioAnswersGroup(currQuestion.answers, isBtnEnabled)
         answersGroup.Create()
-        currAnswers = answersGroup.getAnswers()
     }
 
     @Composable
@@ -97,11 +94,10 @@ class TestScreen(
                 text = stringResource(id = R.string.answer).uppercase()
             ) {
                 if (questionNumber.intValue < testData.questions.size) {
-                    answers.add(currAnswers)
                     isBtnEnabled.value = false
 
                     if (questionNumber.intValue + 1 == testData.questions.size) {
-                        toResultsScreen(answers)
+                        toResultsScreen()
                     } else questionNumber.intValue++
                 }
             }

@@ -26,7 +26,6 @@ class LessonScreen(
             else -> LessonScreenType.TestScreen
         }
     )
-    private var answers: Iterable<Iterable<Boolean>>? = null
 
     @Composable
     fun Create() {
@@ -39,12 +38,7 @@ class LessonScreen(
             when (currentLessonScreen.value) {
                 LessonScreenType.TestResultsScreen -> {
                     if (RemoteInfoStorage.checkCourseDataLevel(CourseDataAccessLevel.TESTS_DATA)) {
-                        TestResultsScreen(
-                            (lessonData as TestData).id,
-                            (lessonData as TestData).questions,
-                            answers!!,
-                            onBackClick
-                        ) {
+                        TestResultsScreen(lessonData as TestData, onBackClick) {
                             currentLessonScreen.value = LessonScreenType.TestScreen
                         }.Create()
                     } else {
@@ -56,7 +50,6 @@ class LessonScreen(
                     if (RemoteInfoStorage.checkCourseDataLevel(CourseDataAccessLevel.TESTS_DATA)) {
                         TestScreen(lessonData as TestData) {
                             currentLessonScreen.value = LessonScreenType.TestResultsScreen
-                            answers = it
                         }.Create()
                     } else {
                         ShowToast()
@@ -64,9 +57,7 @@ class LessonScreen(
                 }
 
                 LessonScreenType.NoteScreen -> NoteScreen(
-                    (lessonData as NoteData).id,
-                    lessonData,
-                    onBackClick
+                    (lessonData as NoteData), onBackClick
                 ).Create()
             }
         }

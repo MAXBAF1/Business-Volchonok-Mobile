@@ -28,7 +28,7 @@ class CheckBoxAnswersGroup(
     override val list: List<AnswerData>, override val isBtnEnabled: MutableState<Boolean>
 ) : IAnswersGroup {
     private val answers = (List(list.size) { false }).toMutableStateList()
-    override fun getAnswers(): SnapshotStateList<Boolean> = answers
+    //override fun getAnswers(): SnapshotStateList<Boolean> = answers
 
     @Composable
     override fun Create() {
@@ -57,6 +57,7 @@ class CheckBoxAnswersGroup(
                 .clip(CircleShape)
                 .fillMaxWidth()
                 .selectable(selected = checkedState, onClick = {
+                    list[index].wasChooseByUser = !checkedState
                     answers[index] = !checkedState
                     isBtnEnabled.value = answers.count { it } > 0
                 })

@@ -12,5 +12,5 @@ interface IAnswersGroup {
     @Composable
     fun Create()
 
-    fun getAnswers(): SnapshotStateList<Boolean>
+    //fun getAnswers(): SnapshotStateList<Boolean>
 }

@@ -200,7 +200,8 @@ public class CourseService extends GetService<Pair<CourseDataAccessLevel, List<C
                         JSONObject answer = answersArray.getJSONObject(i);
                         answers.add(new AnswerData(
                                 answer.getString("text"),
-                                answer.getBoolean("is_right")
+                                answer.getBoolean("is_right"),
+                                false // TODO я тут false поставил
                         ));
                     } catch (JSONException ex) {
                         throw new RuntimeException(ex);
