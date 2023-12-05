@@ -15,7 +15,7 @@ public enum ServiceStringValue {
     COMPLETED_COURSES_REQUEST_ADDRESS(SERVER_ADDRESS.value + "/api/v1/user/completed/courses"),
     COMPLETED_TESTS_REQUEST_ADDRESS(SERVER_ADDRESS.value + "/api/v1/user/completed/tests"),
     COMPLETED_MODULES_REQUEST_ADDRESS(SERVER_ADDRESS.value + "/api/v1/user/completed/modules"),
-    COMPLETED_QUESTIONS_REQUEST_ADDRESS(SERVER_ADDRESS.value + "/api/v1/user/completed/questions"),
+    COMPLETED_QUESTIONS_REQUEST_ADDRESS(SERVER_ADDRESS.value + "/api/v1/user/completed/questions/"),
     SHARED_PREFERENCES_NAME("tokens"),
     REQUEST_METHOD_POST("POST"),
     REQUEST_METHOD_GET("GET"),

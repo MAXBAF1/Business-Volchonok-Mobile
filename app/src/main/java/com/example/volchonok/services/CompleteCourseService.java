@@ -55,9 +55,6 @@ public class CompleteCourseService extends PostService<Integer> {
 
         if (isExecuted) {
             switch (requestAddress) {
-                case COMPLETED_COURSES_REQUEST_ADDRESS -> {
-                    //TODO
-                }
                 case COMPLETED_MODULES_REQUEST_ADDRESS -> {
                     getCoursesData(ctx, CourseDataAccessLevel.ONLY_COURSES_DATA)
                             .stream().filter(courseData -> new HashSet<>(courseData.getModules()
@@ -84,8 +81,8 @@ public class CompleteCourseService extends PostService<Integer> {
                                                 .filter(note -> ids.contains(((NoteData) note).getId()))
                                                 .forEach(note -> ((NoteData) note).setCompleted(true));
 
-                                        if (/*Stream.concat(module.getLessonTests().stream(),*/
-                                                module.getLessonNotes().stream()
+                                        if (Stream.concat(module.getLessonTests().stream(),
+                                                module.getLessonNotes().stream())
                                                         .allMatch(ILesson::isCompleted)) {
 
                                             new CompleteCourseService(COMPLETED_MODULES_REQUEST_ADDRESS, ctx)
@@ -101,11 +98,16 @@ public class CompleteCourseService extends PostService<Integer> {
                                         module.getLessonTests().stream()
                                                 .filter(test -> ids.contains(((TestData) test).getId()))
                                                 .forEach(test -> ((TestData) test).setCompleted(true));
+
+                                        if (Stream.concat(module.getLessonTests().stream(),
+                                                        module.getLessonNotes().stream())
+                                                .allMatch(ILesson::isCompleted)) {
+
+                                            new CompleteCourseService(COMPLETED_MODULES_REQUEST_ADDRESS, ctx)
+                                                    .execute(module.getId());
+                                        }
                                     })
                             );
-                }
-                case COMPLETED_QUESTIONS_REQUEST_ADDRESS -> {
-
                 }
             }
         }
