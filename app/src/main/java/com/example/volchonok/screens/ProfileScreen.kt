@@ -1,12 +1,5 @@
 package com.example.volchonok.screens
 
-import android.graphics.Bitmap
-import android.graphics.ImageDecoder
-import android.net.Uri
-import android.util.Log
-import android.util.Pair
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -20,12 +13,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -34,41 +25,30 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import com.example.volchonok.R
-import com.example.volchonok.RemoteInfoStorage
 import com.example.volchonok.RemoteInfoStorage.getCoursesData
-import com.example.volchonok.RemoteInfoStorage.getUserData
 import com.example.volchonok.data.CourseData
 import com.example.volchonok.data.UserData
 import com.example.volchonok.enums.CourseDataAccessLevel
 import com.example.volchonok.screens.vidgets.cards.CourseProgressCard
 import com.example.volchonok.screens.vidgets.others.DefaultButton
 import com.example.volchonok.screens.vidgets.others.StylizedTextInput
-import com.example.volchonok.services.CourseService
-import com.example.volchonok.services.UserInfoService
 
 class ProfileScreen(private val onBackClick: () -> Unit, private val userData: UserData) {
     private lateinit var coursesList: List<CourseData>
@@ -97,21 +77,47 @@ class ProfileScreen(private val onBackClick: () -> Unit, private val userData: U
         }
     }
 
+    private var fioTI: StylizedTextInput? = null
+    private var phoneTI: StylizedTextInput? = null
+    private var emailTI: StylizedTextInput? = null
+    private var addressTI: StylizedTextInput? = null
+    private var classGradeTI: StylizedTextInput? = null
+
     @Composable
     private fun TextInputs() {
+        fioTI = StylizedTextInput(
+            "Фамилия Имя Отчество",
+            stringResource(id = R.string.fio),
+            isEnabled = false,
+            inputText = listOf(
+                userData.surname, userData.firstname, userData.middlename
+            ).joinToString(" ")
+        )
+        phoneTI = StylizedTextInput(
+            "89003330088", stringResource(id = R.string.phone), inputText = userData.phone
+        )
+        emailTI = StylizedTextInput(
+            "example@gmail.com", stringResource(id = R.string.mail), inputText = userData.email
+        )
+        addressTI = StylizedTextInput(
+            "Екатеринбург",
+            stringResource(id = R.string.address),
+            isEnabled = false,
+            inputText = userData.address
+        )
+        classGradeTI = StylizedTextInput(
+            "1",
+            stringResource(id = R.string.grade),
+            isEnabled = false,
+            isLast = true,
+            inputText = userData.class_grade
+        )
         Column(modifier = Modifier.padding(start = 30.dp, end = 30.dp)) {
-            StylizedTextInput("Фамилия Имя Отчество", stringResource(id = R.string.fio),
-                isEnabled = false,
-                inputText = listOf(userData.surname, userData.firstname, userData.middlename).joinToString(" ")
-            ).Create()
-            StylizedTextInput("89003330088", stringResource(id = R.string.phone),
-                inputText = userData.phone).Create()
-            StylizedTextInput("example@gmail.com", stringResource(id = R.string.mail),
-                inputText = userData.email).Create()
-            StylizedTextInput("Екатеринбург", stringResource(id = R.string.address),
-                isEnabled = false, inputText = userData.address).Create()
-            StylizedTextInput("1", stringResource(id = R.string.grade), isEnabled = false,
-                isLast = true, inputText = userData.class_grade).Create()
+            fioTI!!.Create()
+            phoneTI!!.Create()
+            emailTI!!.Create()
+            addressTI!!.Create()
+            classGradeTI!!.Create()
         }
     }
 
@@ -123,18 +129,19 @@ class ProfileScreen(private val onBackClick: () -> Unit, private val userData: U
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onBackground
             )
-
-            Row(modifier = Modifier.padding(top = 5.dp)) {
-                Text(
-                    text = "${stringResource(id = R.string.fill_data)} ",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-                Text(
-                    text = stringResource(id = R.string.five_coins),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
+            if (phoneTI?.text?.value?.isEmpty() == true || emailTI?.text?.value?.isEmpty() == true) {
+                Row(modifier = Modifier.padding(top = 5.dp)) {
+                    Text(
+                        text = "${stringResource(id = R.string.fill_data)} ",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                    Text(
+                        text = stringResource(id = R.string.five_coins),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                }
             }
         }
     }
