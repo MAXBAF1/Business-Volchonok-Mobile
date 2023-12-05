@@ -37,7 +37,8 @@ class StylizedTextInput(
     private val titleText: String = "",
     private val isPasswordField: Boolean = false,
     private val isEnabled: Boolean = true,
-    private val isLast: Boolean = false
+    private val isLast: Boolean = false,
+    private val inputText: String = ""
 ) {
     var text: MutableState<String>? = null
 
@@ -60,7 +61,7 @@ class StylizedTextInput(
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     private fun CreateTextField() {
-        text = remember { mutableStateOf("") }
+        text = remember { mutableStateOf(inputText) }
         val passwordVisible = remember { mutableStateOf(false) }
         val onBackgroundColor = MaterialTheme.colorScheme.onBackground
         val secondaryColor = MaterialTheme.colorScheme.outlineVariant

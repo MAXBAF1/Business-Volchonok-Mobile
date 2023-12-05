@@ -34,6 +34,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -58,6 +59,8 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import com.example.volchonok.R
 import com.example.volchonok.RemoteInfoStorage
+import com.example.volchonok.RemoteInfoStorage.getCoursesData
+import com.example.volchonok.RemoteInfoStorage.getUserData
 import com.example.volchonok.data.CourseData
 import com.example.volchonok.data.UserData
 import com.example.volchonok.enums.CourseDataAccessLevel
@@ -67,12 +70,11 @@ import com.example.volchonok.screens.vidgets.others.StylizedTextInput
 import com.example.volchonok.services.CourseService
 import com.example.volchonok.services.UserInfoService
 
-class ProfileScreen(private val onBackClick: () -> Unit) {
-    private lateinit var userData: UserData
+class ProfileScreen(private val onBackClick: () -> Unit, private val userData: UserData) {
     private lateinit var coursesList: List<CourseData>
 
     private var showAvatarDialog = mutableStateOf(false)
-    private var selectedAvatarNumber = mutableIntStateOf(0) // FIXME Индекс аватарки с БД
+    private var selectedAvatarNumber = mutableIntStateOf(userData.avatar)
     private var tappedAvatarNumber = 0
     private val avatars = arrayOf(
         R.drawable.wolf_icon, R.drawable.suit_wolf, R.drawable.mic_wolf, R.drawable.party_wolf
@@ -82,8 +84,7 @@ class ProfileScreen(private val onBackClick: () -> Unit) {
     @Composable
     fun Create() {
         val context = LocalContext.current
-        userData = UserInfoService(context).execute().get()
-        coursesList = RemoteInfoStorage.getCoursesData(context, CourseDataAccessLevel.NOTES_DATA)
+        coursesList = getCoursesData(context, CourseDataAccessLevel.NOTES_DATA)
 
         Column {
             TopAppBar()
@@ -99,17 +100,18 @@ class ProfileScreen(private val onBackClick: () -> Unit) {
     @Composable
     private fun TextInputs() {
         Column(modifier = Modifier.padding(start = 30.dp, end = 30.dp)) {
-            StylizedTextInput(
-                "Лепинских Максим Игоревич", stringResource(id = R.string.fio), isEnabled = false
+            StylizedTextInput("Фамилия Имя Отчество", stringResource(id = R.string.fio),
+                isEnabled = false,
+                inputText = listOf(userData.surname, userData.firstname, userData.middlename).joinToString(" ")
             ).Create()
-            StylizedTextInput("89501234567", stringResource(id = R.string.phone)).Create()
-            StylizedTextInput("example@gmail.com", stringResource(id = R.string.mail)).Create()
-            StylizedTextInput(
-                "Екатеринбург", stringResource(id = R.string.address), isEnabled = false
-            ).Create()
-            StylizedTextInput(
-                "1", stringResource(id = R.string.grade), isEnabled = false, isLast = true
-            ).Create()
+            StylizedTextInput("89003330088", stringResource(id = R.string.phone),
+                inputText = userData.phone).Create()
+            StylizedTextInput("example@gmail.com", stringResource(id = R.string.mail),
+                inputText = userData.email).Create()
+            StylizedTextInput("Екатеринбург", stringResource(id = R.string.address),
+                isEnabled = false, inputText = userData.address).Create()
+            StylizedTextInput("1", stringResource(id = R.string.grade), isEnabled = false,
+                isLast = true, inputText = userData.class_grade).Create()
         }
     }
 
