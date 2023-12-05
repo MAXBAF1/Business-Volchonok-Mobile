@@ -7,6 +7,6 @@ data class TestData(
     override val name: String,
     override val description: String,
     override val durationTime: String,
-    override val isCompleted: Boolean,
+    override var isCompleted: Boolean,
     val questions: List<QuestionData>
 ) : ILesson

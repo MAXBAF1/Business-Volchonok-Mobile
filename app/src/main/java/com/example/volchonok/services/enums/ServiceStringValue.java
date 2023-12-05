@@ -11,9 +11,11 @@ public enum ServiceStringValue {
     LESSON_DATA_REQUEST_ADDRESS(SERVER_ADDRESS.value + "/api/v1/lesson/"),
     QUESTION_DATA_REQUEST_ADDRESS(SERVER_ADDRESS.value + "/api/v1/question/"),
     TEST_DATA_REQUEST_ADDRESS(SERVER_ADDRESS.value + "/api/v1/test/"),
-    COMPLETED_LESSONS_REQUEST_ADDRESS(SERVER_ADDRESS.value + "/api/v1/user/completed/lessons"),
+    COMPLETED_NOTES_REQUEST_ADDRESS(SERVER_ADDRESS.value + "/api/v1/user/completed/lessons"),
     COMPLETED_COURSES_REQUEST_ADDRESS(SERVER_ADDRESS.value + "/api/v1/user/completed/courses"),
     COMPLETED_TESTS_REQUEST_ADDRESS(SERVER_ADDRESS.value + "/api/v1/user/completed/tests"),
+    COMPLETED_MODULES_REQUEST_ADDRESS(SERVER_ADDRESS.value + "/api/v1/user/completed/modules"),
+    COMPLETED_QUESTIONS_REQUEST_ADDRESS(SERVER_ADDRESS.value + "/api/v1/user/completed/questions"),
     SHARED_PREFERENCES_NAME("tokens"),
     REQUEST_METHOD_POST("POST"),
     REQUEST_METHOD_GET("GET"),
@@ -31,7 +33,7 @@ public enum ServiceStringValue {
 
 
 
-    private String value;
+    private final String value;
 
     ServiceStringValue(String value) {
         this.value = value;

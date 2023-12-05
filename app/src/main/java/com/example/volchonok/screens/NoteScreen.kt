@@ -1,5 +1,6 @@
 package com.example.volchonok.screens
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,17 +18,16 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.volchonok.R
@@ -37,9 +37,14 @@ import com.example.volchonok.enums.AuthorType
 import com.example.volchonok.enums.MessageType
 import com.example.volchonok.screens.vidgets.others.DefaultButton
 import com.example.volchonok.screens.vidgets.others.YoutubeVideoPlayer
-import kotlinx.coroutines.delay
+import com.example.volchonok.services.CompleteCourseService
+import com.example.volchonok.services.enums.ServiceStringValue
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class NoteScreen(
+    private val noteId: Int, // TODO для выполнения урока
     private val note: NoteData,
     private val onCompleteBtn: () -> Unit,
 ) {
@@ -85,7 +90,10 @@ class NoteScreen(
 
     @Composable
     private fun SendMessageOrCompleteBtn() {
+        val ctx = LocalContext.current
+        val rcs = rememberCoroutineScope()
         val nextMsgIndex = msgStates.lastIndexOf(true) + 1
+
         if (!note.isCompleted && sendBtnShowed.value) {
             SendMessageBtn(note.messages[nextMsgIndex].text) {
                 sendBtnShowed.value = false
@@ -96,7 +104,18 @@ class NoteScreen(
         if (note.isCompleted || nextMsgIndex >= note.messages.size) {
             DefaultButton(
                 text = stringResource(id = if (note.isCompleted) R.string.read else R.string.complete).uppercase(),
-                onClick = onCompleteBtn
+                onClick = {
+                    onCompleteBtn.invoke()
+
+                    rcs.launch {
+                        withContext(Dispatchers.IO) {
+                            CompleteCourseService(
+                                ServiceStringValue.COMPLETED_NOTES_REQUEST_ADDRESS,
+                                ctx
+                            ).execute(noteId).get()
+                        }
+                    }
+                }
             )
         }
     }

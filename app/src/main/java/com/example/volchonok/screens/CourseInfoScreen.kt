@@ -1,5 +1,6 @@
 package com.example.volchonok.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -19,6 +20,7 @@ import com.example.volchonok.R
 import com.example.volchonok.RemoteInfoStorage
 import com.example.volchonok.RemoteInfoStorage.getCoursesData
 import com.example.volchonok.RemoteInfoStorage.getUserData
+import com.example.volchonok.RemoteInfoStorage.setUserData
 import com.example.volchonok.data.CourseData
 import com.example.volchonok.data.ModuleData
 import com.example.volchonok.data.UserData
@@ -41,7 +43,7 @@ class CourseInfoScreen(
         val context = LocalContext.current
         userData = getUserData()
         if (userData == null) {
-            RemoteInfoStorage.setUserData(UserInfoService(context).execute().get())
+            setUserData(UserInfoService(context).execute().get())
         }
 
         Column(

@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -28,8 +29,11 @@ import com.example.volchonok.data.AnswerData
 import com.example.volchonok.data.QuestionData
 import com.example.volchonok.enums.ButtonType
 import com.example.volchonok.screens.vidgets.others.DefaultButton
+import com.example.volchonok.services.CompleteCourseService
+import com.example.volchonok.services.enums.ServiceStringValue
 
 class TestResultsScreen(
+    private val testId: Int, //TODO для сохранения прогресса теста в бд
     private val questions: List<QuestionData>,
     private val answers: Iterable<Iterable<Boolean>>,
     private val onCompleteBtn: () -> Unit,
@@ -72,6 +76,9 @@ class TestResultsScreen(
                 onRepeatBtn
             )
         }
+
+        CompleteCourseService(ServiceStringValue.COMPLETED_TESTS_REQUEST_ADDRESS, LocalContext.current)
+            .execute(testId).get()
     }
 
     @Composable

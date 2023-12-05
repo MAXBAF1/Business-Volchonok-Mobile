@@ -40,6 +40,7 @@ class LessonScreen(
                 LessonScreenType.TestResultsScreen -> {
                     if (RemoteInfoStorage.checkCourseDataLevel(CourseDataAccessLevel.TESTS_DATA)) {
                         TestResultsScreen(
+                            (lessonData as TestData).id,
                             (lessonData as TestData).questions,
                             answers!!,
                             onBackClick
@@ -63,7 +64,9 @@ class LessonScreen(
                 }
 
                 LessonScreenType.NoteScreen -> NoteScreen(
-                    lessonData as NoteData, onBackClick
+                    (lessonData as NoteData).id,
+                    lessonData,
+                    onBackClick
                 ).Create()
             }
         }

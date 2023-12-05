@@ -1,15 +1,19 @@
 package com.example.volchonok.services;
 
 import static com.example.volchonok.services.enums.ServiceStringValue.ACCESS_TOKEN_KEY;
+import static com.example.volchonok.services.enums.ServiceStringValue.ACCESS_TOKEN_REQUEST_ADDRESS;
+import static com.example.volchonok.services.enums.ServiceStringValue.LOGIN_REQUEST_ADDRESS;
 import static com.example.volchonok.services.enums.ServiceStringValue.REFRESH_TOKEN_KEY;
 import static com.example.volchonok.services.enums.ServiceStringValue.REQUEST_METHOD_POST;
 import static com.example.volchonok.services.enums.ServiceStringValue.RESPONSE_DATA_KEY;
 import static com.example.volchonok.services.enums.ServiceStringValue.RESPONSE_STATUS_KEY;
+import static com.example.volchonok.services.enums.ServiceStringValue.TEST_DATA_REQUEST_ADDRESS;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.example.volchonok.services.enums.ServiceStringValue;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -54,13 +58,11 @@ public abstract class PostService<Params> extends AbstractService<Params, Double
                     String.valueOf(responseBodyAsMap.get(RESPONSE_STATUS_KEY.getValue()))
             );
 
-            if (Math.abs(responseCode - 200.0) < 1e6) {
+            if (Math.abs(responseCode - 200.0) < 1e6 && url.equals(LOGIN_REQUEST_ADDRESS.getValue())) {
                 ServiceUtil.saveTokensToPreferences(responseBodyAsMap, sPref.edit());
             }
 
-            return Double.parseDouble(
-                    String.valueOf(responseBodyAsMap.get(RESPONSE_STATUS_KEY.getValue()))
-            );
+            return responseCode;
         } catch (IOException | NullPointerException e) {
             e.printStackTrace();
         }

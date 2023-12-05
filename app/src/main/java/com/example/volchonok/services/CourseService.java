@@ -26,7 +26,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -152,7 +151,7 @@ public class CourseService extends GetService<Pair<CourseDataAccessLevel, List<C
                         String.valueOf(noteDataMap.get("name")),
                         String.valueOf(noteDataMap.get("description")),
                         String.valueOf(noteDataMap.get("duration")),
-                        isItemCompleted(COMPLETED_LESSONS_REQUEST_ADDRESS.getValue(), Double.valueOf(moduleLessonId)),
+                        isItemCompleted(COMPLETED_NOTES_REQUEST_ADDRESS.getValue(), Double.valueOf(moduleLessonId)),
                         messages
                 ));
             }

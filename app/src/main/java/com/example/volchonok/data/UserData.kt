@@ -6,12 +6,12 @@ data class UserData(
     val firstname: String,
     val surname: String,
     val middlename: String,
-    val avatar: String,
+    val avatar: Int,
     val level: Int,
     val email: String,
     val address: String,
     val class_grade: String,
     val coins: Int
 ) {
-    constructor() : this(1, "", "", "", "", "", 0, "", "", "", 0)
+    constructor() : this(1, "", "", "", "", 0, 0, "", "", "", 0)
 }
