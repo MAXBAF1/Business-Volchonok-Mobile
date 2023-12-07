@@ -25,6 +25,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
@@ -56,9 +57,6 @@ class ProfileScreen(private val onBackClick: () -> Unit, private val userData: U
     private var showAvatarDialog = mutableStateOf(false)
     private var selectedAvatarNumber = mutableIntStateOf(userData.avatar)
     private var tappedAvatarNumber = 0
-    private val avatars = arrayOf(
-        R.drawable.wolf_icon, R.drawable.suit_wolf, R.drawable.mic_wolf, R.drawable.party_wolf
-    )
     private val avatarsStates = List(avatars.size) { mutableStateOf(false) }
 
     @Composable
@@ -77,47 +75,45 @@ class ProfileScreen(private val onBackClick: () -> Unit, private val userData: U
         }
     }
 
-    private var fioTI: StylizedTextInput? = null
-    private var phoneTI: StylizedTextInput? = null
-    private var emailTI: StylizedTextInput? = null
-    private var addressTI: StylizedTextInput? = null
-    private var classGradeTI: StylizedTextInput? = null
+    private var isPhoneEmpty: MutableState<Boolean> = mutableStateOf(true)
+    private var isEmailEmpty: MutableState<Boolean> = mutableStateOf(true)
 
     @Composable
     private fun TextInputs() {
-        fioTI = StylizedTextInput(
-            "Фамилия Имя Отчество",
-            stringResource(id = R.string.fio),
-            isEnabled = false,
-            inputText = listOf(
-                userData.surname, userData.firstname, userData.middlename
-            ).joinToString(" ")
-        )
-        phoneTI = StylizedTextInput(
-            "89003330088", stringResource(id = R.string.phone), inputText = userData.phone
-        )
-        emailTI = StylizedTextInput(
-            "example@gmail.com", stringResource(id = R.string.mail), inputText = userData.email
-        )
-        addressTI = StylizedTextInput(
-            "Екатеринбург",
-            stringResource(id = R.string.address),
-            isEnabled = false,
-            inputText = userData.address
-        )
-        classGradeTI = StylizedTextInput(
-            "1",
-            stringResource(id = R.string.grade),
-            isEnabled = false,
-            isLast = true,
-            inputText = userData.class_grade
-        )
         Column(modifier = Modifier.padding(start = 30.dp, end = 30.dp)) {
-            fioTI!!.Create()
-            phoneTI!!.Create()
-            emailTI!!.Create()
-            addressTI!!.Create()
-            classGradeTI!!.Create()
+            StylizedTextInput(
+                "Фамилия Имя Отчество",
+                stringResource(id = R.string.fio),
+                isEnabled = false,
+                inputText = listOf(
+                    userData.surname, userData.firstname, userData.middlename
+                ).joinToString(" ")
+            ).Create()
+            StylizedTextInput(
+                "89003330088",
+                stringResource(id = R.string.phone),
+                inputText = userData.phone,
+                isEmpty = isPhoneEmpty
+            ).Create()
+            StylizedTextInput(
+                "example@gmail.com",
+                stringResource(id = R.string.mail),
+                inputText = userData.email,
+                isEmpty = isEmailEmpty
+            ).Create()
+            StylizedTextInput(
+                "Екатеринбург",
+                stringResource(id = R.string.address),
+                isEnabled = false,
+                inputText = userData.address
+            ).Create()
+            StylizedTextInput(
+                "1",
+                stringResource(id = R.string.grade),
+                isEnabled = false,
+                isLast = true,
+                inputText = userData.class_grade
+            ).Create()
         }
     }
 
@@ -129,7 +125,7 @@ class ProfileScreen(private val onBackClick: () -> Unit, private val userData: U
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onBackground
             )
-            if (phoneTI?.text?.value?.isEmpty() == true || emailTI?.text?.value?.isEmpty() == true) {
+            if (isPhoneEmpty.value || isEmailEmpty.value) {
                 Row(modifier = Modifier.padding(top = 5.dp)) {
                     Text(
                         text = "${stringResource(id = R.string.fill_data)} ",
@@ -296,6 +292,12 @@ class ProfileScreen(private val onBackClick: () -> Unit, private val userData: U
                 },
             contentScale = ContentScale.Crop,
             alignment = Alignment.Center
+        )
+    }
+
+    companion object {
+        val avatars = arrayOf(
+            R.drawable.wolf_icon, R.drawable.suit_wolf, R.drawable.mic_wolf, R.drawable.party_wolf
         )
     }
 }

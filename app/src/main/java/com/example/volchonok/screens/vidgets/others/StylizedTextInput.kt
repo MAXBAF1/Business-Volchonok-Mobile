@@ -38,7 +38,8 @@ class StylizedTextInput(
     private val isPasswordField: Boolean = false,
     private val isEnabled: Boolean = true,
     private val isLast: Boolean = false,
-    private val inputText: String = ""
+    private val inputText: String = "",
+    private val isEmpty: MutableState<Boolean>? = null
 ) {
     var text: MutableState<String>? = null
 
@@ -62,6 +63,7 @@ class StylizedTextInput(
     @Composable
     private fun CreateTextField() {
         text = remember { mutableStateOf(inputText) }
+        if (isEmpty != null) isEmpty.value = text!!.value.isEmpty()
         val passwordVisible = remember { mutableStateOf(false) }
         val onBackgroundColor = MaterialTheme.colorScheme.onBackground
         val secondaryColor = MaterialTheme.colorScheme.outlineVariant

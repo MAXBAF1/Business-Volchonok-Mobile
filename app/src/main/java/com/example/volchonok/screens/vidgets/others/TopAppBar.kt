@@ -36,6 +36,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.volchonok.R
 import com.example.volchonok.data.UserData
+import com.example.volchonok.screens.ProfileScreen
 import com.example.volchonok.services.UserInfoService
 import com.example.volchonok.utils.bottomBorder
 
@@ -121,9 +122,9 @@ class TopAppBar(
         val borderColor = if (isLessonScreen) {
             MaterialTheme.colorScheme.onPrimary
         } else MaterialTheme.colorScheme.primary
-        val defaultAvatar = ImageBitmap.imageResource(R.drawable.wolf_icon)
 
-        Image(bitmap = defaultAvatar, // FIXME get avatar
+        Image(
+            painter = painterResource(id = ProfileScreen.avatars[userData?.avatar ?: 0]),
             contentDescription = "avatar",
             modifier = Modifier
                 .clip(CircleShape)

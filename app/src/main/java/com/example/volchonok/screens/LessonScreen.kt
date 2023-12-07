@@ -20,7 +20,8 @@ class LessonScreen(
     private val toProfile: () -> Unit,
 ) {
     private var currentLessonScreen: MutableState<LessonScreenType> = mutableStateOf(
-        when (lessonData) {
+        if (lessonData is TestData && lessonData.isCompleted) LessonScreenType.TestResultsScreen
+        else when (lessonData) {
             is TestData -> LessonScreenType.TestScreen
             is NoteData -> LessonScreenType.NoteScreen
             else -> LessonScreenType.TestScreen
