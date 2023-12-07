@@ -8,7 +8,6 @@ import com.example.volchonok.services.enums.ServiceStringValue;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -26,39 +25,28 @@ public class ChooseAnswerService extends PostService<Map<Integer, List<Integer>>
                 .getString(ServiceStringValue.ACCESS_TOKEN_KEY.getValue(), "");
     }
 
-    public boolean chooseAnswers(RequestBody requestBody, int testId) {
-        boolean isExecuted = tryChooseAnswers(requestBody, testId);
-        if (!isExecuted) {
+    public int chooseAnswers(RequestBody requestBody, int testId) {
+        int executeCode = tryChooseAnswers(requestBody, testId);
+        if (executeCode == 400) {
             try {
                 new RefreshTokenService(ctx).execute().get();
-                isExecuted = tryChooseAnswers(requestBody, testId);
-            } catch (ExecutionException | InterruptedException e) {
+                executeCode = tryChooseAnswers(requestBody, testId);
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
 
-        return isExecuted;
+        return executeCode;
     }
 
-    private boolean tryChooseAnswers(RequestBody requestBody, int testId) {
+    private int tryChooseAnswers(RequestBody requestBody, int testId) {
         Double responseCode = sendPostRequestToURL(
                 requestAddress.getValue() + testId,
                 requestBody,
                 Collections.singletonMap("Authorization", String.format("Bearer %s", accessToken))
         );
 
-        return responseCode.intValue() == 200;
-    }
-
-    public Double executeChooseAnswers(int testId, Map<Integer, List<Integer>> answers) {
-        try {
-            return new ChooseAnswerService(ctx).execute(
-                    Map.of(testId, List.of()),
-                    answers
-            ).get();
-        } catch (ExecutionException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        return responseCode.intValue();
     }
 
     @Override
@@ -80,8 +68,10 @@ public class ChooseAnswerService extends PostService<Map<Integer, List<Integer>>
                 .deleteCharAt(requestBodyStringBuilder.length() - 1)
                 .append("]\n}");
 
-        return chooseAnswers(RequestBody.create(requestBodyStringBuilder.toString(),
+        Log.d("TAG", "request to complete answers: " + requestBodyStringBuilder);
+
+        return (double) chooseAnswers(RequestBody.create(requestBodyStringBuilder.toString(),
                         MediaType.get(ServiceStringValue.MEDIA_TYPE_JSON.getValue())),
-                testId) ? 200d : 400;
+                testId);
     }
 }

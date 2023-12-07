@@ -27,6 +27,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -63,17 +64,29 @@ public class CourseService extends GetService<Pair<CourseDataAccessLevel, List<C
     }
 
     private void fillCoursesData(List<CourseData> courses, int courseId) {
-        UserData emptyUser = new UserData();
-
-        List<ReviewData> reviews = List.of(
-                new ReviewData(emptyUser, ""),
-                new ReviewData(emptyUser, ""),
-                new ReviewData(emptyUser, "")
-        );
-
         Map<String, Object> dataMap = ServiceUtil.getJsonAsMap(
                 sendGetRequestToURL(COURSE_DATA_REQUEST_ADDRESS.getValue() + courseId)
         );
+
+        List<ReviewData> reviews = new ArrayList<>();
+        try {
+            JSONArray arr = new JSONArray(String.valueOf(dataMap.get("reviews")));
+            int i = 0;
+            String reviewString;
+
+            while (true) {
+                reviewString = arr.getJSONObject(i++).toString();
+                Map<String, Object> reviewAsMap = ServiceUtil.getJsonAsMap(reviewString);
+                reviews.add(new ReviewData(
+                        String.join(" ", String.valueOf(reviewAsMap.get("surname")), String.valueOf(reviewAsMap.get("firstname"))),
+                        Integer.parseInt(String.valueOf(reviewAsMap.get("avatar"))),
+                        String.valueOf(reviewAsMap.get("text"))
+                ));
+
+                if (false) break;
+            }
+
+        } catch (JSONException ignored) {}
 
         courses.add(new CourseData(
                 courseId,
@@ -199,6 +212,7 @@ public class CourseService extends GetService<Pair<CourseDataAccessLevel, List<C
                     try {
                         JSONObject answer = answersArray.getJSONObject(i);
                         answers.add(new AnswerData(
+                                answer.getInt("id"),
                                 answer.getString("text"),
                                 answer.getBoolean("is_right"),
                                 false // TODO я тут false поставил

@@ -1,5 +1,6 @@
 package com.example.volchonok.screens
 
+import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +18,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,8 +32,13 @@ import com.example.volchonok.data.QuestionData
 import com.example.volchonok.data.TestData
 import com.example.volchonok.enums.ButtonType
 import com.example.volchonok.screens.vidgets.others.DefaultButton
+import com.example.volchonok.services.ChooseAnswerService
 import com.example.volchonok.services.CompleteCourseService
 import com.example.volchonok.services.enums.ServiceStringValue
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.util.Collections
 
 class TestResultsScreen(
     private val testData: TestData,
@@ -40,6 +47,9 @@ class TestResultsScreen(
 ) {
     @Composable
     fun Create() {
+        val context = LocalContext.current
+
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -65,7 +75,23 @@ class TestResultsScreen(
                 stringResource(id = R.string.complete).uppercase(),
                 Modifier,
                 true,
-                onClick = onCompleteBtn
+                onClick = {
+                    onCompleteBtn.invoke()
+
+                    testData.isCompleted = true
+
+                    ChooseAnswerService(context).execute(
+                            mapOf(Pair(testData.id, Collections.emptyList())),
+                            testData.questions.associate { q ->
+                                Pair(
+                                    q.id,
+                                    q.answers
+                                        .filter { a -> a.wasChooseByUser }
+                                        .map { a -> a.id }
+                                )
+                            }
+                        ).get()
+                }
             )
             DefaultButton(
                 stringResource(id = R.string.repeat_again).uppercase(),
@@ -75,10 +101,6 @@ class TestResultsScreen(
                 onRepeatBtn
             )
         }
-
-        CompleteCourseService(
-            ServiceStringValue.COMPLETED_TESTS_REQUEST_ADDRESS, LocalContext.current
-        ).execute(testData.id).get()
     }
 
     @Composable
@@ -108,12 +130,14 @@ class TestResultsScreen(
         val color = if (answerData.isCorrect) {
             MaterialTheme.colorScheme.primary
         } else MaterialTheme.colorScheme.error
-        val answerColor = if (itsAdditional) MaterialTheme.colorScheme.onBackground else color
+        val answerColor =
+            if (itsAdditional) MaterialTheme.colorScheme.onBackground else color
         val icon = if (answerData.isCorrect) {
             R.drawable.ic_correct_answer
         } else R.drawable.ic_wrong_answer
         Row(
-            modifier = Modifier.padding(top = 10.dp), verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier.padding(top = 10.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
                 modifier = Modifier.size(12.dp),

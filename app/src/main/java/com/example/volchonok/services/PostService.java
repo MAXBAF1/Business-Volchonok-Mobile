@@ -1,39 +1,21 @@
 package com.example.volchonok.services;
 
-import static com.example.volchonok.services.enums.ServiceStringValue.ACCESS_TOKEN_KEY;
-import static com.example.volchonok.services.enums.ServiceStringValue.ACCESS_TOKEN_REQUEST_ADDRESS;
 import static com.example.volchonok.services.enums.ServiceStringValue.LOGIN_REQUEST_ADDRESS;
-import static com.example.volchonok.services.enums.ServiceStringValue.REFRESH_TOKEN_KEY;
 import static com.example.volchonok.services.enums.ServiceStringValue.REQUEST_METHOD_POST;
-import static com.example.volchonok.services.enums.ServiceStringValue.RESPONSE_DATA_KEY;
 import static com.example.volchonok.services.enums.ServiceStringValue.RESPONSE_STATUS_KEY;
-import static com.example.volchonok.services.enums.ServiceStringValue.TEST_DATA_REQUEST_ADDRESS;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.example.volchonok.services.enums.ServiceStringValue;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
-import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
-public abstract class PostService<Params> extends AbstractService<Params, Double> {
+public abstract class PostService<In> extends AbstractService<In, Double> {
 
     public PostService(Context ctx) {
         super(ctx);
@@ -50,9 +32,13 @@ public abstract class PostService<Params> extends AbstractService<Params, Double
 
         request = builder.build();
 
+        Log.d("TAG", "request: " + request);
+
         try (Response response = httpClient.newCall(request).execute()) {
             ResponseBody responseBody = response.body();
             Map<String, Object> responseBodyAsMap = ServiceUtil.getJsonAsMap(responseBody.string());
+
+            Log.d("TAG", "response: " + responseBodyAsMap);
 
             double responseCode = Double.parseDouble(
                     String.valueOf(responseBodyAsMap.get(RESPONSE_STATUS_KEY.getValue()))

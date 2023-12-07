@@ -14,7 +14,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
-public abstract class GetService<Par, Res> extends AbstractService<Par, Res>{
+public abstract class GetService<In, Out> extends AbstractService<In, Out>{
 
     protected GetService(Context ctx) {
         super(ctx);

@@ -1,6 +1,7 @@
 package com.example.volchonok.services;
 
 import android.content.Context;
+import android.util.Log;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -10,6 +11,7 @@ import static com.example.volchonok.services.enums.ServiceStringValue.*;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.util.HashMap;
 import java.util.Map;
 
 //only service class
@@ -28,7 +30,7 @@ public class RefreshTokenService extends PostService<Void> {
                                         REFRESH_TOKEN_KEY.getValue(),
                                         sPref.getString(REFRESH_TOKEN_KEY.getValue(), "")
                                 ),
-                                new TypeToken<Map>() {}.getType()),
+                                new TypeToken<HashMap<String, Object>>() {}.getType()),
                         MediaType.get(CONTENT_TYPE_JSON.getValue())
                 ));
     }
