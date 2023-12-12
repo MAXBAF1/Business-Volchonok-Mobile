@@ -97,7 +97,7 @@ class Navigation {
 
         selectedCourse?.let { courseData ->
             if (RemoteInfoStorage.checkCourseDataLevel(CourseDataAccessLevel.NOTES_DATA)) {
-                Log.d("TAGG", "Переход")
+
                 CourseInfoScreen(courseData = courseData, toLessonsScreen = {
                     selectedModule = it
                     navController!!.navigate(LESSONS_SCREEN_ROUTE)
