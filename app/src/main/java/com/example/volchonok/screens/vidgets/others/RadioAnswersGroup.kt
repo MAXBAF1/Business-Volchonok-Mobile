@@ -48,7 +48,7 @@ class RadioAnswersGroup(
     @Composable
     private fun RadioRow(answer: AnswerData, index: Int) {
         val primary = MaterialTheme.colorScheme.primary
-        val secondary = MaterialTheme.colorScheme.outline
+        val secondary = MaterialTheme.colorScheme.outlineVariant
         val isSelected = answers[index]
         val color = if (isSelected) primary else secondary
         Row(

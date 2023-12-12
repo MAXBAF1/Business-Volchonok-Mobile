@@ -1,6 +1,5 @@
 package com.example.volchonok.screens.vidgets.cards
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,12 +27,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.volchonok.R
-import com.example.volchonok.data.TestData
 import com.example.volchonok.data.ModuleData
 import com.example.volchonok.interfaces.ILesson
 import com.example.volchonok.screens.vidgets.others.CompletedLessonsCntText
@@ -120,7 +120,7 @@ class ModuleCard(
                 .padding(start = 10.dp)
                 .size(24.dp),
             shape = CircleShape,
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onPrimary)
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background)
         ) {
             Text(
                 text = "i",
@@ -128,7 +128,7 @@ class ModuleCard(
                     .fillMaxSize()
                     .wrapContentHeight(),
                 style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onTertiaryContainer,
+                color = MaterialTheme.colorScheme.outline,
                 textAlign = TextAlign.Center
             )
         }
@@ -137,21 +137,28 @@ class ModuleCard(
 
     @Composable
     private fun LessonInfo(lessonData: ILesson) {
-        val checkMarkColor = if (lessonData.isCompleted) {
-            MaterialTheme.colorScheme.primary
-        } else MaterialTheme.colorScheme.onTertiaryContainer
+        val checkMarkBackground: Color
+        val checkMarkColor: Color
+        if (lessonData.isCompleted) {
+            checkMarkBackground = MaterialTheme.colorScheme.primary
+            checkMarkColor = MaterialTheme.colorScheme.inverseSurface
+        } else {
+            checkMarkBackground = MaterialTheme.colorScheme.onBackground
+            checkMarkColor = MaterialTheme.colorScheme.inverseOnSurface
+        }
         Row(
             modifier = Modifier.padding(top = 15.dp), verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
                 modifier = Modifier
-                    .background(checkMarkColor, CircleShape)
+                    .background(checkMarkBackground, CircleShape)
                     .padding(4.dp),
             ) {
-                Image(
+                Icon(
                     modifier = Modifier.size(12.dp),
                     painter = painterResource(id = R.drawable.ic_check_mark),
-                    contentDescription = "check_mark_icon"
+                    contentDescription = "check_mark_icon",
+                    tint = checkMarkColor
                 )
             }
             Text(

@@ -34,7 +34,7 @@ import com.example.volchonok.utils.isInternetAvailable
 class SplashScreen(
     private val toNetworkErrorScreen: () -> Unit,
     private val toWelcomeScreen: () -> Unit,
-    private val toCoursesScreen: () -> Unit,
+    private val toCoursesScreen: () -> Unit, // TODO переход на эран курса, если уже залогинен
 ) {
     @Composable
     fun Create() {

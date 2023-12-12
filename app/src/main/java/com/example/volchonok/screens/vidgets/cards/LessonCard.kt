@@ -36,7 +36,7 @@ class LessonCard(
     @Composable
     fun Create() {
         cardColor = if (lessonData.isCompleted) {
-            MaterialTheme.colorScheme.primary
+            MaterialTheme.colorScheme.scrim
         } else MaterialTheme.colorScheme.onBackground
 
         Card(
@@ -63,7 +63,7 @@ class LessonCard(
                     style = MaterialTheme.typography.labelSmall,
                     color = if (lessonData.isCompleted) {
                         cardColor!!
-                    } else MaterialTheme.colorScheme.onTertiaryContainer
+                    } else MaterialTheme.colorScheme.outlineVariant
                 )
             }
         }
@@ -92,7 +92,7 @@ class LessonCard(
                     Text(
                         text = stringResource(id = R.string.completed),
                         style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onPrimary
+                        color = MaterialTheme.colorScheme.background
                     )
                 }
             }
