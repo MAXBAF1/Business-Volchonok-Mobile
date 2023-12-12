@@ -1,6 +1,5 @@
 package com.example.volchonok.screens
 
-import android.util.Log
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -26,9 +25,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -81,8 +84,8 @@ class ProfileScreen(
         }
     }
 
-    private var isPhoneEmpty: MutableState<Boolean> = mutableStateOf(true)
-    private var isEmailEmpty: MutableState<Boolean> = mutableStateOf(true)
+    private var isPhoneEmpty: MutableState<Boolean> = mutableStateOf(false)
+    private var isEmailEmpty: MutableState<Boolean> = mutableStateOf(false)
 
     @Composable
     private fun TextInputs() {
@@ -101,7 +104,7 @@ class ProfileScreen(
                 inputText = userData.phone,
                 wasDataChanged = wasUserDataChanged,
                 isEmpty = isPhoneEmpty,
-                f = {
+                updateData = {
                     userData.phone = it
                 }
             ).Create()
@@ -111,7 +114,7 @@ class ProfileScreen(
                 inputText = userData.email,
                 wasDataChanged = wasUserDataChanged,
                 isEmpty = isEmailEmpty,
-                f = {
+                updateData = {
                     userData.email = it
                 }
             ).Create()
@@ -267,6 +270,7 @@ class ProfileScreen(
             DefaultButton(
                 text = stringResource(id = R.string.save).uppercase(), Modifier.padding(top = 6.dp)
             ) {
+                userData.avatar = tappedAvatarNumber
                 selectedAvatarNumber.intValue = tappedAvatarNumber
                 showAvatarDialog.value = false
             }

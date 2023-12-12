@@ -41,7 +41,7 @@ class StylizedTextInput(
     private var inputText: String = "",
     private var wasDataChanged: MutableState<Boolean> = mutableStateOf(false),
     private val isEmpty: MutableState<Boolean>? = null,
-    private val f: ((String) -> Unit)? = null
+    private val updateData: ((String) -> Unit)? = null
 ) {
     var text: MutableState<String>? = null
 
@@ -84,9 +84,8 @@ class StylizedTextInput(
             },
             value = text!!.value,
             onValueChange = {
-                inputText = (it.also { text!!.value = it })
-                if (f != null)
-                    f!!(it)
+                text!!.value = it
+                updateData?.let { function -> function(it) }
                 wasDataChanged.value = true
             },
             placeholder = {

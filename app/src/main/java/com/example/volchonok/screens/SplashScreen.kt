@@ -1,12 +1,11 @@
 package com.example.volchonok.screens
 
-import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
-import android.os.Build
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.keyframes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,14 +23,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat.getSystemService
 import com.example.volchonok.R
 import com.example.volchonok.utils.isInternetAvailable
-import kotlinx.coroutines.delay
 
 class SplashScreen(
     private val toNetworkErrorScreen: () -> Unit,
@@ -40,6 +38,19 @@ class SplashScreen(
 ) {
     @Composable
     fun Create() {
+        if (!isInternetAvailable(LocalContext.current)) toNetworkErrorScreen()
+
+        var isAnimationStart by remember { mutableStateOf(false) }
+        LaunchedEffect(Unit) {
+            isAnimationStart = true
+        }
+        val imageHeight = animateDpAsState(targetValue = if (isAnimationStart) 500.dp else 0.dp,
+            animationSpec = keyframes {
+                durationMillis = 3000
+            },
+            finishedListener = { toWelcomeScreen() },
+            label = ""
+        )
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -68,25 +79,19 @@ class SplashScreen(
                     color = MaterialTheme.colorScheme.background
                 )
             }
-            Image(
+            Box(
                 modifier = Modifier
+                    .padding(top = 50.dp)
                     .weight(0.75f)
-                    .size(220.dp, 400.dp)
-                    .padding(top = 50.dp),
-                painter = painterResource(id = R.drawable.suit_wolf),
-                contentDescription = "suit_wolf",
-                alignment = Alignment.TopCenter
-            )
-        }
-
-        var toNextScreen by remember { mutableStateOf(false) }
-        if (isInternetAvailable(LocalContext.current)) {
-            LaunchedEffect(toNextScreen) {
-                delay(3000)
-                toNextScreen = true
+            ) {
+                Image(
+                    modifier = Modifier.size(220.dp, imageHeight.value),
+                    painter = painterResource(id = R.drawable.suit_wolf),
+                    contentDescription = "suit_wolf",
+                    alignment = Alignment.TopCenter,
+                    contentScale = ContentScale.FillWidth
+                )
             }
-
-            if (toNextScreen) toWelcomeScreen()
-        } else toNetworkErrorScreen()
+        }
     }
 }

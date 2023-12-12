@@ -7,7 +7,7 @@ data class UserData(
     val firstname: String,
     val surname: String,
     val middlename: String,
-    val avatar: Int,
+    var avatar: Int,
     val level: Int,
     var email: String,
     val address: String,
