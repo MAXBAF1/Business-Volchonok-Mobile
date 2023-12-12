@@ -38,8 +38,10 @@ class StylizedTextInput(
     private val isPasswordField: Boolean = false,
     private val isEnabled: Boolean = true,
     private val isLast: Boolean = false,
-    private val inputText: String = "",
-    private val isEmpty: MutableState<Boolean>? = null
+    private var inputText: String = "",
+    private var wasDataChanged: MutableState<Boolean> = mutableStateOf(false),
+    private val isEmpty: MutableState<Boolean>? = null,
+    private val f: ((String) -> Unit)? = null
 ) {
     var text: MutableState<String>? = null
 
@@ -81,7 +83,12 @@ class StylizedTextInput(
                 }
             },
             value = text!!.value,
-            onValueChange = { text!!.value = it },
+            onValueChange = {
+                inputText = (it.also { text!!.value = it })
+                if (f != null)
+                    f!!(it)
+                wasDataChanged.value = true
+            },
             placeholder = {
                 Text(
                     text = hint, style = MaterialTheme.typography.labelSmall, color = secondaryColor

@@ -3,13 +3,13 @@ package com.example.volchonok.data
 data class UserData(
     val id: Int,
     val login: String,
-    val phone: String,
+    var phone: String,
     val firstname: String,
     val surname: String,
     val middlename: String,
     val avatar: Int,
     val level: Int,
-    val email: String,
+    var email: String,
     val address: String,
     val class_grade: String,
     val coins: Int

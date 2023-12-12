@@ -32,13 +32,14 @@ public abstract class PostService<In> extends AbstractService<In, Double> {
 
         request = builder.build();
 
-        Log.d("TAG", "request: " + request);
+//        Log.d("TAG", "request: " + request);
 
         try (Response response = httpClient.newCall(request).execute()) {
             ResponseBody responseBody = response.body();
-            Map<String, Object> responseBodyAsMap = ServiceUtil.getJsonAsMap(responseBody.string());
+            String responseBodyAsString = responseBody.string();
+            Map<String, Object> responseBodyAsMap = ServiceUtil.getJsonAsMap(responseBodyAsString);
 
-            Log.d("TAG", "response: " + responseBodyAsMap);
+//            Log.d("TAG", "response: " + response);
 
             double responseCode = Double.parseDouble(
                     String.valueOf(responseBodyAsMap.get(RESPONSE_STATUS_KEY.getValue()))

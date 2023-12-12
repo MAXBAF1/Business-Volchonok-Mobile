@@ -2,6 +2,8 @@ package com.example.volchonok.navigation
 
 import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -22,6 +24,7 @@ import com.example.volchonok.screens.ProfileScreen
 import com.example.volchonok.screens.SplashScreen
 import com.example.volchonok.screens.WelcomeScreen
 import com.example.volchonok.services.LoginService
+import com.example.volchonok.services.UpdateUserInfoService
 import com.example.volchonok.services.UserInfoService
 import com.example.volchonok.utils.ShowToast
 
@@ -146,11 +149,23 @@ class Navigation {
     @Composable
     private fun CreateProfileScreen() {
         val userData = RemoteInfoStorage.getUserData()
+        val context = LocalContext.current
+        val wasUserDataChanged = remember { mutableStateOf(false) }
+
         if (userData == null) {
-            RemoteInfoStorage.setUserData(UserInfoService(LocalContext.current).execute().get())
+            RemoteInfoStorage.setUserData(UserInfoService(context).execute().get())
         }
         if (RemoteInfoStorage.checkCourseDataLevel(CourseDataAccessLevel.NOTES_DATA)) {
-            ProfileScreen(onBackClick = { navController!!.popBackStack() }, userData).Create()
+            ProfileScreen(
+                onBackClick = {
+                    navController!!.popBackStack()
+                    if (wasUserDataChanged.value) {
+                        UpdateUserInfoService(context).execute(userData).get()
+                    }
+                },
+                userData,
+                wasUserDataChanged
+            ).Create()
         } else {
             Log.d("TAG", "Данные грузятся!")
             ShowToast()
