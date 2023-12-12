@@ -1,5 +1,6 @@
 package com.example.volchonok.screens
 
+import android.util.Log
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -51,7 +52,11 @@ import com.example.volchonok.screens.vidgets.cards.CourseProgressCard
 import com.example.volchonok.screens.vidgets.others.DefaultButton
 import com.example.volchonok.screens.vidgets.others.StylizedTextInput
 
-class ProfileScreen(private val onBackClick: () -> Unit, private val userData: UserData) {
+class ProfileScreen(
+    private val onBackClick: () -> Unit,
+    private val userData: UserData,
+    private var wasUserDataChanged: MutableState<Boolean>
+) {
     private lateinit var coursesList: List<CourseData>
 
     private var showAvatarDialog = mutableStateOf(false)
@@ -62,6 +67,7 @@ class ProfileScreen(private val onBackClick: () -> Unit, private val userData: U
     @Composable
     fun Create() {
         val context = LocalContext.current
+        wasUserDataChanged.value = false
         coursesList = getCoursesData(context, CourseDataAccessLevel.NOTES_DATA)
 
         Column {
@@ -93,13 +99,21 @@ class ProfileScreen(private val onBackClick: () -> Unit, private val userData: U
                 "89003330088",
                 stringResource(id = R.string.phone),
                 inputText = userData.phone,
-                isEmpty = isPhoneEmpty
+                wasDataChanged = wasUserDataChanged,
+                isEmpty = isPhoneEmpty,
+                f = {
+                    userData.phone = it
+                }
             ).Create()
             StylizedTextInput(
                 "example@gmail.com",
                 stringResource(id = R.string.mail),
                 inputText = userData.email,
-                isEmpty = isEmailEmpty
+                wasDataChanged = wasUserDataChanged,
+                isEmpty = isEmailEmpty,
+                f = {
+                    userData.email = it
+                }
             ).Create()
             StylizedTextInput(
                 "Екатеринбург",
