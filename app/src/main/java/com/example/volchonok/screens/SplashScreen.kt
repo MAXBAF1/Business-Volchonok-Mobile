@@ -61,14 +61,22 @@ class SplashScreen(
                 launch {
                     withContext(Dispatchers.IO) {
                         val start = System.currentTimeMillis()
-                        RemoteInfoStorage.getCoursesData(context, CourseDataAccessLevel.ONLY_COURSES_DATA)
-                        RemoteInfoStorage.getCoursesData(context, CourseDataAccessLevel.MODULES_DATA)
+                        RemoteInfoStorage.getCoursesData(
+                            context,
+                            CourseDataAccessLevel.ONLY_COURSES_DATA
+                        )
+                        RemoteInfoStorage.getCoursesData(
+                            context,
+                            CourseDataAccessLevel.MODULES_DATA
+                        )
                         RemoteInfoStorage.getCoursesData(context, CourseDataAccessLevel.NOTES_DATA)
                         RemoteInfoStorage.getCoursesData(context, CourseDataAccessLevel.TESTS_DATA)
-                        val data = RemoteInfoStorage.getCoursesData(context, CourseDataAccessLevel.QUESTIONS_DATA
+                        val data = RemoteInfoStorage.getCoursesData(
+                            context, CourseDataAccessLevel.QUESTIONS_DATA
                         )
                         loadCompletedAnswers(data, context)
-                        Log.d("TAG",
+                        Log.d(
+                            "TAG",
                             "[splash] Download time: ${(System.currentTimeMillis() - start) / 1000.0} s"
                         )
                     }
@@ -136,26 +144,34 @@ class SplashScreen(
     }
 
     private fun loadCompletedAnswers(data: List<CourseData>, context: Context) {
-        val tests = mutableMapOf<Int, MutableMap<Int, List<Int>>>()
+        val tests = mutableMapOf<Int, MutableMap<Int, MutableList<Int>>>()
         val completedTests = mutableListOf<TestData>()
         val completedAnswersId = mutableListOf<Int>()
 
         // беру все вопросы из РЕШЁННЫХ тестов
         data.forEach { course ->
             course.modules.forEach { module ->
-                completedTests.addAll(module.lessonTests
-                    .filter { it.isCompleted }
-                    .map { it as TestData })
+                completedTests.addAll(
+                    module.lessonTests
+                        .filter { it.isCompleted }
+                        .map { it as TestData }
+                )
             }
         }
 
         // сливаю в мапу [id вопроса; ответы]
         completedTests.forEach { test ->
             test.questions.forEach { question ->
-                val answersId = question.answers.map { answer -> answer.id }
-                tests[test.id]?.set(question.id, answersId)
+                val answersId = question.answers.map { it.id }.toMutableList()
+
+                if (tests.containsKey(test.id))
+                    tests[test.id]?.put(question.id, answersId)
+                else
+                    tests.put(test.id, mutableMapOf())
+
             }
         }
+
 
         // в лоб проверяю, какие ответы есть в бд (решённые вопросы по id теста)
         tests.forEach { test ->

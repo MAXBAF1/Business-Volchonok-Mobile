@@ -186,26 +186,34 @@ class LoginScreen(
     }
 
     private fun loadCompletedAnswers(data: List<CourseData>, context: Context) {
-        val tests = mutableMapOf<Int, MutableMap<Int, List<Int>>>()
+        val tests = mutableMapOf<Int, MutableMap<Int, MutableList<Int>>>()
         val completedTests = mutableListOf<TestData>()
         val completedAnswersId = mutableListOf<Int>()
 
         // беру все вопросы из РЕШЁННЫХ тестов
         data.forEach { course ->
             course.modules.forEach { module ->
-                completedTests.addAll(module.lessonTests
-                    .filter { it.isCompleted }
-                    .map { it as TestData })
+                completedTests.addAll(
+                    module.lessonTests
+                        .filter { it.isCompleted }
+                        .map { it as TestData }
+                )
             }
         }
 
         // сливаю в мапу [id вопроса; ответы]
-        completedTests.forEach {test ->
+        completedTests.forEach { test ->
             test.questions.forEach { question ->
-                val answersId = question.answers.map { answer -> answer.id }
-                tests[test.id]?.set(question.id, answersId)
+                val answersId = question.answers.map { it.id }.toMutableList()
+
+                if (tests.containsKey(test.id))
+                    tests[test.id]?.put(question.id, answersId)
+                else
+                    tests.put(test.id, mutableMapOf())
+
             }
         }
+
 
         // в лоб проверяю, какие ответы есть в бд (решённые вопросы по id теста)
         tests.forEach { test ->

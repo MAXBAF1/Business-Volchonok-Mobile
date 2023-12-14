@@ -28,8 +28,6 @@ public class ChooseAnswerService extends PostService<Map<Integer, List<Integer>>
     public int chooseAnswers(RequestBody requestBody, int testId) {
         int executeCode = tryChooseAnswers(requestBody, testId);
 
-        Log.d("TAG", "chooseAnswers: " + executeCode);
-
         if (executeCode == 400) {
             try {
                 new RefreshTokenService(ctx).execute().get();
@@ -38,8 +36,6 @@ public class ChooseAnswerService extends PostService<Map<Integer, List<Integer>>
                 throw new RuntimeException(e);
             }
         }
-
-        Log.d("TAG", "chooseAnswers: " + executeCode);
 
         return executeCode;
     }
