@@ -1,23 +1,12 @@
 package com.example.volchonok.screens
 
-import android.widget.Toast
+import android.content.Context
+import android.util.Log
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.animateColor
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.repeatable
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.animation.with
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -40,18 +29,22 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.volchonok.R
+import com.example.volchonok.RemoteInfoStorage
+import com.example.volchonok.data.CourseData
+import com.example.volchonok.data.TestData
+import com.example.volchonok.enums.CourseDataAccessLevel
 import com.example.volchonok.screens.vidgets.others.DefaultButton
 import com.example.volchonok.screens.vidgets.others.StylizedTextInput
-import java.io.File
-import java.io.FileWriter
+import com.example.volchonok.services.CompletedAnswersService
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class LoginScreen(
@@ -97,12 +90,30 @@ class LoginScreen(
 
     @Composable
     private fun CheckData() {
+        val context = LocalContext.current
         val usernameText = usernameText?.value?.trim()
         val passwordText = passwordText?.value?.trim()
         if (usernameText.isNullOrEmpty() || passwordText.isNullOrEmpty()) return
 
         when (getLoginResult(usernameText, passwordText)) {
-            200.0 -> toCoursesScreen()
+            200.0 -> {
+                LaunchedEffect(Unit) {
+                    launch {
+                        withContext(Dispatchers.IO) {
+                            val start = System.currentTimeMillis()
+                            RemoteInfoStorage.getCoursesData(context, CourseDataAccessLevel.ONLY_COURSES_DATA)
+                            RemoteInfoStorage.getCoursesData(context, CourseDataAccessLevel.MODULES_DATA)
+                            RemoteInfoStorage.getCoursesData(context, CourseDataAccessLevel.NOTES_DATA)
+                            RemoteInfoStorage.getCoursesData(context, CourseDataAccessLevel.TESTS_DATA)
+                            val data = RemoteInfoStorage.getCoursesData(context, CourseDataAccessLevel.QUESTIONS_DATA)
+                            loadCompletedAnswers(data, context)
+                            Log.d("TAG", "[login] Download time: ${(System.currentTimeMillis() - start) / 1000.0} s")
+                        }
+                    }
+                }
+
+                toCoursesScreen()
+            }
             -1000.0 -> errorText?.value = stringResource(id = R.string.incorrect)
             -2000.0 -> errorText?.value = stringResource(id = R.string.unknown_error)
         }
@@ -171,6 +182,43 @@ class LoginScreen(
         enabled = usernameText!!.value.isNotEmpty() && passwordText!!.value.isNotEmpty()
         DefaultButton(stringResource(id = R.string.log_in).uppercase(), enabled = enabled) {
             tryLogin?.value = true
+        }
+    }
+
+    private fun loadCompletedAnswers(data: List<CourseData>, context: Context) {
+        val tests = mutableMapOf<Int, MutableMap<Int, List<Int>>>()
+        val completedTests = mutableListOf<TestData>()
+        val completedAnswersId = mutableListOf<Int>()
+
+        // беру все вопросы из РЕШЁННЫХ тестов
+        data.forEach { course ->
+            course.modules.forEach { module ->
+                completedTests.addAll(module.lessonTests
+                    .filter { it.isCompleted }
+                    .map { it as TestData })
+            }
+        }
+
+        // сливаю в мапу [id вопроса; ответы]
+        completedTests.forEach {test ->
+            test.questions.forEach { question ->
+                val answersId = question.answers.map { answer -> answer.id }
+                tests[test.id]?.set(question.id, answersId)
+            }
+        }
+
+        // в лоб проверяю, какие ответы есть в бд (решённые вопросы по id теста)
+        tests.forEach { test ->
+            completedAnswersId.addAll(CompletedAnswersService(context).execute(test.key).get())
+        }
+
+        // в найденные ответы ставлю wasChoosedByUser
+        completedTests.forEach { test ->
+            test.questions.forEach { question ->
+                question.answers.forEach { answer ->
+                    answer.wasChooseByUser = completedAnswersId.contains(answer.id)
+                }
+            }
         }
     }
 }

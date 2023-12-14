@@ -1,5 +1,7 @@
 package com.example.volchonok.screens
 
+import android.content.Context
+import android.util.Log
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.keyframes
 import androidx.compose.foundation.Image
@@ -29,7 +31,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.volchonok.R
+import com.example.volchonok.RemoteInfoStorage
+import com.example.volchonok.RemoteInfoStorage.getUserData
+import com.example.volchonok.RemoteInfoStorage.setUserData
+import com.example.volchonok.data.CourseData
+import com.example.volchonok.data.TestData
+import com.example.volchonok.enums.CourseDataAccessLevel
+import com.example.volchonok.services.CompletedAnswersService
+import com.example.volchonok.services.UserInfoService
 import com.example.volchonok.utils.isInternetAvailable
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SplashScreen(
     private val toNetworkErrorScreen: () -> Unit,
@@ -40,15 +53,42 @@ class SplashScreen(
     fun Create() {
         if (!isInternetAvailable(LocalContext.current)) toNetworkErrorScreen()
 
+        val context = LocalContext.current
+        setUserData(UserInfoService(context).execute().get())
+
+        if (getUserData() != null) {
+            LaunchedEffect(Unit) {
+                launch {
+                    withContext(Dispatchers.IO) {
+                        val start = System.currentTimeMillis()
+                        RemoteInfoStorage.getCoursesData(context, CourseDataAccessLevel.ONLY_COURSES_DATA)
+                        RemoteInfoStorage.getCoursesData(context, CourseDataAccessLevel.MODULES_DATA)
+                        RemoteInfoStorage.getCoursesData(context, CourseDataAccessLevel.NOTES_DATA)
+                        RemoteInfoStorage.getCoursesData(context, CourseDataAccessLevel.TESTS_DATA)
+                        val data = RemoteInfoStorage.getCoursesData(context, CourseDataAccessLevel.QUESTIONS_DATA
+                        )
+                        loadCompletedAnswers(data, context)
+                        Log.d("TAG",
+                            "[splash] Download time: ${(System.currentTimeMillis() - start) / 1000.0} s"
+                        )
+                    }
+                }
+            }
+        }
+
         var isAnimationStart by remember { mutableStateOf(false) }
         LaunchedEffect(Unit) {
             isAnimationStart = true
         }
-        val imageHeight = animateDpAsState(targetValue = if (isAnimationStart) 500.dp else 0.dp,
+        val imageHeight = animateDpAsState(
+            targetValue = if (isAnimationStart) 500.dp else 0.dp,
             animationSpec = keyframes {
                 durationMillis = 3000
             },
-            finishedListener = { toWelcomeScreen() },
+            finishedListener = {
+                if (getUserData() != null) toCoursesScreen()
+                else toWelcomeScreen()
+            },
             label = ""
         )
         Column(
@@ -91,6 +131,43 @@ class SplashScreen(
                     alignment = Alignment.TopCenter,
                     contentScale = ContentScale.FillWidth
                 )
+            }
+        }
+    }
+
+    private fun loadCompletedAnswers(data: List<CourseData>, context: Context) {
+        val tests = mutableMapOf<Int, MutableMap<Int, List<Int>>>()
+        val completedTests = mutableListOf<TestData>()
+        val completedAnswersId = mutableListOf<Int>()
+
+        // беру все вопросы из РЕШЁННЫХ тестов
+        data.forEach { course ->
+            course.modules.forEach { module ->
+                completedTests.addAll(module.lessonTests
+                    .filter { it.isCompleted }
+                    .map { it as TestData })
+            }
+        }
+
+        // сливаю в мапу [id вопроса; ответы]
+        completedTests.forEach { test ->
+            test.questions.forEach { question ->
+                val answersId = question.answers.map { answer -> answer.id }
+                tests[test.id]?.set(question.id, answersId)
+            }
+        }
+
+        // в лоб проверяю, какие ответы есть в бд (решённые вопросы по id теста)
+        tests.forEach { test ->
+            completedAnswersId.addAll(CompletedAnswersService(context).execute(test.key).get())
+        }
+
+        // в найденные ответы ставлю wasChoosedByUser
+        completedTests.forEach { test ->
+            test.questions.forEach { question ->
+                question.answers.forEach { answer ->
+                    answer.wasChooseByUser = completedAnswersId.contains(answer.id)
+                }
             }
         }
     }

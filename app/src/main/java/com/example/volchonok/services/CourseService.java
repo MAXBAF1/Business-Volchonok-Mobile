@@ -19,6 +19,7 @@ import com.example.volchonok.enums.AuthorType;
 import com.example.volchonok.enums.CourseDataAccessLevel;
 import com.example.volchonok.enums.MessageType;
 import com.example.volchonok.interfaces.ILesson;
+import com.example.volchonok.services.enums.ServiceStringValue;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -70,7 +71,7 @@ public class CourseService extends GetService<Pair<CourseDataAccessLevel, List<C
 
         List<ReviewData> reviews = new ArrayList<>();
         try {
-            JSONArray arr = new JSONArray(String.valueOf(dataMap.get("reviews")));
+            JSONArray arr = new JSONArray(String.valueOf(dataMap.get(REVIEWS_KEY.getValue())));
             int i = 0;
             String reviewString;
 
@@ -78,9 +79,12 @@ public class CourseService extends GetService<Pair<CourseDataAccessLevel, List<C
                 reviewString = arr.getJSONObject(i++).toString();
                 Map<String, Object> reviewAsMap = ServiceUtil.getJsonAsMap(reviewString);
                 reviews.add(new ReviewData(
-                        String.join(" ", String.valueOf(reviewAsMap.get("surname")), String.valueOf(reviewAsMap.get("firstname"))),
-                        Integer.parseInt(String.valueOf(reviewAsMap.get("avatar"))),
-                        String.valueOf(reviewAsMap.get("text"))
+                        String.join(" ",
+                                String.valueOf(reviewAsMap.get(SURNAME_KEY.getValue())),
+                                String.valueOf(reviewAsMap.get(FIRSTNAME_KEY.getValue()))
+                        ),
+                        Integer.parseInt(String.valueOf(reviewAsMap.get(AVATAR_KEY.getValue()))),
+                        String.valueOf(reviewAsMap.get(TEXT_KEY.getValue()))
                 ));
 
                 if (false) break;
@@ -111,8 +115,8 @@ public class CourseService extends GetService<Pair<CourseDataAccessLevel, List<C
 
             modules.add(new ModuleData(
                     moduleId,
-                    String.valueOf(moduleDataMap.get("name")),
-                    String.valueOf(moduleDataMap.get("description")),
+                    String.valueOf(moduleDataMap.get(NAME_KEY.getValue())),
+                    String.valueOf(moduleDataMap.get(DESCRIPTION_KEY.getValue())),
                     new ArrayList<>(),
                     new ArrayList<>()
             ));
@@ -131,16 +135,17 @@ public class CourseService extends GetService<Pair<CourseDataAccessLevel, List<C
                 List<MessageData> messages = new ArrayList<>();
 
                 try {
-                    JSONObject chatText = new JSONObject(String.valueOf(noteDataMap.get("chat_text")));
-                    JSONArray messageArray = chatText.getJSONArray("list");
+                    JSONObject chatText = new JSONObject(String.valueOf(noteDataMap.get(CHAT_TEXT_KEY.getValue())));
+                    JSONArray messageArray = chatText.getJSONArray(LIST_KEY.getValue());
+
                     for (int i = 0; i < messageArray.length(); i++) {
                         JSONObject currentMessage = messageArray.getJSONObject(i);
 
-                        String author = currentMessage.getString("author");
-                        String type = currentMessage.getString("type");
+                        String author = currentMessage.getString(AUTHOR_KEY.getValue());
+                        String type = currentMessage.getString(TYPE_KEY.getValue());
 
                         messages.add(new MessageData(
-                                currentMessage.getString("text"),
+                                currentMessage.getString(TEXT_KEY.getValue()),
 
                                 author.equals(AuthorType.STUDENT.getDesc())
                                         ? AuthorType.STUDENT
@@ -152,7 +157,7 @@ public class CourseService extends GetService<Pair<CourseDataAccessLevel, List<C
                                         ? MessageType.VIDEO
                                         : MessageType.PICTURE,
 
-                                currentMessage.getString("url")
+                                currentMessage.getString(URL_KEY.getValue())
                         ));
                     }
                 } catch (JSONException e) {
@@ -160,10 +165,10 @@ public class CourseService extends GetService<Pair<CourseDataAccessLevel, List<C
                 }
 
                 notes.add(new NoteData(
-                        Integer.parseInt(String.valueOf(noteDataMap.get("lesson_id"))),
-                        String.valueOf(noteDataMap.get("name")),
-                        String.valueOf(noteDataMap.get("description")),
-                        String.valueOf(noteDataMap.get("duration")),
+                        Integer.parseInt(String.valueOf(noteDataMap.get(LESSON_ID_KEY.getValue()))),
+                        String.valueOf(noteDataMap.get(NAME_KEY.getValue())),
+                        String.valueOf(noteDataMap.get(DESCRIPTION_KEY.getValue())),
+                        String.valueOf(noteDataMap.get(DURATION_KEY.getValue())),
                         isItemCompleted(COMPLETED_NOTES_REQUEST_ADDRESS.getValue(), Double.valueOf(moduleLessonId)),
                         messages
                 ));
@@ -182,9 +187,9 @@ public class CourseService extends GetService<Pair<CourseDataAccessLevel, List<C
 
                 tests.add(new TestData(
                         moduleTestId,
-                        String.valueOf(testDataMap.get("name")),
-                        String.valueOf(testDataMap.get("description")),
-                        String.valueOf(testDataMap.get("duration")),
+                        String.valueOf(testDataMap.get(NAME_KEY.getValue())),
+                        String.valueOf(testDataMap.get(DESCRIPTION_KEY.getValue())),
+                        String.valueOf(testDataMap.get(DURATION_KEY.getValue())),
                         isItemCompleted(COMPLETED_TESTS_REQUEST_ADDRESS.getValue(), Double.valueOf(moduleTestId)),
                         new ArrayList<>()
                 ));
@@ -206,16 +211,16 @@ public class CourseService extends GetService<Pair<CourseDataAccessLevel, List<C
                 );
 
                 List<AnswerData> answers = new ArrayList<>();
-                JSONArray answersArray = (JSONArray) q.get("answers");
+                JSONArray answersArray = (JSONArray) q.get(ANSWERS_KEY.getValue());
 
                 for (int i = 0; i < (answersArray != null ? answersArray.length() : 0); i++) {
                     try {
                         JSONObject answer = answersArray.getJSONObject(i);
                         answers.add(new AnswerData(
-                                answer.getInt("id"),
-                                answer.getString("text"),
-                                answer.getBoolean("is_right"),
-                                false // TODO я тут false поставил
+                                answer.getInt(ID_KEY.getValue()),
+                                answer.getString(TEXT_KEY.getValue()),
+                                answer.getBoolean(IS_RIGHT_KEY.getValue()),
+                                false
                         ));
                     } catch (JSONException ex) {
                         throw new RuntimeException(ex);
@@ -224,9 +229,9 @@ public class CourseService extends GetService<Pair<CourseDataAccessLevel, List<C
 
                 questions.add(new QuestionData(
                         testQuestionId,
-                        String.valueOf(q.get("text")),
+                        String.valueOf(q.get(TEXT_KEY.getValue())),
                         answers,
-                        String.valueOf(q.get("explanation"))
+                        String.valueOf(q.get(EXPLANATION_KEY.getValue()))
                 ));
             }
         }

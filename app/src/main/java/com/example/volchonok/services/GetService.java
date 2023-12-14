@@ -6,6 +6,7 @@ import static com.example.volchonok.services.enums.ServiceStringValue.RESPONSE_D
 import static com.example.volchonok.services.enums.ServiceStringValue.RESPONSE_STATUS_KEY;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.IOException;
 import java.util.Map;
@@ -30,6 +31,10 @@ public abstract class GetService<In, Out> extends AbstractService<In, Out>{
         try (Response response = httpClient.newCall(request).execute()) {
             ResponseBody responseBody = response.body();
             Map<String, Object> responseBodyAsMap = ServiceUtil.getJsonAsMap(responseBody.string());
+
+            if (response.code() == 403)
+                return null;
+//            Log.d("TAG", "RESPONSE: " + response);
 
             double responseCode = Double.parseDouble(
                     String.valueOf(responseBodyAsMap.get(RESPONSE_STATUS_KEY.getValue()))

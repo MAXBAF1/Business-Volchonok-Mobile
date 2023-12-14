@@ -25,6 +25,7 @@ import com.example.volchonok.services.UserInfoService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.Collections
 
 class CoursesScreen(
     private val toCourseInfoScreen: (CourseData) -> Unit,
@@ -45,27 +46,20 @@ class CoursesScreen(
             getCoursesData(context, CourseDataAccessLevel.ONLY_COURSES_DATA)
         }
 
-        if (!checkCourseDataLevel(CourseDataAccessLevel.MODULES_DATA))
-            LaunchedEffect(Unit) {
-                launch {
-                    withContext(Dispatchers.IO) {
-                        val start = System.currentTimeMillis()
-                        getCoursesData(context, CourseDataAccessLevel.MODULES_DATA)
-                        Log.d("TAG", "Create: modules was downloaded")
-                        getCoursesData(context, CourseDataAccessLevel.NOTES_DATA)
-                        Log.d("TAG", "Create: notes was downloaded")
-                        getCoursesData(context, CourseDataAccessLevel.TESTS_DATA)
-                        Log.d("TAG", "Create: tests was downloaded")
-                        val data = getCoursesData(context, CourseDataAccessLevel.QUESTIONS_DATA)
-                        Log.d("TAG", "Create: questions was downloaded")
-                        loadCompletedAnswers(data, context)
-                        Log.d(
-                            "TAG",
-                            "All data was downloaded in ${(System.currentTimeMillis() - start) / 1000.0} s"
-                        )
-                    }
-                }
-            }
+//        if (!checkCourseDataLevel(CourseDataAccessLevel.MODULES_DATA))
+//            LaunchedEffect(Unit) {
+//                launch {
+//                    withContext(Dispatchers.IO) {
+//                        val start = System.currentTimeMillis()
+//                        getCoursesData(context, CourseDataAccessLevel.MODULES_DATA)
+//                        getCoursesData(context, CourseDataAccessLevel.NOTES_DATA)
+//                        getCoursesData(context, CourseDataAccessLevel.TESTS_DATA)
+//                        val data = getCoursesData(context, CourseDataAccessLevel.QUESTIONS_DATA)
+//                        loadCompletedAnswers(data, context)
+//                        Log.d("TAG", "[courses] Download time: ${(System.currentTimeMillis() - start) / 1000.0} s")
+//                    }
+//                }
+//            }
 
         Column {
             TopAppBar(userData, toProfile).Create()
@@ -89,40 +83,40 @@ class CoursesScreen(
         }
     }
 
-    private fun loadCompletedAnswers(data: List<CourseData>, context: Context) {
-        val tests = mutableMapOf<Int, MutableMap<Int, List<Int>>>()
-        val completedTests = mutableListOf<TestData>()
-        val completedAnswersId = mutableListOf<Int>()
-
-        // беру все вопросы из РЕШЁННЫХ тестов
-        data.forEach { course ->
-            course.modules.forEach { module ->
-                completedTests.addAll(module.lessonTests
-                    .filter { it.isCompleted }
-                    .map { it as TestData })
-            }
-        }
-
-        // сливаю в мапу [id вопроса; ответы]
-        completedTests.forEach {test ->
-            test.questions.forEach { question ->
-                val answersId = question.answers.map { answer -> answer.id }
-                    tests[test.id]?.set(question.id, answersId)
-            }
-        }
-
-        // в лоб проверяю, какие ответы есть в бд (решённые вопросы по id теста)
-        tests.forEach { test ->
-            completedAnswersId.addAll(CompletedAnswersService(context).execute(test.key).get())
-        }
-
-        // в найденные ответы ставлю wasChoosedByUser
-        completedTests.forEach { test ->
-            test.questions.forEach { question ->
-                question.answers.forEach { answer ->
-                    answer.wasChooseByUser = completedAnswersId.contains(answer.id)
-                }
-            }
-        }
-    }
+//    private fun loadCompletedAnswers(data: List<CourseData>, context: Context) {
+//        val tests = mutableMapOf<Int, MutableMap<Int, List<Int>>>()
+//        val completedTests = mutableListOf<TestData>()
+//        val completedAnswersId = mutableListOf<Int>()
+//
+//        // беру все вопросы из РЕШЁННЫХ тестов
+//        data.forEach { course ->
+//            course.modules.forEach { module ->
+//                completedTests.addAll(module.lessonTests
+//                    .filter { it.isCompleted }
+//                    .map { it as TestData })
+//            }
+//        }
+//
+//        // сливаю в мапу [id вопроса; ответы]
+//        completedTests.forEach {test ->
+//            test.questions.forEach { question ->
+//                val answersId = question.answers.map { answer -> answer.id }
+//                    tests[test.id]?.set(question.id, answersId)
+//            }
+//        }
+//
+//        // в лоб проверяю, какие ответы есть в бд (решённые вопросы по id теста)
+//        tests.forEach { test ->
+//            completedAnswersId.addAll(CompletedAnswersService(context).execute(test.key).get())
+//        }
+//
+//        // в найденные ответы ставлю wasChoosedByUser
+//        completedTests.forEach { test ->
+//            test.questions.forEach { question ->
+//                question.answers.forEach { answer ->
+//                    answer.wasChooseByUser = completedAnswersId.contains(answer.id)
+//                }
+//            }
+//        }
+//    }
 }

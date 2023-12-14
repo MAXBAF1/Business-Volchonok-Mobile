@@ -39,7 +39,8 @@ class Navigation {
         navController = rememberNavController()
 
         NavHost(
-            navController = navController!!, startDestination = SPLASH_SCREEN_ROUTE
+            navController = navController!!,
+            startDestination = SPLASH_SCREEN_ROUTE
         ) {
             composable(SPLASH_SCREEN_ROUTE) { CreateSplashScreen() }
             composable(NETWORK_ERROR_SCREEN_ROUTE) { CreateNetworkErrorScreen() }

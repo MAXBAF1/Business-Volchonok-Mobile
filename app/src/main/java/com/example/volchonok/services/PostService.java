@@ -22,8 +22,7 @@ public abstract class PostService<In> extends AbstractService<In, Double> {
     }
 
     protected Double sendPostRequestToURL(String url, RequestBody requestBody, Map<String, String> headers) {
-        Request.Builder builder = new Request.Builder()
-                .url(url)
+        Request.Builder builder = new Request.Builder().url(url)
                 .method(REQUEST_METHOD_POST.getValue(), requestBody);
 
         for (Map.Entry<String, String> e : headers.entrySet()) {
@@ -40,6 +39,9 @@ public abstract class PostService<In> extends AbstractService<In, Double> {
             Map<String, Object> responseBodyAsMap = ServiceUtil.getJsonAsMap(responseBodyAsString);
 
 //            Log.d("TAG", "response: " + response);
+
+            if (response.code() == 403)
+                return Double.NaN;
 
             double responseCode = Double.parseDouble(
                     String.valueOf(responseBodyAsMap.get(RESPONSE_STATUS_KEY.getValue()))

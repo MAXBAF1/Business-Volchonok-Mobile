@@ -42,7 +42,9 @@ public class UserInfoService extends AsyncTask<Void, Void, UserData> {
             response = tryGetUserInfo();
         }
 
-        return new Gson().fromJson(response, UserData.class);
+        return response == null
+                ? null
+                : new Gson().fromJson(response, UserData.class);
     }
 
     private String tryGetUserInfo() {
@@ -71,6 +73,8 @@ public class UserInfoService extends AsyncTask<Void, Void, UserData> {
             }
         } catch (IOException | NullPointerException e) {
             e.printStackTrace();
+        } catch (NumberFormatException ignored) {
+            return null;
         }
 
         return null;

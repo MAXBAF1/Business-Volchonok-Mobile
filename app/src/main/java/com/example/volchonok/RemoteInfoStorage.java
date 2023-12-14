@@ -35,6 +35,7 @@ public class RemoteInfoStorage {
 
     public static List<CourseData> getCoursesData(Context context, CourseDataAccessLevel level) {
         boolean isLevelAllow = checkCourseDataLevel(level);
+
         if (!isLevelAllow) {
             try {
                 coursesData = (List<CourseData>) new CourseService(context)
@@ -44,6 +45,7 @@ public class RemoteInfoStorage {
                 Log.d("TAG", "updateCoursesData error: ", e);
             }
         }
+
         return coursesData;
     }
 

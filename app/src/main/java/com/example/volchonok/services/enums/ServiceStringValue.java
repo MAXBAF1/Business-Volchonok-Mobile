@@ -1,5 +1,7 @@
 package com.example.volchonok.services.enums;
 
+import androidx.annotation.NonNull;
+
 public enum ServiceStringValue {
     SERVER_ADDRESS("http://83.147.246.55"),
     ACCESS_TOKEN_REQUEST_ADDRESS(SERVER_ADDRESS.value + "/api/v1/auth/refresh"),
@@ -27,11 +29,24 @@ public enum ServiceStringValue {
     REFRESH_TOKEN_KEY("refresh_token"),
     RESPONSE_STATUS_KEY("status"),
     NAME_KEY("name"),
+    SURNAME_KEY("surname"),
+    FIRSTNAME_KEY("firstname"),
     ID_KEY("id"),
     DESCRIPTION_KEY("description"),
+    DURATION_KEY("duration"),
+    LESSON_ID_KEY("lesson_id"),
+    TEXT_KEY("text"),
+    AVATAR_KEY("avatar"),
+    REVIEWS_KEY("reviews"),
+    ANSWERS_KEY("answers"),
+    IS_RIGHT_KEY("is_right"),
+    EXPLANATION_KEY("explanation"),
+    URL_KEY("url"),
+    AUTHOR_KEY("author"),
+    LIST_KEY("list"),
+    TYPE_KEY("type"),
+    CHAT_TEXT_KEY("chat_text"),
     RESPONSE_DATA_KEY("data");
-
-
 
     private final String value;
 
