@@ -274,6 +274,7 @@ class ProfileScreen(
                 selectedAvatarNumber.intValue = tappedAvatarNumber
                 showAvatarDialog.value = false
             }
+            wasUserDataChanged.value = true
         })
     }
 

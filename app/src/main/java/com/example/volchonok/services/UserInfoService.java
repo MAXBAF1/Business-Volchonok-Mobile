@@ -73,9 +73,7 @@ public class UserInfoService extends AsyncTask<Void, Void, UserData> {
             }
         } catch (IOException | NullPointerException e) {
             e.printStackTrace();
-        } catch (NumberFormatException ignored) {
-            return null;
-        }
+        } catch (NumberFormatException ignored) { }
 
         return null;
     }

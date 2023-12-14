@@ -31,14 +31,14 @@ public abstract class PostService<In> extends AbstractService<In, Double> {
 
         request = builder.build();
 
-        Log.d("TAG", "request: " + request);
+//        Log.d("TAG", "request: " + request);
 
         try (Response response = httpClient.newCall(request).execute()) {
             ResponseBody responseBody = response.body();
             String responseBodyAsString = responseBody.string();
             Map<String, Object> responseBodyAsMap = ServiceUtil.getJsonAsMap(responseBodyAsString);
 
-            Log.d("TAG", "response: " + response);
+//            Log.d("TAG", "response: " + response);
 
             if (response.code() == 403)
                 return Double.NaN;
