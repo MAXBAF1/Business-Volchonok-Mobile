@@ -209,7 +209,7 @@ class LoginScreen(
                 if (tests.containsKey(test.id))
                     tests[test.id]?.put(question.id, answersId)
                 else
-                    tests.put(test.id, mutableMapOf())
+                    tests[test.id] = mutableMapOf(Pair(question.id, answersId))
 
             }
         }
