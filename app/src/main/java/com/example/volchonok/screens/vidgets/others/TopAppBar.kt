@@ -103,8 +103,8 @@ class TopAppBar(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.wolf_icon),
-                    contentDescription = "wolf_icon",
+                    painter = painterResource(id = R.drawable.coin),
+                    contentDescription = "coin",
                     modifier = Modifier.size(36.dp)
                 )
                 Text(

@@ -316,7 +316,13 @@ class ProfileScreen(
 
     companion object {
         val avatars = arrayOf(
-            R.drawable.wolf_icon, R.drawable.suit_wolf, R.drawable.mic_wolf, R.drawable.party_wolf
+            R.drawable.ava_1,
+            R.drawable.ava_2,
+            R.drawable.ava_3,
+            R.drawable.ava_4,
+            R.drawable.ava_5,
+            R.drawable.ava_6,
+            R.drawable.ava_7
         )
     }
 }

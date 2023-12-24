@@ -23,11 +23,11 @@ import androidx.compose.ui.unit.dp
 import com.example.volchonok.R
 import com.example.volchonok.data.ReviewData
 import com.example.volchonok.data.UserData
+import com.example.volchonok.screens.ProfileScreen
 
 class ReviewCard(private val reviewData: ReviewData, private val isFirst: Boolean = false) {
     @Composable
     fun Add() {
-        val defaultAvatar = ImageBitmap.imageResource(R.drawable.wolf_icon)
         Card(
             modifier = Modifier.padding(start = if (isFirst) 30.dp else 0.dp, end = 15.dp),
             border = BorderStroke(1.dp, MaterialTheme.colorScheme.onBackground),
@@ -36,8 +36,10 @@ class ReviewCard(private val reviewData: ReviewData, private val isFirst: Boolea
             Column(modifier = Modifier.padding(15.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Image(
-                        modifier = Modifier.size(32.dp).clip(CircleShape),
-                        bitmap = defaultAvatar, // FIXME get avatar
+                        painter = painterResource(id = ProfileScreen.avatars[reviewData.authorAvatarId]),
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clip(CircleShape),
                         contentDescription = "avatar"
                     )
                     Text(
