@@ -8,18 +8,16 @@ import com.example.volchonok.data.CourseData;
 import com.example.volchonok.data.TestData;
 import com.example.volchonok.data.UserData;
 import com.example.volchonok.enums.CourseDataAccessLevel;
-import com.example.volchonok.services.CourseService;
-import com.example.volchonok.services.UserInfoService;
+import com.example.volchonok.services.LoadCourseService;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.locks.Lock;
 
 public class RemoteInfoStorage {
     private static UserData userData;
     private static List<CourseData> coursesData;
+    private static boolean wasSentRefreshRequest;
 
     static {
         coursesData = new ArrayList<>();
@@ -38,7 +36,7 @@ public class RemoteInfoStorage {
 
         if (!isLevelAllow) {
             try {
-                coursesData = (List<CourseData>) new CourseService(context)
+                coursesData = (List<CourseData>) new LoadCourseService(context)
                         .execute(new Pair(level, coursesData))
                         .get();
             } catch (InterruptedException | ExecutionException e) {
@@ -87,5 +85,13 @@ public class RemoteInfoStorage {
                         && checkCourseDataLevel(CourseDataAccessLevel.NOTES_DATA);
             }
         }
+    }
+
+    public static boolean isWasSentRefreshRequest() {
+        return wasSentRefreshRequest;
+    }
+
+    public static void setWasSentRefreshRequest(boolean wasSentRefreshRequest) {
+        RemoteInfoStorage.wasSentRefreshRequest = wasSentRefreshRequest;
     }
 }

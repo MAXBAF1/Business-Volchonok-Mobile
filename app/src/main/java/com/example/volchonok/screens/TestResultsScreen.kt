@@ -97,9 +97,26 @@ class TestResultsScreen(
                 stringResource(id = R.string.repeat_again).uppercase(),
                 Modifier.padding(top = 10.dp),
                 true,
-                ButtonType.Outlined,
-                onRepeatBtn
-            )
+                ButtonType.Outlined
+            ) {
+                onRepeatBtn.invoke()
+
+                testData.isCompleted = true
+
+                ChooseAnswerService(context).execute(
+                    mapOf(Pair(testData.id, Collections.emptyList())),
+                    testData.questions.associate { q ->
+                        Pair(
+                            q.id,
+                            q.answers
+                                .filter { a -> a.wasChooseByUser }
+                                .map { a -> a.id }
+                        )
+                    }
+                ).get()
+
+                testData.questions.forEach { it.answers.forEach { a -> a.wasChooseByUser = false } }
+            }
         }
     }
 

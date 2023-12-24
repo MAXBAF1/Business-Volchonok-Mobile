@@ -1,10 +1,13 @@
 package com.example.volchonok.services;
 
+import static com.example.volchonok.RemoteInfoStorage.isWasSentRefreshRequest;
+import static com.example.volchonok.RemoteInfoStorage.setWasSentRefreshRequest;
 import static com.example.volchonok.services.enums.ServiceStringValue.*;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.example.volchonok.RemoteInfoStorage;
 import com.example.volchonok.data.UserData;
@@ -37,8 +40,9 @@ public class UserInfoService extends AsyncTask<Void, Void, UserData> {
 
         String response = tryGetUserInfo();
 
-        if (response == null) {
+        if (response == null && !isWasSentRefreshRequest()) {
             new RefreshTokenService(ctx).execute();
+            setWasSentRefreshRequest(true);
             response = tryGetUserInfo();
         }
 

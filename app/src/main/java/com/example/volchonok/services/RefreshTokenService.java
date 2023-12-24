@@ -22,6 +22,7 @@ public class RefreshTokenService extends PostService<Void> {
     }
 
     private double refresh() {
+        Log.d("TAG", "refresh");
         return sendPostRequestToURL(
                 ACCESS_TOKEN_REQUEST_ADDRESS.getValue(),
                 RequestBody.create(

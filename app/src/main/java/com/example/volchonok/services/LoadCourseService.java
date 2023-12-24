@@ -14,12 +14,10 @@ import com.example.volchonok.data.NoteData;
 import com.example.volchonok.data.QuestionData;
 import com.example.volchonok.data.ReviewData;
 import com.example.volchonok.data.TestData;
-import com.example.volchonok.data.UserData;
 import com.example.volchonok.enums.AuthorType;
 import com.example.volchonok.enums.CourseDataAccessLevel;
 import com.example.volchonok.enums.MessageType;
 import com.example.volchonok.interfaces.ILesson;
-import com.example.volchonok.services.enums.ServiceStringValue;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -28,15 +26,14 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class CourseService extends GetService<Pair<CourseDataAccessLevel, List<CourseData>>, List<CourseData>> {
+public class LoadCourseService extends GetService<Pair<CourseDataAccessLevel, List<CourseData>>, List<CourseData>> {
     protected final Gson gson;
     private final Map<String, List<String>> completedItems;
 
-    public CourseService(Context ctx) {
+    public LoadCourseService(Context ctx) {
         super(ctx);
         completedItems = new HashMap<>();
         gson = new Gson();
@@ -46,11 +43,6 @@ public class CourseService extends GetService<Pair<CourseDataAccessLevel, List<C
         List<CourseData> response = new ArrayList<>();
 
         String courses = sendGetRequestToURL(USER_COURSES_REQUEST_ADDRESS.getValue());
-
-        if (courses == null) {
-            new RefreshTokenService(ctx).execute();
-            courses = sendGetRequestToURL(USER_COURSES_REQUEST_ADDRESS.getValue());
-        }
 
         int[] coursesId = gson.fromJson(courses, int[].class);
 
