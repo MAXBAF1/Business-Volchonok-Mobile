@@ -5,7 +5,6 @@ import static com.example.volchonok.services.ServiceUtil.getJsonAsMap;
 import static com.example.volchonok.services.enums.ServiceStringValue.COMPLETED_QUESTIONS_REQUEST_ADDRESS;
 
 import android.content.Context;
-import android.util.Log;
 
 import org.json.JSONObject;
 
@@ -39,8 +38,6 @@ public class CompletedAnswersService extends GetService<Integer, List<Integer>> 
                         });
                 }
         );
-
-        Log.d("TAG", "res: " + result);
 
         return result;
     }

@@ -40,15 +40,11 @@ public class RemoteInfoStorage {
                         .execute(new Pair(level, coursesData))
                         .get();
             } catch (InterruptedException | ExecutionException e) {
-                Log.d("TAG", "updateCoursesData error: ", e);
+                Log.d("TAG", "RemInfSto - getCoursesData error: ", e);
             }
         }
 
         return coursesData;
-    }
-
-    public static void setCoursesData(List<CourseData> coursesData) {
-        RemoteInfoStorage.coursesData = coursesData;
     }
 
     public static boolean checkCourseDataLevel(CourseDataAccessLevel level) {

@@ -40,6 +40,7 @@ import com.example.volchonok.enums.CourseDataAccessLevel
 import com.example.volchonok.services.CompletedAnswersService
 import com.example.volchonok.services.UserInfoService
 import com.example.volchonok.utils.isInternetAvailable
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -47,42 +48,11 @@ import kotlinx.coroutines.withContext
 class SplashScreen(
     private val toNetworkErrorScreen: () -> Unit,
     private val toWelcomeScreen: () -> Unit,
-    private val toCoursesScreen: () -> Unit, // TODO переход на эран курса, если уже залогинен
+    private val toCoursesScreen: () -> Unit,
 ) {
     @Composable
     fun Create() {
         if (!isInternetAvailable(LocalContext.current)) toNetworkErrorScreen()
-
-        val context = LocalContext.current
-        setUserData(UserInfoService(context).execute().get())
-
-        if (getUserData() != null) {
-            LaunchedEffect(Unit) {
-                launch {
-                    withContext(Dispatchers.IO) {
-                        val start = System.currentTimeMillis()
-                        RemoteInfoStorage.getCoursesData(
-                            context,
-                            CourseDataAccessLevel.ONLY_COURSES_DATA
-                        )
-                        RemoteInfoStorage.getCoursesData(
-                            context,
-                            CourseDataAccessLevel.MODULES_DATA
-                        )
-                        RemoteInfoStorage.getCoursesData(context, CourseDataAccessLevel.NOTES_DATA)
-                        RemoteInfoStorage.getCoursesData(context, CourseDataAccessLevel.TESTS_DATA)
-                        val data = RemoteInfoStorage.getCoursesData(
-                            context, CourseDataAccessLevel.QUESTIONS_DATA
-                        )
-                        loadCompletedAnswers(data, context)
-                        Log.d(
-                            "TAG",
-                            "[splash] Download time: ${(System.currentTimeMillis() - start) / 1000.0} s"
-                        )
-                    }
-                }
-            }
-        }
 
         var isAnimationStart by remember { mutableStateOf(false) }
         LaunchedEffect(Unit) {
@@ -99,6 +69,31 @@ class SplashScreen(
             },
             label = ""
         )
+
+        val context = LocalContext.current
+        setUserData(UserInfoService(context).execute().get())
+
+        if (getUserData() != null) {
+            LaunchedEffect(Int) {
+                launch {
+                    withContext(Dispatchers.IO) {
+                        val start = System.currentTimeMillis()
+                        RemoteInfoStorage.getCoursesData(
+                            context,
+                            CourseDataAccessLevel.ONLY_COURSES_DATA
+                        )
+                        RemoteInfoStorage.getCoursesData(
+                            context,
+                            CourseDataAccessLevel.MODULES_DATA
+                        )
+                        Log.d(
+                            "TAG",
+                            "[splash] Download time: ${(System.currentTimeMillis() - start) / 1000.0} s"
+                        )
+                    }
+                }
+            }
+        }
         Column(
             modifier = Modifier
                 .fillMaxSize()

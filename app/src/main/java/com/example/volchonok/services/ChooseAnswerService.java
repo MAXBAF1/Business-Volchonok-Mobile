@@ -69,8 +69,6 @@ public class ChooseAnswerService extends PostService<Map<Integer, List<Integer>>
                 .deleteCharAt(requestBodyStringBuilder.length() - 1)
                 .append("]\n}");
 
-        Log.d("TAG", "request to complete answers: " + requestBodyStringBuilder);
-
         return (double) chooseAnswers(RequestBody.create(requestBodyStringBuilder.toString(),
                         MediaType.get(ServiceStringValue.MEDIA_TYPE_JSON.getValue())),
                 testId);
