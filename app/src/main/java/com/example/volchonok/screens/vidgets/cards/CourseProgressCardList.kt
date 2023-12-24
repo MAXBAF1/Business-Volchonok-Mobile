@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
@@ -29,7 +30,7 @@ import com.example.volchonok.data.CourseData
 import com.example.volchonok.screens.vidgets.others.CompletedLessonsCntText
 import kotlin.math.roundToInt
 
-class CourseProgressCard(private val coursesList: List<CourseData>) {
+class CourseProgressCardList(private val coursesList: List<CourseData>) {
     private var courseProgress = 0.0f
 
     @Composable
@@ -42,7 +43,7 @@ class CourseProgressCard(private val coursesList: List<CourseData>) {
         ) {
             itemsIndexed(coursesList) { i, course ->
                 CreateCard(
-                    if (coursesList.size == 1) Modifier.fillParentMaxWidth() else Modifier.width(300.dp),
+                    if (coursesList.size == 1) Modifier.fillParentMaxWidth() else Modifier.width(350.dp),
                     course,
                     i == 0,
                     i == coursesList.size - 1

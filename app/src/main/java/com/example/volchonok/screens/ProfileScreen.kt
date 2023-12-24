@@ -25,13 +25,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,7 +47,7 @@ import com.example.volchonok.RemoteInfoStorage.getCoursesData
 import com.example.volchonok.data.CourseData
 import com.example.volchonok.data.UserData
 import com.example.volchonok.enums.CourseDataAccessLevel
-import com.example.volchonok.screens.vidgets.cards.CourseProgressCard
+import com.example.volchonok.screens.vidgets.cards.CourseProgressCardList
 import com.example.volchonok.screens.vidgets.others.DefaultButton
 import com.example.volchonok.screens.vidgets.others.StylizedTextInput
 
@@ -77,7 +73,7 @@ class ProfileScreen(
             TopAppBar()
             Column(Modifier.verticalScroll(rememberScrollState())) {
                 UserInfoRow()
-                CourseProgressCard(coursesList).Create()
+                CourseProgressCardList(coursesList).Create()
                 YourDataTexts()
                 TextInputs()
             }

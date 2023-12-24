@@ -73,13 +73,14 @@ class CourseInfoScreen(
 
     @Composable
     private fun Description() {
+        val descriptionParts = courseData.description.split("#_#")
         Text(
             text = stringResource(id = R.string.about),
             modifier = Modifier.padding(top = 30.dp),
             style = MaterialTheme.typography.titleMedium,
         )
         Text(
-            text = courseData.description,
+            text = descriptionParts[0],
             modifier = Modifier.padding(top = 15.dp),
             style = MaterialTheme.typography.labelSmall,
         )
@@ -89,7 +90,7 @@ class CourseInfoScreen(
             style = MaterialTheme.typography.titleMedium,
         )
         Text(
-            text = "", // TODO whyYouDescription
+            text = if (descriptionParts.size > 1) descriptionParts[1] else "",
             modifier = Modifier.padding(top = 15.dp),
             style = MaterialTheme.typography.labelSmall,
         )

@@ -115,7 +115,7 @@ class LoginScreen(
                 toCoursesScreen()
             }
             -1000.0 -> errorText?.value = stringResource(id = R.string.incorrect)
-            -2000.0 -> errorText?.value = stringResource(id = R.string.unknown_error)
+            else -> errorText?.value = stringResource(id = R.string.unknown_error)
         }
     }
 
