@@ -143,7 +143,7 @@ class ModuleCard(
             checkMarkBackground = MaterialTheme.colorScheme.primary
             checkMarkColor = MaterialTheme.colorScheme.inverseSurface
         } else {
-            checkMarkBackground = MaterialTheme.colorScheme.onBackground
+            checkMarkBackground = MaterialTheme.colorScheme.outline
             checkMarkColor = MaterialTheme.colorScheme.inverseOnSurface
         }
         Row(
