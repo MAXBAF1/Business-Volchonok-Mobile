@@ -45,9 +45,9 @@ public class CompletedAnswersService extends GetService<Integer, List<Integer>> 
     private List<Integer> getCompletedAnswers(int testId) {
         List<Integer> result = new ArrayList<>();
         String data = sendGetRequestToURL(COMPLETED_QUESTIONS_REQUEST_ADDRESS.getValue() + testId)
-                .replace("}]},{", "}]}, {");
+                .replace("}]},{", "}]},__{");
 
-        Arrays.stream(data.substring(1, data.length() - 1).split(", ")).forEach(
+        Arrays.stream(data.substring(1, data.length() - 1).split(",__")).forEach(
                 testAsString -> {
 
                     String answersAsString = String.valueOf(getJsonAsMap(testAsString).get("answers"));
