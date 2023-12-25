@@ -47,17 +47,19 @@ class CoursesScreen(
             getCoursesData(context, CourseDataAccessLevel.ONLY_COURSES_DATA)
         }
 
-        if (!checkCourseDataLevel(CourseDataAccessLevel.NOTES_DATA))
-            LaunchedEffect(Unit) {
-                launch {
-                    withContext(Dispatchers.IO) {
-                        getCoursesData(context, CourseDataAccessLevel.NOTES_DATA)
-                        getCoursesData(context, CourseDataAccessLevel.TESTS_DATA)
-                        val data = getCoursesData(context, CourseDataAccessLevel.QUESTIONS_DATA)
-                        loadCompletedAnswers(data, context)
-                    }
-                }
-            }
+//        if (!checkCourseDataLevel(CourseDataAccessLevel.NOTES_DATA))
+//             LaunchedEffect(Unit) {
+//                launch {
+//                    withContext(Dispatchers.IO) {
+//                        val start = System.currentTimeMillis()
+//                        getCoursesData(context, CourseDataAccessLevel.NOTES_DATA)
+//                        getCoursesData(context, CourseDataAccessLevel.TESTS_DATA)
+//                        val data = getCoursesData(context, CourseDataAccessLevel.QUESTIONS_DATA)
+//                        loadCompletedAnswers(data, context)
+//                        Log.d("TAG", "[courses] after-load: ${(System.currentTimeMillis() - start) /1000.0} s")
+//                    }
+//                }
+//            }
 
         Column {
             TopAppBar(userData, toProfile).Create()

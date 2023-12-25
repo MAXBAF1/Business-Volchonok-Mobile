@@ -42,6 +42,7 @@ import com.example.volchonok.services.UserInfoService
 import com.example.volchonok.utils.isInternetAvailable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -86,6 +87,13 @@ class SplashScreen(
                             context,
                             CourseDataAccessLevel.MODULES_DATA
                         )
+                        RemoteInfoStorage.getCoursesData(context, CourseDataAccessLevel.NOTES_DATA)
+                        RemoteInfoStorage.getCoursesData(context, CourseDataAccessLevel.TESTS_DATA)
+                        val data = RemoteInfoStorage.getCoursesData(
+                            context,
+                            CourseDataAccessLevel.QUESTIONS_DATA
+                        )
+                        loadCompletedAnswers(data, context)
                         Log.d(
                             "TAG",
                             "[splash] Download time: ${(System.currentTimeMillis() - start) / 1000.0} s"

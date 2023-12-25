@@ -23,7 +23,7 @@ public class RefreshTokenService extends PostService<Void> {
 
     private double refresh() {
         Log.d("TAG", "refresh");
-        return sendPostRequestToURL(
+        double x = sendPostRequestToURL(
                 ACCESS_TOKEN_REQUEST_ADDRESS.getValue(),
                 RequestBody.create(
                         new Gson().toJson(
@@ -31,9 +31,13 @@ public class RefreshTokenService extends PostService<Void> {
                                         REFRESH_TOKEN_KEY.getValue(),
                                         sPref.getString(REFRESH_TOKEN_KEY.getValue(), "")
                                 ),
-                                new TypeToken<HashMap<String, Object>>() {}.getType()),
+                                new TypeToken<HashMap<String, Object>>() {
+                                }.getType()),
                         MediaType.get(CONTENT_TYPE_JSON.getValue())
                 ));
+
+        Log.d("TAG", "refresh: " + x);
+        return x;
     }
 
     @Override
