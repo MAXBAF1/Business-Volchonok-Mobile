@@ -42,6 +42,9 @@ import com.example.volchonok.enums.CourseDataAccessLevel
 import com.example.volchonok.screens.vidgets.others.DefaultButton
 import com.example.volchonok.screens.vidgets.others.StylizedTextInput
 import com.example.volchonok.services.CompletedAnswersService
+import com.example.volchonok.services.enums.ServiceStringValue
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -101,19 +104,47 @@ class LoginScreen(
                     launch {
                         withContext(Dispatchers.IO) {
                             val start = System.currentTimeMillis()
-                            RemoteInfoStorage.getCoursesData(context, CourseDataAccessLevel.ONLY_COURSES_DATA)
-                            RemoteInfoStorage.getCoursesData(context, CourseDataAccessLevel.MODULES_DATA)
-                            RemoteInfoStorage.getCoursesData(context, CourseDataAccessLevel.NOTES_DATA)
-                            RemoteInfoStorage.getCoursesData(context, CourseDataAccessLevel.TESTS_DATA)
-                            val data = RemoteInfoStorage.getCoursesData(context, CourseDataAccessLevel.QUESTIONS_DATA)
+                            RemoteInfoStorage.getCoursesData(
+                                context,
+                                CourseDataAccessLevel.ONLY_COURSES_DATA
+                            )
+                            RemoteInfoStorage.getCoursesData(
+                                context,
+                                CourseDataAccessLevel.MODULES_DATA
+                            )
+                            RemoteInfoStorage.getCoursesData(
+                                context,
+                                CourseDataAccessLevel.NOTES_DATA
+                            )
+                            RemoteInfoStorage.getCoursesData(
+                                context,
+                                CourseDataAccessLevel.TESTS_DATA
+                            )
+                            val data = RemoteInfoStorage.getCoursesData(
+                                context,
+                                CourseDataAccessLevel.QUESTIONS_DATA
+                            )
                             loadCompletedAnswers(data, context)
-                            Log.d("TAG", "[login] Download time: ${(System.currentTimeMillis() - start) / 1000.0} s")
+
+                            Log.d(
+                                "TAG",
+                                "[login] Download time: ${(System.currentTimeMillis() - start) / 1000.0} s"
+                            )
+
+                            // сохраняем джэксоном всё локально
+                            val sPref = context.getSharedPreferences(
+                                ServiceStringValue.SHARED_PREFERENCES_NAME.name,
+                                Context.MODE_PRIVATE
+                            )
+                            sPref.edit().putString("UNIQUE_KEY", ObjectMapper().registerKotlinModule().writeValueAsString(data)).apply()
+
                         }
                     }
                 }
 
                 toCoursesScreen()
             }
+
             -1000.0 -> errorText?.value = stringResource(id = R.string.incorrect)
             else -> errorText?.value = stringResource(id = R.string.unknown_error)
         }

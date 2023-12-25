@@ -18,6 +18,7 @@ import com.example.volchonok.enums.AuthorType;
 import com.example.volchonok.enums.CourseDataAccessLevel;
 import com.example.volchonok.enums.MessageType;
 import com.example.volchonok.interfaces.ILesson;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -115,7 +116,7 @@ public class LoadCourseService extends GetService<Pair<CourseDataAccessLevel, Li
         }
     }
 
-    private void fillNotesData(List<ILesson> notes, int moduleId) {
+    private void fillNotesData(List<NoteData> notes, int moduleId) {
         List<Integer> moduleLessonsId = ServiceUtil.getJsonAsList(
                 sendGetRequestToURL(MODULE_DATA_REQUEST_ADDRESS.getValue() + moduleId + "/lessons"));
 
@@ -168,7 +169,7 @@ public class LoadCourseService extends GetService<Pair<CourseDataAccessLevel, Li
         }
     }
 
-    private void fillTestsData(List<ILesson> tests, int lessonId) {
+    private void fillTestsData(List<TestData> tests, int lessonId) {
         List<Integer> moduleTestsId = ServiceUtil.getJsonAsList(
                 sendGetRequestToURL(LESSON_DATA_REQUEST_ADDRESS.getValue() + lessonId + "/tests"));
 

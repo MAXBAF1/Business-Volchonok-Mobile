@@ -32,17 +32,23 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.volchonok.R
 import com.example.volchonok.RemoteInfoStorage
+import com.example.volchonok.RemoteInfoStorage.getCoursesData
 import com.example.volchonok.RemoteInfoStorage.getUserData
+import com.example.volchonok.RemoteInfoStorage.setCoursesData
 import com.example.volchonok.RemoteInfoStorage.setUserData
 import com.example.volchonok.data.CourseData
 import com.example.volchonok.data.TestData
 import com.example.volchonok.enums.CourseDataAccessLevel
 import com.example.volchonok.services.CompletedAnswersService
 import com.example.volchonok.services.UserInfoService
+import com.example.volchonok.services.enums.ServiceStringValue
 import com.example.volchonok.utils.isInternetAvailable
-import kotlinx.coroutines.CoroutineScope
+import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -79,26 +85,16 @@ class SplashScreen(
             LaunchedEffect(Int) {
                 launch {
                     withContext(Dispatchers.IO) {
-                        val start = System.currentTimeMillis()
-                        RemoteInfoStorage.getCoursesData(
-                            context,
-                            CourseDataAccessLevel.ONLY_COURSES_DATA
+                        // берём из бд
+                        val mapper = ObjectMapper().registerKotlinModule()
+                        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+
+                        val sPref = context.getSharedPreferences(
+                            ServiceStringValue.SHARED_PREFERENCES_NAME.name,
+                            Context.MODE_PRIVATE
                         )
-                        RemoteInfoStorage.getCoursesData(
-                            context,
-                            CourseDataAccessLevel.MODULES_DATA
-                        )
-                        RemoteInfoStorage.getCoursesData(context, CourseDataAccessLevel.NOTES_DATA)
-                        RemoteInfoStorage.getCoursesData(context, CourseDataAccessLevel.TESTS_DATA)
-                        val data = RemoteInfoStorage.getCoursesData(
-                            context,
-                            CourseDataAccessLevel.QUESTIONS_DATA
-                        )
-                        loadCompletedAnswers(data, context)
-                        Log.d(
-                            "TAG",
-                            "[splash] Download time: ${(System.currentTimeMillis() - start) / 1000.0} s"
-                        )
+                        val s = sPref.getString("UNIQUE_KEY", "")
+                        setCoursesData(mapper.readValue<List<CourseData>>(s!!))
                     }
                 }
             }

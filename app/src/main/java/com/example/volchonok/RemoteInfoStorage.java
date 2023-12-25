@@ -16,6 +16,11 @@ import java.util.concurrent.ExecutionException;
 
 public class RemoteInfoStorage {
     private static UserData userData;
+
+    public static void setCoursesData(List<CourseData> coursesData) {
+        RemoteInfoStorage.coursesData = coursesData;
+    }
+
     private static List<CourseData> coursesData;
     private static boolean wasSentRefreshRequest;
 
