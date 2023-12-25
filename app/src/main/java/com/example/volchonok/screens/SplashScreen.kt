@@ -55,7 +55,10 @@ class SplashScreen(
     fun Create() {
         if (!isInternetAvailable(LocalContext.current)) toNetworkErrorScreen()
 
+        val context = LocalContext.current
+        setUserData(UserInfoService(context).execute().get())
         var isAnimationStart by remember { mutableStateOf(false) }
+
         LaunchedEffect(Unit) {
             isAnimationStart = true
         }
@@ -71,8 +74,6 @@ class SplashScreen(
             label = ""
         )
 
-        val context = LocalContext.current
-        setUserData(UserInfoService(context).execute().get())
 
         if (getUserData() != null) {
             LaunchedEffect(Int) {

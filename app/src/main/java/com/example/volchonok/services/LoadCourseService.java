@@ -212,6 +212,7 @@ public class LoadCourseService extends GetService<Pair<CourseDataAccessLevel, Li
                                 answer.getInt(ID_KEY.getValue()),
                                 answer.getString(TEXT_KEY.getValue()),
                                 answer.getBoolean(IS_RIGHT_KEY.getValue()),
+                                answer.getString(EXPLANATION_KEY.getValue()),
                                 false
                         ));
                     } catch (JSONException ex) {
@@ -222,8 +223,7 @@ public class LoadCourseService extends GetService<Pair<CourseDataAccessLevel, Li
                 questions.add(new QuestionData(
                         testQuestionId,
                         String.valueOf(q.get(TEXT_KEY.getValue())),
-                        answers,
-                        String.valueOf(q.get(EXPLANATION_KEY.getValue()))
+                        answers
                 ));
             }
         }

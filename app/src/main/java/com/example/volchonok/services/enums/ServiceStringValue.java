@@ -3,7 +3,7 @@ package com.example.volchonok.services.enums;
 import androidx.annotation.NonNull;
 
 public enum ServiceStringValue {
-    SERVER_ADDRESS("http://83.147.246.55"),
+    SERVER_ADDRESS("https://business-volchonok.ru/mobile"),
     ACCESS_TOKEN_REQUEST_ADDRESS(SERVER_ADDRESS.value + "/api/v1/auth/refresh"),
     LOGIN_REQUEST_ADDRESS(SERVER_ADDRESS.value + "/api/v1/auth/login"),
     USER_INFO_REQUEST_ADDRESS(SERVER_ADDRESS.value + "/api/v1/user/me"),
