@@ -9,13 +9,15 @@ import android.content.Context;
 import android.util.Log;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Map;
 
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
-public abstract class GetService<In, Out> extends AbstractService<In, Out>{
+public abstract class GetService<In, Out> extends AbstractService<In, Out> {
 
     protected GetService(Context ctx) {
         super(ctx);
@@ -32,8 +34,7 @@ public abstract class GetService<In, Out> extends AbstractService<In, Out>{
             ResponseBody responseBody = response.body();
             Map<String, Object> responseBodyAsMap = ServiceUtil.getJsonAsMap(responseBody.string());
 
-            if (response.code() == 403)
-                return null;
+            if (response.code() == 403) return null;
 //            Log.d("TAG", "RESPONSE: " + response);
 
             double responseCode = Double.parseDouble(
