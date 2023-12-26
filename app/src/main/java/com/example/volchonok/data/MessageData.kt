@@ -7,5 +7,5 @@ data class MessageData(
     val text: String,
     val author: AuthorType,
     val type: MessageType,
-    val url: String // хз какой тип мб Url или Uri
+    val url: String
 )

@@ -57,13 +57,16 @@ class SplashScreen(
 
         val context = LocalContext.current
         setUserData(UserInfoService(context).execute().get())
-        var isAnimationStart by remember { mutableStateOf(false) }
+        /*var isAnimationStart by remember { mutableStateOf(false) }
 
         LaunchedEffect(Unit) {
             isAnimationStart = true
-        }
-        val imageHeight = animateDpAsState(
-            targetValue = if (isAnimationStart) 500.dp else 0.dp,
+        }*/
+        val imageHeight = remember { mutableStateOf(0.dp) }
+        val onePartHeight = (500 / 5).dp
+        val isDataDownloaded = remember { mutableStateOf(false) }
+        if (isDataDownloaded.value) toCoursesScreen()
+        /*animateDpAsState(targetValue = if (isAnimationStart) 500.dp else 0.dp,
             animationSpec = keyframes {
                 durationMillis = 3000
             },
@@ -72,7 +75,7 @@ class SplashScreen(
                 else toWelcomeScreen()
             },
             label = ""
-        )
+        )*/
 
 
         if (getUserData() != null) {
@@ -81,28 +84,31 @@ class SplashScreen(
                     withContext(Dispatchers.IO) {
                         val start = System.currentTimeMillis()
                         RemoteInfoStorage.getCoursesData(
-                            context,
-                            CourseDataAccessLevel.ONLY_COURSES_DATA
+                            context, CourseDataAccessLevel.ONLY_COURSES_DATA
                         )
+                        imageHeight.value += onePartHeight
                         RemoteInfoStorage.getCoursesData(
-                            context,
-                            CourseDataAccessLevel.MODULES_DATA
+                            context, CourseDataAccessLevel.MODULES_DATA
                         )
+                        imageHeight.value += onePartHeight
                         RemoteInfoStorage.getCoursesData(context, CourseDataAccessLevel.NOTES_DATA)
+                        imageHeight.value += onePartHeight
                         RemoteInfoStorage.getCoursesData(context, CourseDataAccessLevel.TESTS_DATA)
+                        imageHeight.value += onePartHeight
                         val data = RemoteInfoStorage.getCoursesData(
-                            context,
-                            CourseDataAccessLevel.QUESTIONS_DATA
+                            context, CourseDataAccessLevel.QUESTIONS_DATA
                         )
+                        imageHeight.value += onePartHeight
                         loadCompletedAnswers(data, context)
                         Log.d(
                             "TAG",
                             "[splash] Download time: ${(System.currentTimeMillis() - start) / 1000.0} s"
                         )
+                        isDataDownloaded.value = true
                     }
                 }
             }
-        }
+        } else toWelcomeScreen()
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -155,11 +161,8 @@ class SplashScreen(
         // беру все вопросы из РЕШЁННЫХ тестов
         data.forEach { course ->
             course.modules.forEach { module ->
-                completedTests.addAll(
-                    module.lessonTests
-                        .filter { it.isCompleted }
-                        .map { it as TestData }
-                )
+                completedTests.addAll(module.lessonTests.filter { it.isCompleted }
+                    .map { it as TestData })
             }
         }
 
@@ -168,10 +171,8 @@ class SplashScreen(
             test.questions.forEach { question ->
                 val answersId = question.answers.map { it.id }.toMutableList()
 
-                if (tests.containsKey(test.id))
-                    tests[test.id]?.put(question.id, answersId)
-                else
-                    tests[test.id] = mutableMapOf(Pair(question.id, answersId))
+                if (tests.containsKey(test.id)) tests[test.id]?.put(question.id, answersId)
+                else tests[test.id] = mutableMapOf(Pair(question.id, answersId))
 
             }
         }
