@@ -3,6 +3,7 @@
 
     <!--Splash screen-->
     <string name="business_school">Бизнес школа</string>
+    <string name="first_download">Не закрываете приложение, выполняется первичная загрузка данных</string>
 
     <!--Network error screen-->
     <string name="something_went_wrong">Что-то пошло не так</string>

@@ -51,7 +51,7 @@ import kotlinx.coroutines.withContext
 
 
 class LoginScreen(
-    private val toCoursesScreen: () -> Unit,
+    private val toSplashScreen: () -> Unit,
     private val getLoginResult: (loginText: String, passwordText: String) -> Double
 ) {
     private var usernameText: MutableState<String>? = null
@@ -93,62 +93,17 @@ class LoginScreen(
 
     @Composable
     private fun CheckData() {
-        val context = LocalContext.current
         val usernameText = usernameText?.value?.trim()
         val passwordText = passwordText?.value?.trim()
         if (usernameText.isNullOrEmpty() || passwordText.isNullOrEmpty()) return
 
         when (getLoginResult(usernameText, passwordText)) {
-            200.0 -> {
-                LaunchedEffect(Unit) {
-                    launch {
-                        withContext(Dispatchers.IO) {
-                            val start = System.currentTimeMillis()
-                            RemoteInfoStorage.getCoursesData(
-                                context,
-                                CourseDataAccessLevel.ONLY_COURSES_DATA
-                            )
-                            RemoteInfoStorage.getCoursesData(
-                                context,
-                                CourseDataAccessLevel.MODULES_DATA
-                            )
-                            RemoteInfoStorage.getCoursesData(
-                                context,
-                                CourseDataAccessLevel.NOTES_DATA
-                            )
-                            RemoteInfoStorage.getCoursesData(
-                                context,
-                                CourseDataAccessLevel.TESTS_DATA
-                            )
-                            val data = RemoteInfoStorage.getCoursesData(
-                                context,
-                                CourseDataAccessLevel.QUESTIONS_DATA
-                            )
-                            loadCompletedAnswers(data, context)
-
-                            Log.d(
-                                "TAG",
-                                "[login] Download time: ${(System.currentTimeMillis() - start) / 1000.0} s"
-                            )
-
-                            // сохраняем джэксоном всё локально
-                            val sPref = context.getSharedPreferences(
-                                ServiceStringValue.SHARED_PREFERENCES_NAME.name,
-                                Context.MODE_PRIVATE
-                            )
-                            sPref.edit().putString("UNIQUE_KEY", ObjectMapper().registerKotlinModule().writeValueAsString(data)).apply()
-
-                        }
-                    }
-                }
-
-                toCoursesScreen()
-            }
-
+            200.0 -> toSplashScreen()
             -1000.0 -> errorText?.value = stringResource(id = R.string.incorrect)
             else -> errorText?.value = stringResource(id = R.string.unknown_error)
         }
     }
+
 
     @Composable
     private fun MakeErrorText() {
@@ -224,11 +179,8 @@ class LoginScreen(
         // беру все вопросы из РЕШЁННЫХ тестов
         data.forEach { course ->
             course.modules.forEach { module ->
-                completedTests.addAll(
-                    module.lessonTests
-                        .filter { it.isCompleted }
-                        .map { it as TestData }
-                )
+                completedTests.addAll(module.lessonTests.filter { it.isCompleted }
+                    .map { it as TestData })
             }
         }
 
@@ -237,10 +189,8 @@ class LoginScreen(
             test.questions.forEach { question ->
                 val answersId = question.answers.map { it.id }.toMutableList()
 
-                if (tests.containsKey(test.id))
-                    tests[test.id]?.put(question.id, answersId)
-                else
-                    tests[test.id] = mutableMapOf(Pair(question.id, answersId))
+                if (tests.containsKey(test.id)) tests[test.id]?.put(question.id, answersId)
+                else tests[test.id] = mutableMapOf(Pair(question.id, answersId))
 
             }
         }

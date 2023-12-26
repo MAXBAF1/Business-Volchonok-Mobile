@@ -33,14 +33,14 @@ class Navigation {
     private var selectedCourse: CourseData? = null
     private var selectedModule: ModuleData? = null
     private var selectedLesson: ILesson? = null
+    private var isSplashDownload = false
 
     @Composable
     fun Create() {
         navController = rememberNavController()
 
         NavHost(
-            navController = navController!!,
-            startDestination = SPLASH_SCREEN_ROUTE
+            navController = navController!!, startDestination = SPLASH_SCREEN_ROUTE
         ) {
             composable(SPLASH_SCREEN_ROUTE) { CreateSplashScreen() }
             composable(NETWORK_ERROR_SCREEN_ROUTE) { CreateNetworkErrorScreen() }
@@ -67,7 +67,7 @@ class Navigation {
             navController!!.navigate(WELCOME_SCREEN_ROUTE)
         }, toCoursesScreen = {
             navController!!.navigate(COURSES_SCREEN_ROUTE)
-        }).Create()
+        }, isSplashDownload).Create()
     }
 
     @Composable
@@ -80,11 +80,12 @@ class Navigation {
     @Composable
     private fun CreateLoginScreen() {
         val ctx = LocalContext.current
-
-        LoginScreen(toCoursesScreen = { navController!!.navigate(COURSES_SCREEN_ROUTE) },
-            getLoginResult = { loginText, passwordText ->
-                return@LoginScreen LoginService(ctx).execute(loginText, passwordText).get()
-            }).Create()
+        LoginScreen(toSplashScreen = {
+            isSplashDownload = true
+            navController!!.navigate(SPLASH_SCREEN_ROUTE)
+        }, getLoginResult = { loginText, passwordText ->
+            return@LoginScreen LoginService(ctx).execute(loginText, passwordText).get()
+        }).Create()
     }
 
     @Composable
@@ -163,9 +164,7 @@ class Navigation {
                     if (wasUserDataChanged.value) {
                         UpdateUserInfoService(context).execute(userData).get()
                     }
-                },
-                userData,
-                wasUserDataChanged
+                }, userData, wasUserDataChanged
             ).Create()
         } else {
             Log.d("TAG", "Данные грузятся!")
