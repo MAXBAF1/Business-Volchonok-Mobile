@@ -318,7 +318,12 @@ class ProfileScreen(
             R.drawable.ava_4,
             R.drawable.ava_5,
             R.drawable.ava_6,
-            R.drawable.ava_7
+            R.drawable.ava_7,
+            R.drawable.ava_8,
+            R.drawable.ava_9,
+            R.drawable.ava_10,
+            R.drawable.ava_11,
+            R.drawable.ava_12
         )
     }
 }
