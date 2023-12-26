@@ -6,6 +6,6 @@ data class ModuleData(
     var id: Int,
     val name: String,
     val description: String,
-    val lessonNotes: List<ILesson>,
-    val lessonTests: List<ILesson>,
+    val lessonNotes: List<NoteData>,
+    val lessonTests: List<TestData>,
 )
