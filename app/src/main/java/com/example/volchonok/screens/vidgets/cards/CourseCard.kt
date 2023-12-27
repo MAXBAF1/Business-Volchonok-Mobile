@@ -77,13 +77,14 @@ class CourseCard(
 
     @Composable
     private fun AddNameAndDescription() {
+        val descriptions = courseData.description.split("#_#")
         Text(
             text = courseData.name,
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onPrimary
         )
         Text(
-            text = courseData.description,
+            text = if (descriptions.isNotEmpty()) descriptions[0] else "",
             modifier = Modifier
                 .padding(top = 10.dp)
                 .widthIn(max = 160.dp),
