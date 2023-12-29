@@ -2,6 +2,7 @@ package com.example.volchonok.screens.vidgets.cards
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -16,7 +17,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -38,9 +41,10 @@ class ReviewCard(private val reviewData: ReviewData, private val isFirst: Boolea
                     Image(
                         painter = painterResource(id = ProfileScreen.avatars[reviewData.authorAvatarId]),
                         modifier = Modifier
-                            .size(32.dp)
-                            .clip(CircleShape),
-                        contentDescription = "avatar"
+                            .clip(CircleShape)
+                            .size(32.dp),
+                        contentDescription = "avatar",
+                        contentScale = ContentScale.Crop
                     )
                     Text(
                         text = reviewData.authorName,

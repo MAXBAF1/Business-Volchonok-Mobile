@@ -94,26 +94,22 @@ class ProfileScreen(
                     userData.surname, userData.firstname, userData.middlename
                 ).joinToString(" ")
             ).Create()
-            StylizedTextInput(
-                "89003330088",
+            StylizedTextInput("89003330088",
                 stringResource(id = R.string.phone),
                 inputText = userData.phone,
                 wasDataChanged = wasUserDataChanged,
                 isEmpty = isPhoneEmpty,
                 updateData = {
                     userData.phone = it
-                }
-            ).Create()
-            StylizedTextInput(
-                "example@gmail.com",
+                }).Create()
+            StylizedTextInput("example@gmail.com",
                 stringResource(id = R.string.mail),
                 inputText = userData.email,
                 wasDataChanged = wasUserDataChanged,
                 isEmpty = isEmailEmpty,
                 updateData = {
                     userData.email = it
-                }
-            ).Create()
+                }).Create()
             StylizedTextInput(
                 "Екатеринбург",
                 stringResource(id = R.string.address),
@@ -217,7 +213,7 @@ class ProfileScreen(
         val editIcon = AppCompatResources.getDrawable(LocalContext.current, R.drawable.ic_edit)!!
             .toBitmap(editIconSize, editIconSize).asImageBitmap()
 
-        Image(painterResource(id = avatars[selectedAvatarNumber.intValue]),
+        Image(painter = painterResource(id = avatars[selectedAvatarNumber.intValue]),
             contentDescription = "avatar",
             modifier = Modifier
                 .clip(CircleShape)

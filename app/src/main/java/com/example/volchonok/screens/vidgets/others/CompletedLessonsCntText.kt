@@ -2,6 +2,7 @@ package com.example.volchonok.screens.vidgets.others
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -16,10 +17,9 @@ import com.example.volchonok.R
 import com.example.volchonok.data.ModuleData
 
 @Composable
-fun CompletedLessonsCntText(text: String) {
+fun CompletedLessonsCntText(text: String, modifier: Modifier = Modifier) {
     Card(
-        modifier = Modifier
-            .sizeIn(24.dp),
+        modifier = modifier,
         shape = RoundedCornerShape(100),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background)
     ) {
@@ -28,7 +28,8 @@ fun CompletedLessonsCntText(text: String) {
             modifier = Modifier.padding(10.dp, 3.dp),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.outline,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            softWrap = false
         )
     }
 }

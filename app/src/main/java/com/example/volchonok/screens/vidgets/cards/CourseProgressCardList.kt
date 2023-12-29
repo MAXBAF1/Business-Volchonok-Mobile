@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.volchonok.R
 import com.example.volchonok.data.CourseData
@@ -73,16 +74,19 @@ class CourseProgressCardList(private val coursesList: List<CourseData>) {
                 ) {
                     Text(
                         text = course.name,
-                        modifier = Modifier,
+                        modifier = Modifier.weight(1f),
                         style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onPrimary
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1,
+                        softWrap = false
                     )
 
                     val lessonsCtnText =
                         "${getCompletedModulesCnt(course)}/${course.modules.size} ${
                             stringResource(id = R.string.modules_cnt)
                         }"
-                    CompletedLessonsCntText(text = lessonsCtnText)
+                    CompletedLessonsCntText(text = lessonsCtnText, Modifier.padding(start = 10.dp))
                 }
                 Text(
                     text = "${getProgressPercentage(course)}%",
