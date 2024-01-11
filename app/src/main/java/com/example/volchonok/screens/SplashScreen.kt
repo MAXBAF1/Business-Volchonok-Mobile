@@ -35,14 +35,12 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.volchonok.R
 import com.example.volchonok.RemoteInfoStorage
-import com.example.volchonok.RemoteInfoStorage.getUserData
-import com.example.volchonok.RemoteInfoStorage.setCoursesData
-import com.example.volchonok.RemoteInfoStorage.setUserData
+import com.example.volchonok.RemoteInfoStorage.*
 import com.example.volchonok.data.CourseData
 import com.example.volchonok.data.TestData
 import com.example.volchonok.enums.CourseDataAccessLevel
+import com.example.volchonok.services.CheckUserToken
 import com.example.volchonok.services.CompletedAnswersService
-import com.example.volchonok.services.UserInfoService
 import com.example.volchonok.services.enums.ServiceStringValue
 import com.example.volchonok.utils.isInternetAvailable
 import com.fasterxml.jackson.databind.DeserializationFeature
@@ -80,10 +78,11 @@ class SplashScreen(
     @Composable
     private fun SetData() {
         val context = LocalContext.current
-        setUserData(UserInfoService(context).execute().get())
         var isInvalidDataSaved by remember { mutableStateOf(false) }
+        val checkTokenCode = CheckUserToken(context).execute().get()
 
-        if (getUserData() == null || isInvalidDataSaved) toWelcomeScreen()
+        if (checkTokenCode.isNaN() || isInvalidDataSaved)
+            toWelcomeScreen()
         else {
             LaunchedEffect(Int) {
 
@@ -121,25 +120,23 @@ class SplashScreen(
             launch {
                 withContext(Dispatchers.IO) {
                     val start = System.currentTimeMillis()
-                    RemoteInfoStorage.getCoursesData(
-                        context, CourseDataAccessLevel.ONLY_COURSES_DATA
-                    )
+                    getCoursesData(context, CourseDataAccessLevel.ONLY_COURSES_DATA)
+
                     imageHeight += oneHeightPart
-                    RemoteInfoStorage.getCoursesData(
-                        context, CourseDataAccessLevel.MODULES_DATA
-                    )
+
+                    getCoursesData(context, CourseDataAccessLevel.MODULES_DATA)
+
                     imageHeight += oneHeightPart
-                    RemoteInfoStorage.getCoursesData(
-                        context, CourseDataAccessLevel.NOTES_DATA
-                    )
+
+                    getCoursesData(context, CourseDataAccessLevel.NOTES_DATA)
+
                     imageHeight += oneHeightPart
-                    RemoteInfoStorage.getCoursesData(
-                        context, CourseDataAccessLevel.TESTS_DATA
-                    )
+
+                    getCoursesData(context, CourseDataAccessLevel.TESTS_DATA)
+
                     imageHeight += oneHeightPart
-                    val data = RemoteInfoStorage.getCoursesData(
-                        context, CourseDataAccessLevel.QUESTIONS_DATA
-                    )
+
+                    val data = getCoursesData(context, CourseDataAccessLevel.QUESTIONS_DATA)
                     imageHeight += oneHeightPart
                     loadCompletedAnswers(data, context)
                     Log.d(

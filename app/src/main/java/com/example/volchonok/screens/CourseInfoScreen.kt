@@ -29,6 +29,7 @@ import com.example.volchonok.screens.vidgets.cards.ModuleCard
 import com.example.volchonok.screens.vidgets.cards.ReviewCard
 import com.example.volchonok.screens.vidgets.others.Greeting
 import com.example.volchonok.screens.vidgets.others.TopAppBar
+import com.example.volchonok.services.CheckUserToken
 import com.example.volchonok.services.UserInfoService
 
 class CourseInfoScreen(
@@ -43,6 +44,12 @@ class CourseInfoScreen(
         val context = LocalContext.current
         userData = getUserData()
         if (userData == null) {
+
+            CheckUserToken(context).execute().get()
+            //TODO если тут возвращается Double.NaN,
+            // то нужно переместить пользователя на страницу логина
+            // если прилетает 200, то всё ок
+
             setUserData(UserInfoService(context).execute().get())
         }
 

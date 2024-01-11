@@ -8,35 +8,35 @@ import okhttp3.RequestBody;
 
 import static com.example.volchonok.services.enums.ServiceStringValue.*;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.HashMap;
 import java.util.Map;
 
 //only service class
-public class RefreshTokenService extends PostService<Void> {
+class RefreshTokenService extends PostService<Void> {
 
     public RefreshTokenService(Context ctx) {
         super(ctx);
     }
 
-    private double refresh() {
-        Log.d("TAG", "refresh");
-        double x = sendPostRequestToURL(
-                ACCESS_TOKEN_REQUEST_ADDRESS.getValue(),
-                RequestBody.create(
-                        new Gson().toJson(
-                                Map.of(
-                                        REFRESH_TOKEN_KEY.getValue(),
-                                        sPref.getString(REFRESH_TOKEN_KEY.getValue(), "")
-                                ),
-                                new TypeToken<HashMap<String, Object>>() {
-                                }.getType()),
-                        MediaType.get(CONTENT_TYPE_JSON.getValue())
-                ));
-
-        Log.d("TAG", "refresh: " + x);
+    double refresh() {
+        double x = Double.NaN;
+        try {
+            x = sendPostRequestToURL(
+                    REFRESH_TOKENS_REQUEST_ADDRESS.getValue(),
+                    RequestBody.create(
+                            new ObjectMapper().writeValueAsString(
+                                    Map.of(
+                                            ACCESS_TOKEN_KEY.getValue(), sPref.getString(ACCESS_TOKEN_KEY.getValue(), ""),
+                                            REFRESH_TOKEN_KEY.getValue(), sPref.getString(REFRESH_TOKEN_KEY.getValue(), "")
+                                    )
+                            ),
+                            MediaType.get(CONTENT_TYPE_JSON.getValue())
+                    ));
+        } catch (JsonProcessingException e) {
+            Log.d("TAG", "error" + e.getMessage());
+        }
         return x;
     }
 

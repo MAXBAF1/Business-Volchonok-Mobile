@@ -7,10 +7,15 @@ import static com.example.volchonok.services.enums.ServiceStringValue.RESPONSE_D
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -21,7 +26,8 @@ public class ServiceUtil {
 
     protected static Map<String, Object> getJsonAsMap(String json){
         Map<String, Object> result = new HashMap<>();
-        if (json.isEmpty()) return result;
+        if (json == null || json.isEmpty())
+            return result;
         try {
             JSONObject obj = new JSONObject(json);
 
@@ -47,6 +53,8 @@ public class ServiceUtil {
             }
         } catch (JSONException e) {
             throw new RuntimeException(json);
+        } catch (NullPointerException e) {
+            Log.d("TAG", "error on json: " + json);
         }
 
         return result;
@@ -58,10 +66,15 @@ public class ServiceUtil {
                 String.valueOf(responseBodyAsMap.get(RESPONSE_DATA_KEY.getValue()))
         );
 
+        editor.remove(ACCESS_TOKEN_KEY.getValue())
+                .remove(REFRESH_TOKEN_KEY.getValue())
+                        .apply();
+
         editor.putString(ACCESS_TOKEN_KEY.getValue(),
                         String.valueOf(tokens.get(ACCESS_TOKEN_KEY.getValue())))
                 .putString(REFRESH_TOKEN_KEY.getValue(),
                         String.valueOf(tokens.get(REFRESH_TOKEN_KEY.getValue())))
                 .apply();
+        Log.d("TAG", "svd: ");
     }
 }

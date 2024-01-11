@@ -1,5 +1,6 @@
 package com.example.volchonok.screens.vidgets.others
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -37,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import com.example.volchonok.R
 import com.example.volchonok.data.UserData
 import com.example.volchonok.screens.ProfileScreen
+import com.example.volchonok.services.CheckUserToken
 import com.example.volchonok.services.UserInfoService
 import com.example.volchonok.utils.bottomBorder
 
@@ -50,7 +52,18 @@ class TopAppBar(
 
     @Composable
     fun Create() {
-        if (userData == null) userData = UserInfoService(LocalContext.current).execute().get()
+        val context = LocalContext.current
+        if (userData == null) {
+
+            CheckUserToken(context).execute().get()
+            //TODO если тут возвращается Double.NaN,
+            // то нужно переместить пользователя на страницу логина
+            // если прилетает 200, то всё ок
+
+            userData = UserInfoService(context).execute().get()
+        }
+
+        Log.d("TAG", "ud: $userData")
 
         backgroundColor = if (isLessonScreen) {
             MaterialTheme.colorScheme.primary
@@ -124,7 +137,7 @@ class TopAppBar(
         } else MaterialTheme.colorScheme.primary
 
         Image(
-            painter = painterResource(id = ProfileScreen.avatars[userData?.avatar ?: 0]),
+            painter = painterResource(id = ProfileScreen.avatars[userData?.avatar?.toInt() ?: 0]),
             contentDescription = "avatar",
             modifier = Modifier
                 .clip(CircleShape)

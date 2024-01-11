@@ -272,7 +272,7 @@ public class LoadCourseService extends GetService<Pair<CourseDataAccessLevel, Li
                 courses.forEach(course ->
                         course.getModules().forEach(module ->
                                 module.getLessonNotes().forEach(note ->
-                                        fillTestsData(module.getLessonTests(), ((NoteData)note).getId())
+                                        fillTestsData(module.getLessonTests(), note.getId())
                                 )
                         )
                 );
@@ -281,8 +281,7 @@ public class LoadCourseService extends GetService<Pair<CourseDataAccessLevel, Li
                 courses.forEach(course ->
                         course.getModules().forEach(module ->
                                 module.getLessonTests().forEach(test -> {
-                                    TestData testData = (TestData) test;
-                                    fillQuestionsData(testData.getQuestions(), ((TestData) test).getId());
+                                    fillQuestionsData(test.getQuestions(), test.getId());
                                 })
                         )
                 );

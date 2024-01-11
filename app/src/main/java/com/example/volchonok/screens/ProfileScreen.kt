@@ -59,7 +59,7 @@ class ProfileScreen(
     private lateinit var coursesList: List<CourseData>
 
     private var showAvatarDialog = mutableStateOf(false)
-    private var selectedAvatarNumber = mutableIntStateOf(userData.avatar)
+    private var selectedAvatarNumber = userData.avatar
     private var tappedAvatarNumber = 0
     private val avatarsStates = List(avatars.size) { mutableStateOf(false) }
 
@@ -121,7 +121,7 @@ class ProfileScreen(
                 stringResource(id = R.string.grade),
                 isEnabled = false,
                 isLast = true,
-                inputText = userData.class_grade
+                inputText = userData.class_grade.toString()
             ).Create()
         }
     }
@@ -208,12 +208,12 @@ class ProfileScreen(
 
     @Composable
     private fun Avatar() {
-        avatarsStates[selectedAvatarNumber.intValue].value = true
+        avatarsStates[selectedAvatarNumber.toInt()].value = true
         val editIconSize = 66
         val editIcon = AppCompatResources.getDrawable(LocalContext.current, R.drawable.ic_edit)!!
             .toBitmap(editIconSize, editIconSize).asImageBitmap()
 
-        Image(painter = painterResource(id = avatars[selectedAvatarNumber.intValue]),
+        Image(painter = painterResource(id = avatars[selectedAvatarNumber.toInt()]),
             contentDescription = "avatar",
             modifier = Modifier
                 .clip(CircleShape)
@@ -262,8 +262,8 @@ class ProfileScreen(
             DefaultButton(
                 text = stringResource(id = R.string.save).uppercase(), Modifier.padding(top = 6.dp)
             ) {
-                userData.avatar = tappedAvatarNumber
-                selectedAvatarNumber.intValue = tappedAvatarNumber
+                userData.avatar = tappedAvatarNumber.toString()
+                selectedAvatarNumber = tappedAvatarNumber.toString()
                 showAvatarDialog.value = false
             }
             wasUserDataChanged.value = true
