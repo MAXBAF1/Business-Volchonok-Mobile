@@ -1,6 +1,8 @@
 package com.example.volchonok.services;
 
+import static com.example.volchonok.services.enums.ServiceStringValue.ACCESS_TOKEN_KEY;
 import static com.example.volchonok.services.enums.ServiceStringValue.LOGIN_REQUEST_ADDRESS;
+import static com.example.volchonok.services.enums.ServiceStringValue.REFRESH_TOKENS_REQUEST_ADDRESS;
 import static com.example.volchonok.services.enums.ServiceStringValue.REQUEST_METHOD_POST;
 import static com.example.volchonok.services.enums.ServiceStringValue.RESPONSE_STATUS_KEY;
 
@@ -8,6 +10,8 @@ import android.content.Context;
 import android.util.Log;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import okhttp3.Request;
@@ -38,16 +42,16 @@ public abstract class PostService<In> extends AbstractService<In, Double> {
             String responseBodyAsString = responseBody.string();
             Map<String, Object> responseBodyAsMap = ServiceUtil.getJsonAsMap(responseBodyAsString);
 
-//            Log.d("TAG", "response: " + response);
+            Log.d("TAG", "response: " + response);
 
             if (response.code() == 403)
-                return Double.NaN;
+                return Double.NEGATIVE_INFINITY;
 
             double responseCode = Double.parseDouble(
                     String.valueOf(responseBodyAsMap.get(RESPONSE_STATUS_KEY.getValue()))
             );
 
-            if (Math.abs(responseCode - 200.0) < 1e6 && url.equals(LOGIN_REQUEST_ADDRESS.getValue())) {
+            if (response.code() == 200 && List.of(LOGIN_REQUEST_ADDRESS.getValue(), REFRESH_TOKENS_REQUEST_ADDRESS.getValue()).contains(url)) {
                 ServiceUtil.saveTokensToPreferences(responseBodyAsMap, sPref.edit());
             }
 

@@ -109,6 +109,12 @@ class NoteScreen(
                 onClick = {
                     onCompleteBtn.invoke()
 
+//                    Log.d("TAG", CheckUserToken(ctx).execute().get().toString())
+//                    //TODO если тут возвращается Double.NaN,
+//                    // то нужно переместить пользователя на страницу логина
+//                    // если прилетает 200, то всё ок
+
+
                     rcs.launch {
                         withContext(Dispatchers.IO) {
                             CompleteCourseService(

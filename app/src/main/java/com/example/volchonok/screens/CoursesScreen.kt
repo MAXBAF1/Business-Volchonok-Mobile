@@ -15,6 +15,7 @@ import com.example.volchonok.enums.CourseDataAccessLevel
 import com.example.volchonok.screens.vidgets.cards.CourseCard
 import com.example.volchonok.screens.vidgets.others.Greeting
 import com.example.volchonok.screens.vidgets.others.TopAppBar
+import com.example.volchonok.services.CheckUserToken
 import com.example.volchonok.services.UserInfoService
 
 class CoursesScreen(
@@ -30,6 +31,12 @@ class CoursesScreen(
 
         userData = RemoteInfoStorage.getUserData()
         if (userData == null) {
+
+            CheckUserToken(context).execute().get()
+            //TODO если тут возвращается Double.NaN,
+            // то нужно переместить пользователя на страницу логина
+            // если прилетает 200, то всё ок
+
             RemoteInfoStorage.setUserData(UserInfoService(context).execute().get())
         }
         courses = remember {

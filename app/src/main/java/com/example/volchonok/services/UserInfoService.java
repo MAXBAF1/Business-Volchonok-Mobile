@@ -11,10 +11,13 @@ import android.util.Log;
 
 import com.example.volchonok.RemoteInfoStorage;
 import com.example.volchonok.data.UserData;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Objects;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -38,17 +41,24 @@ public class UserInfoService extends AsyncTask<Void, Void, UserData> {
     public UserData getUserInfo() {
         if (userData != null) return userData;
 
+        String a = ctx.getSharedPreferences(SHARED_PREFERENCES_NAME.getValue(), Context.MODE_PRIVATE).getString(ACCESS_TOKEN_KEY.getValue(), "");
+        Log.d("TAG", "BEFORE: " + a);
         String response = tryGetUserInfo();
 
         if (response == null && !isWasSentRefreshRequest()) {
             new RefreshTokenService(ctx).execute();
+            a = ctx.getSharedPreferences(SHARED_PREFERENCES_NAME.getValue(), Context.MODE_PRIVATE).getString(ACCESS_TOKEN_KEY.getValue(), "");
+            Log.d("TAG", "AFTER: " + a);
             setWasSentRefreshRequest(true);
             response = tryGetUserInfo();
         }
 
-        return response == null
-                ? null
-                : new Gson().fromJson(response, UserData.class);
+
+        try {
+            return response == null ? null : new ObjectMapper().readValue(response, UserData.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private String tryGetUserInfo() {
@@ -63,10 +73,14 @@ public class UserInfoService extends AsyncTask<Void, Void, UserData> {
                 .addHeader("Authorization", "Bearer " + sPref.getString(ACCESS_TOKEN_KEY.getValue(), ""))
                 .build();
 
+//        Log.d("TAG", "request info: " + Objects.requireNonNull(request.header("Authorization")).substring(7));
+
         try (Response response = httpClient.newCall(request).execute()) {
 
             ResponseBody responseBody = response.body();
             Map<String, Object> responseBodyAsMap = ServiceUtil.getJsonAsMap(responseBody.string());
+
+//            Log.d("TAG", "user info response: " + response.code());
 
             double responseCode = Double.parseDouble(
                     String.valueOf(responseBodyAsMap.get(RESPONSE_STATUS_KEY.getValue()))

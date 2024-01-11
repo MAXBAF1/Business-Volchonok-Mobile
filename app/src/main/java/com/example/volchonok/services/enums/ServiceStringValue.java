@@ -1,10 +1,8 @@
 package com.example.volchonok.services.enums;
 
-import androidx.annotation.NonNull;
-
 public enum ServiceStringValue {
     SERVER_ADDRESS("https://business-volchonok.ru/mobile/api/v1"),
-    ACCESS_TOKEN_REQUEST_ADDRESS(SERVER_ADDRESS.value + "/auth/refresh"),
+    REFRESH_TOKENS_REQUEST_ADDRESS(SERVER_ADDRESS.value + "/auth/refresh"),
     LOGIN_REQUEST_ADDRESS(SERVER_ADDRESS.value + "/auth/login"),
     USER_INFO_REQUEST_ADDRESS(SERVER_ADDRESS.value + "/user/me"),
     USER_COURSES_REQUEST_ADDRESS(SERVER_ADDRESS.value + "/user/courses"),
