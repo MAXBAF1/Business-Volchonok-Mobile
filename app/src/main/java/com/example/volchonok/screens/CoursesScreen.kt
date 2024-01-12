@@ -9,6 +9,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.volchonok.RemoteInfoStorage
+import com.example.volchonok.RemoteInfoStorage.getCoursesData
+import com.example.volchonok.RemoteInfoStorage.getUserData
+import com.example.volchonok.RemoteInfoStorage.setUserData
 import com.example.volchonok.data.CourseData
 import com.example.volchonok.data.UserData
 import com.example.volchonok.enums.CourseDataAccessLevel
@@ -29,18 +32,13 @@ class CoursesScreen(
     fun Create() {
         val context = LocalContext.current
 
-        userData = RemoteInfoStorage.getUserData()
+        userData = getUserData()
         if (userData == null) {
 
-            CheckUserToken(context).execute().get()
-            //TODO если тут возвращается Double.NaN,
-            // то нужно переместить пользователя на страницу логина
-            // если прилетает 200, то всё ок
-
-            RemoteInfoStorage.setUserData(UserInfoService(context).execute().get())
+            setUserData(UserInfoService(context).execute().get())
         }
         courses = remember {
-            RemoteInfoStorage.getCoursesData(context, CourseDataAccessLevel.ONLY_COURSES_DATA)
+            getCoursesData(context, CourseDataAccessLevel.ONLY_COURSES_DATA)
         }
 
         Column {

@@ -36,6 +36,8 @@ import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.volchonok.R
+import com.example.volchonok.RemoteInfoStorage
+import com.example.volchonok.RemoteInfoStorage.getUserData
 import com.example.volchonok.data.UserData
 import com.example.volchonok.screens.ProfileScreen
 import com.example.volchonok.services.CheckUserToken
@@ -43,7 +45,7 @@ import com.example.volchonok.services.UserInfoService
 import com.example.volchonok.utils.bottomBorder
 
 class TopAppBar(
-    private var userData: UserData? = null,
+    private var userData: UserData? = getUserData(),
     private val toProfile: () -> Unit,
     private val isLessonScreen: Boolean = false,
     private val onBackClick: () -> Unit = {},
@@ -54,12 +56,6 @@ class TopAppBar(
     fun Create() {
         val context = LocalContext.current
         if (userData == null) {
-
-            CheckUserToken(context).execute().get()
-            //TODO если тут возвращается Double.NaN,
-            // то нужно переместить пользователя на страницу логина
-            // если прилетает 200, то всё ок
-
             userData = UserInfoService(context).execute().get()
         }
 
