@@ -1,6 +1,7 @@
 package com.example.volchonok.screens
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.util.Log
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
@@ -53,15 +54,19 @@ import kotlinx.coroutines.withContext
 class LoginScreen(
     private val toSplashScreen: () -> Unit,
     private val getLoginResult: (loginText: String, passwordText: String) -> Double,
-    private val isTokenTimeout: Boolean = false
+    private val isTokenTimeout: Boolean = false,
 ) {
     private var usernameText: MutableState<String>? = null
     private var passwordText: MutableState<String>? = null
     private var tryLogin: MutableState<Boolean>? = null
     private var errorText: MutableState<String>? = null
+    private var sharedPreferences: SharedPreferences? = null
 
     @Composable
     fun Create() {
+        sharedPreferences = LocalContext.current.getSharedPreferences(
+            ServiceStringValue.SHARED_PREFERENCES_NAME.name, Context.MODE_PRIVATE
+        )
         tryLogin = remember { mutableStateOf(false) }
         errorText = remember { mutableStateOf("") }
         Column(
@@ -99,7 +104,11 @@ class LoginScreen(
         if (usernameText.isNullOrEmpty() || passwordText.isNullOrEmpty()) return
 
         when (getLoginResult(usernameText, passwordText)) {
-            200.0 -> toSplashScreen()
+            200.0 -> {
+                sharedPreferences?.edit()?.putBoolean(IS_FIRST_LOGIN_KEY, false)?.apply()
+                toSplashScreen()
+            }
+
             -1000.0 -> errorText?.value = stringResource(id = R.string.incorrect)
             else -> errorText?.value = stringResource(id = R.string.unknown_error)
         }
@@ -108,7 +117,11 @@ class LoginScreen(
 
     @Composable
     private fun MakeErrorText() {
-        if (isTokenTimeout) errorText!!.value = stringResource(id = R.string.token_timeout)
+        val isFirstLogin = sharedPreferences?.getBoolean(IS_FIRST_LOGIN_KEY, true) ?: true
+
+        if (isTokenTimeout || !isFirstLogin) {
+            errorText!!.value = stringResource(id = R.string.token_timeout)
+        }
         AnimatedContent(
             targetState = errorText!!.value, transitionSpec = {
                 scaleIn(tween(500)) togetherWith scaleOut(tween(100))
@@ -211,5 +224,9 @@ class LoginScreen(
                 }
             }
         }
+    }
+
+    companion object {
+        private const val IS_FIRST_LOGIN_KEY = "IS_FIRST_LOGIN_KEY"
     }
 }
