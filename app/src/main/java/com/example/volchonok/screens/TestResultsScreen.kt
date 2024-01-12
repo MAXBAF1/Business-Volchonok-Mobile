@@ -31,7 +31,7 @@ import java.util.Collections
 
 class TestResultsScreen(
     private val testData: TestData,
-    private val onCompleteBtn: () -> Unit,
+    private val onCompleteBtn: () -> Boolean,
     private val onRepeatBtn: () -> Unit,
 ) {
     @Composable
@@ -64,14 +64,9 @@ class TestResultsScreen(
                 Modifier,
                 true,
                 onClick = {
-                    onCompleteBtn.invoke()
+                    if (!onCompleteBtn.invoke()) return@DefaultButton
 
                     testData.isCompleted = true
-
-                    CheckUserToken(context).execute().get()
-                    //TODO если тут возвращается Double.NaN,
-                    // то нужно переместить пользователя на страницу логина
-                    // если прилетает 200, то всё ок
 
                     ChooseAnswerService(context).execute(
                             mapOf(Pair(testData.id, Collections.emptyList())),

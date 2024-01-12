@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.LocalContext
 import com.example.volchonok.RemoteInfoStorage
 import com.example.volchonok.data.NoteData
 import com.example.volchonok.data.TestData
@@ -12,12 +13,14 @@ import com.example.volchonok.enums.LessonScreenType
 import com.example.volchonok.interfaces.ILesson
 import com.example.volchonok.screens.vidgets.others.InfoHeader
 import com.example.volchonok.screens.vidgets.others.TopAppBar
+import com.example.volchonok.services.CheckUserToken
 import com.example.volchonok.utils.ShowToast
 
 class LessonScreen(
     private val lessonData: ILesson,
     private val onBackClick: () -> Unit,
     private val toProfile: () -> Unit,
+    private val onCompleteBtn: () -> Boolean,
 ) {
     private var currentLessonScreen: MutableState<LessonScreenType> = mutableStateOf(
         if (lessonData is TestData && lessonData.isCompleted) LessonScreenType.TestResultsScreen
@@ -39,7 +42,7 @@ class LessonScreen(
             when (currentLessonScreen.value) {
                 LessonScreenType.TestResultsScreen -> {
                     if (RemoteInfoStorage.checkCourseDataLevel(CourseDataAccessLevel.TESTS_DATA)) {
-                        TestResultsScreen(lessonData as TestData, onBackClick) {
+                        TestResultsScreen(lessonData as TestData, onCompleteBtn) {
                             currentLessonScreen.value = LessonScreenType.TestScreen
                         }.Create()
                     } else {
@@ -58,7 +61,7 @@ class LessonScreen(
                 }
 
                 LessonScreenType.NoteScreen -> NoteScreen(
-                    (lessonData as NoteData), onBackClick
+                    (lessonData as NoteData), onCompleteBtn
                 ).Create()
             }
         }

@@ -52,7 +52,8 @@ import kotlinx.coroutines.withContext
 
 class LoginScreen(
     private val toSplashScreen: () -> Unit,
-    private val getLoginResult: (loginText: String, passwordText: String) -> Double
+    private val getLoginResult: (loginText: String, passwordText: String) -> Double,
+    private val isTokenTimeout: Boolean = false
 ) {
     private var usernameText: MutableState<String>? = null
     private var passwordText: MutableState<String>? = null
@@ -107,6 +108,7 @@ class LoginScreen(
 
     @Composable
     private fun MakeErrorText() {
+        if (isTokenTimeout) errorText!!.value = stringResource(id = R.string.token_timeout)
         AnimatedContent(
             targetState = errorText!!.value, transitionSpec = {
                 scaleIn(tween(500)) togetherWith scaleOut(tween(100))

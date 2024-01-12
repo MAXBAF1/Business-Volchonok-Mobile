@@ -47,7 +47,7 @@ import kotlinx.coroutines.withContext
 
 class NoteScreen(
     private val note: NoteData,
-    private val onCompleteBtn: () -> Unit,
+    private val onCompleteBtn: () -> Boolean,
 ) {
     private val msgStates = mutableStateListOf<Boolean>()
     private var sendBtnShowed = mutableStateOf(false)
@@ -107,13 +107,7 @@ class NoteScreen(
             DefaultButton(
                 text = stringResource(id = if (note.isCompleted) R.string.read else R.string.complete).uppercase(),
                 onClick = {
-                    onCompleteBtn.invoke()
-
-//                    Log.d("TAG", CheckUserToken(ctx).execute().get().toString())
-//                    //TODO если тут возвращается Double.NaN,
-//                    // то нужно переместить пользователя на страницу логина
-//                    // если прилетает 200, то всё ок
-
+                    if (!onCompleteBtn.invoke()) return@DefaultButton
 
                     rcs.launch {
                         withContext(Dispatchers.IO) {

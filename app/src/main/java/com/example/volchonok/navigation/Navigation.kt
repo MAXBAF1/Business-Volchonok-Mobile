@@ -23,6 +23,7 @@ import com.example.volchonok.screens.NetworkErrorScreen
 import com.example.volchonok.screens.ProfileScreen
 import com.example.volchonok.screens.SplashScreen
 import com.example.volchonok.screens.WelcomeScreen
+import com.example.volchonok.services.CheckUserToken
 import com.example.volchonok.services.LoginService
 import com.example.volchonok.services.UpdateUserInfoService
 import com.example.volchonok.services.UserInfoService
@@ -34,6 +35,7 @@ class Navigation {
     private var selectedModule: ModuleData? = null
     private var selectedLesson: ILesson? = null
     private var isSplashDownload = false
+    private var isTokenTimeout = false
 
     @Composable
     fun Create() {
@@ -85,7 +87,7 @@ class Navigation {
             navController!!.navigate(SPLASH_SCREEN_ROUTE)
         }, getLoginResult = { loginText, passwordText ->
             return@LoginScreen LoginService(ctx).execute(loginText, passwordText).get()
-        }).Create()
+        }, isTokenTimeout = isTokenTimeout).Create()
     }
 
     @Composable
@@ -102,7 +104,6 @@ class Navigation {
 
         selectedCourse?.let { courseData ->
             if (RemoteInfoStorage.checkCourseDataLevel(CourseDataAccessLevel.NOTES_DATA)) {
-
                 CourseInfoScreen(courseData = courseData, toLessonsScreen = {
                     selectedModule = it
                     navController!!.navigate(LESSONS_SCREEN_ROUTE)
@@ -134,13 +135,26 @@ class Navigation {
 
     @Composable
     private fun CreateLessonScreen() {
+        val context = LocalContext.current
         selectedLesson?.let {
             if (RemoteInfoStorage.checkCourseDataLevel(CourseDataAccessLevel.NOTES_DATA)) {
-                LessonScreen(
-                    lessonData = it,
+                LessonScreen(lessonData = it,
                     onBackClick = { navController!!.popBackStack() },
                     toProfile = { navController!!.navigate(PROFILE_SCREEN_ROUTE) },
-                ).Create()
+                    onCompleteBtn = {
+                            val result = CheckUserToken(context).execute().get()
+                            if (result.isNaN()) {
+                                isTokenTimeout = true
+                                navController!!.navigate(LOGIN_SCREEN_ROUTE) {
+                                    popUpTo(LOGIN_SCREEN_ROUTE) { inclusive = true }
+                                }
+                                false
+                            } else {
+                                navController!!.popBackStack()
+                                true
+                            }
+                        }
+                    ).Create()
             } else {
                 Log.d("TAG", "Данные грузятся!")
                 ShowToast()

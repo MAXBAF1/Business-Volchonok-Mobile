@@ -117,7 +117,7 @@ class TopAppBar(
                     modifier = Modifier.size(36.dp)
                 )
                 Text(
-                    userData!!.coins.toString(),
+                    userData?.coins.toString(),
                     Modifier.padding(15.dp, 0.dp),
                     color = MaterialTheme.colorScheme.onPrimary,
                     style = MaterialTheme.typography.labelLarge

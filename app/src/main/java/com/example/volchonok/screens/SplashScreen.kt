@@ -81,9 +81,9 @@ class SplashScreen(
         var isInvalidDataSaved by remember { mutableStateOf(false) }
         val checkTokenCode = CheckUserToken(context).execute().get()
 
-        if (checkTokenCode.isNaN() || isInvalidDataSaved)
+        if (checkTokenCode.isNaN() || isInvalidDataSaved) {
             toWelcomeScreen()
-        else {
+        } else {
             LaunchedEffect(Int) {
 
                 launch {
