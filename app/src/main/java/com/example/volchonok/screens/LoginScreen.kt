@@ -37,12 +37,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.volchonok.R
 import com.example.volchonok.RemoteInfoStorage
+import com.example.volchonok.RemoteInfoStorage.setUserData
 import com.example.volchonok.data.CourseData
 import com.example.volchonok.data.TestData
 import com.example.volchonok.enums.CourseDataAccessLevel
 import com.example.volchonok.screens.vidgets.others.DefaultButton
 import com.example.volchonok.screens.vidgets.others.StylizedTextInput
 import com.example.volchonok.services.CompletedAnswersService
+import com.example.volchonok.services.UserInfoService
 import com.example.volchonok.services.enums.ServiceStringValue
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
@@ -107,6 +109,7 @@ class LoginScreen(
             200.0 -> {
                 sharedPreferences?.edit()?.putBoolean(IS_FIRST_LOGIN_KEY, false)?.apply()
                 toSplashScreen()
+                setUserData(UserInfoService(LocalContext.current).execute().get())
             }
 
             -1000.0 -> errorText?.value = stringResource(id = R.string.incorrect)
@@ -183,46 +186,6 @@ class LoginScreen(
         enabled = usernameText!!.value.isNotEmpty() && passwordText!!.value.isNotEmpty()
         DefaultButton(stringResource(id = R.string.log_in).uppercase(), enabled = enabled) {
             tryLogin?.value = true
-        }
-    }
-
-    private fun loadCompletedAnswers(data: List<CourseData>, context: Context) {
-        val tests = mutableMapOf<Int, MutableMap<Int, MutableList<Int>>>()
-        val completedTests = mutableListOf<TestData>()
-        val completedAnswersId = mutableListOf<Int>()
-
-        // беру все вопросы из РЕШЁННЫХ тестов
-        data.forEach { course ->
-            course.modules.forEach { module ->
-                completedTests.addAll(module.lessonTests.filter { it.isCompleted }
-                    .map { it as TestData })
-            }
-        }
-
-        // сливаю в мапу [id вопроса; ответы]
-        completedTests.forEach { test ->
-            test.questions.forEach { question ->
-                val answersId = question.answers.map { it.id }.toMutableList()
-
-                if (tests.containsKey(test.id)) tests[test.id]?.put(question.id, answersId)
-                else tests[test.id] = mutableMapOf(Pair(question.id, answersId))
-
-            }
-        }
-
-
-        // в лоб проверяю, какие ответы есть в бд (решённые вопросы по id теста)
-        tests.forEach { test ->
-            completedAnswersId.addAll(CompletedAnswersService(context).execute(test.key).get())
-        }
-
-        // в найденные ответы ставлю wasChoosedByUser
-        completedTests.forEach { test ->
-            test.questions.forEach { question ->
-                question.answers.forEach { answer ->
-                    answer.wasChooseByUser = completedAnswersId.contains(answer.id)
-                }
-            }
         }
     }
 

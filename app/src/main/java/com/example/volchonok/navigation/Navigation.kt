@@ -10,6 +10,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.volchonok.RemoteInfoStorage
+import com.example.volchonok.RemoteInfoStorage.getUserData
+import com.example.volchonok.RemoteInfoStorage.setUserData
 import com.example.volchonok.data.CourseData
 import com.example.volchonok.data.ModuleData
 import com.example.volchonok.enums.CourseDataAccessLevel
@@ -164,12 +166,12 @@ class Navigation {
 
     @Composable
     private fun CreateProfileScreen() {
-        val userData = RemoteInfoStorage.getUserData()
+        val userData = getUserData()
         val context = LocalContext.current
         val wasUserDataChanged = remember { mutableStateOf(false) }
 
         if (userData == null) {
-            RemoteInfoStorage.setUserData(UserInfoService(context).execute().get())
+            setUserData(UserInfoService(context).execute().get())
         }
         if (RemoteInfoStorage.checkCourseDataLevel(CourseDataAccessLevel.NOTES_DATA)) {
             ProfileScreen(
