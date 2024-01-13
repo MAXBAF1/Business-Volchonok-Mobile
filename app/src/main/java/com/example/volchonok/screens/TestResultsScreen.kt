@@ -118,11 +118,11 @@ class TestResultsScreen(
         )
         for (j in question.answers.indices) {
             if (question.answers[j].wasChooseByUser) {
-                Answer(question.answers[j], question.answers[j].isCorrect && isEnd)
+                Answer(question.answers[j], question.answers[j].correct && isEnd)
             }
         }
         for (j in question.answers.indices) {
-            if (question.answers[j].isCorrect && !question.answers[j].wasChooseByUser) {
+            if (question.answers[j].correct && !question.answers[j].wasChooseByUser) {
                 Answer(question.answers[j], isEnd, true)
             }
         }
@@ -132,12 +132,12 @@ class TestResultsScreen(
     private fun Answer(
         answerData: AnswerData, isEnd: Boolean = false, itsAdditional: Boolean = false
     ) {
-        val color = if (answerData.isCorrect) {
+        val color = if (answerData.correct) {
             MaterialTheme.colorScheme.primary
         } else MaterialTheme.colorScheme.error
         val answerColor =
             if (itsAdditional) MaterialTheme.colorScheme.onBackground else color
-        val icon = if (answerData.isCorrect) {
+        val icon = if (answerData.correct) {
             R.drawable.ic_correct_answer
         } else R.drawable.ic_wrong_answer
         Row(

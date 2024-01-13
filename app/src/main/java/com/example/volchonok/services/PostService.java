@@ -71,7 +71,6 @@ public abstract class PostService<In> extends AbstractService<In, Double> {
                     sharedPreferences.edit()
                             .remove("UNIQUE_KEY")
                             .apply();
-                    Log.d("TAG", "=============== " + new ObjectMapper().convertValue(getCoursesData(ctx, ONLY_COURSES_DATA), String.class));
                     sharedPreferences.edit()
                             .putString(
                                     "UNIQUE_KEY", new ObjectMapper().writeValueAsString(getCoursesData(ctx, ONLY_COURSES_DATA))

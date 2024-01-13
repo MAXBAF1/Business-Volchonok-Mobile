@@ -1,6 +1,5 @@
 package com.example.volchonok.screens
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,16 +10,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableIntState
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -43,7 +36,7 @@ class TestScreen(
     fun Create() {
         val questionNumber = remember { mutableIntStateOf(0) }
         val currQuestion = testData.questions[questionNumber.intValue]
-        itsMultipleAnswersQuestion.value = currQuestion.answers.count { it.isCorrect } > 1
+        itsMultipleAnswersQuestion.value = currQuestion.answers.count { it.correct } > 1
         val chooseAnswerText = if (itsMultipleAnswersQuestion.value) {
             R.string.choose_answers
         } else R.string.choose_answer
