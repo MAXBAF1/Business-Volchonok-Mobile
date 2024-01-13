@@ -60,14 +60,14 @@ public abstract class PostService<In> extends AbstractService<In, Double> {
             );
 
             if (response.code() == 200) {
+                RemoteInfoStorage.setContext(ctx);
+                SharedPreferences sharedPreferences = RemoteInfoStorage.getSharedPreferences();
 
                 if (List.of(LOGIN_REQUEST_ADDRESS.getValue(), REFRESH_TOKENS_REQUEST_ADDRESS.getValue()).contains(url)) {
-                    ServiceUtil.saveTokensToPreferences(responseBodyAsMap, sPref.edit());
+                    ServiceUtil.saveTokensToPreferences(responseBodyAsMap, sharedPreferences.edit());
                 }
 
                 if (!LOGIN_REQUEST_ADDRESS.getValue().equals(url)) {
-                    RemoteInfoStorage.setContext(ctx);
-                    SharedPreferences sharedPreferences = RemoteInfoStorage.getSharedPreferences();
                     sharedPreferences.edit()
                             .remove("UNIQUE_KEY")
                             .apply();

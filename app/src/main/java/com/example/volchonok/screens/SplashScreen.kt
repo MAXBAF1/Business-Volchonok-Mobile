@@ -1,7 +1,6 @@
 package com.example.volchonok.screens
 
 import android.content.Context
-import android.content.Context.MODE_PRIVATE
 import android.util.Log
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.keyframes
@@ -102,13 +101,14 @@ class SplashScreen(
                         setContext(context)
 
                         val sharedPreferences = getSharedPreferences()
-
                         val s = sharedPreferences.getString("UNIQUE_KEY", "")
 
                         try {
                             setCoursesData(mapper.readValue<List<CourseData>>(s!!))
                         } catch (e: MismatchedInputException) {
                             e.printStackTrace()
+                            Log.e("TAG", "=========================================================================++", e)
+                            Log.d("TAG", sharedPreferences.all.toString())
                             isInvalidDataSaved = true
                         }
                     }
@@ -154,9 +154,8 @@ class SplashScreen(
                     )
 
                     // сохраняем джэйсоном всё локально
-                    val sPref = context.getSharedPreferences(
-                        ServiceStringValue.SHARED_PREFERENCES_NAME.name, Context.MODE_PRIVATE
-                    )
+                    setContext(context)
+                    val sPref = getSharedPreferences()
                     sPref.edit().putString(
                         "UNIQUE_KEY", ObjectMapper().registerKotlinModule().writeValueAsString(data)
                     ).apply()

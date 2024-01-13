@@ -51,7 +51,6 @@ public class UserInfoService extends AsyncTask<Void, Void, UserData> {
 
 
         try {
-            Log.d("TAG", "UserInfo: " + response);
             return response == null ? null : new ObjectMapper().readValue(response, UserData.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
