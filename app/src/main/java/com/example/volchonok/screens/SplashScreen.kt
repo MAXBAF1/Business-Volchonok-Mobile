@@ -102,7 +102,6 @@ class SplashScreen(
                         setContext(context)
 
                         val sharedPreferences = getSharedPreferences()
-
                         val s = sharedPreferences.getString("UNIQUE_KEY", "")
 
                         try {
