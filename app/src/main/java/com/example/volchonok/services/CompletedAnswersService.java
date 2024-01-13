@@ -62,6 +62,8 @@ public class CompletedAnswersService extends GetService<Integer, List<Integer>> 
                 }
         );
 
+        Log.d("TAG", "getCompletedAnswers: " + result);
+
         return result;
     }
 

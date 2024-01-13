@@ -1,8 +1,12 @@
 package com.example.volchonok.services;
 
+import static com.example.volchonok.RemoteInfoStorage.getSharedPreferences;
+import static com.example.volchonok.RemoteInfoStorage.setContext;
+
 import android.content.Context;
 import android.util.Log;
 
+import com.example.volchonok.RemoteInfoStorage;
 import com.example.volchonok.services.enums.ServiceStringValue;
 
 import java.util.Collections;
@@ -20,8 +24,8 @@ public class ChooseAnswerService extends PostService<Map<Integer, List<Integer>>
     public ChooseAnswerService(Context ctx) {
         super(ctx);
         this.requestAddress = ServiceStringValue.COMPLETED_QUESTIONS_REQUEST_ADDRESS;
-        accessToken = ctx
-                .getSharedPreferences(ServiceStringValue.SHARED_PREFERENCES_NAME.getValue(), Context.MODE_PRIVATE)
+        setContext(ctx);
+        accessToken = getSharedPreferences()
                 .getString(ServiceStringValue.ACCESS_TOKEN_KEY.getValue(), "");
     }
 
@@ -46,6 +50,8 @@ public class ChooseAnswerService extends PostService<Map<Integer, List<Integer>>
                 requestBody,
                 Collections.singletonMap("Authorization", String.format("Bearer %s", accessToken))
         );
+
+        Log.d("TAG", "marked: " + responseCode);
 
         return responseCode.intValue();
     }

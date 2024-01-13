@@ -34,14 +34,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.volchonok.R
-import com.example.volchonok.RemoteInfoStorage
 import com.example.volchonok.RemoteInfoStorage.*
 import com.example.volchonok.data.CourseData
 import com.example.volchonok.data.TestData
 import com.example.volchonok.enums.CourseDataAccessLevel
 import com.example.volchonok.services.CheckUserToken
 import com.example.volchonok.services.CompletedAnswersService
-import com.example.volchonok.services.enums.ServiceStringValue
 import com.example.volchonok.utils.isInternetAvailable
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -107,7 +105,11 @@ class SplashScreen(
                             setCoursesData(mapper.readValue<List<CourseData>>(s!!))
                         } catch (e: MismatchedInputException) {
                             e.printStackTrace()
-                            Log.e("TAG", "=========================================================================++", e)
+                            Log.e(
+                                "TAG",
+                                "=========================================================================++",
+                                e
+                            )
                             Log.d("TAG", sharedPreferences.all.toString())
                             isInvalidDataSaved = true
                         }
@@ -147,7 +149,7 @@ class SplashScreen(
 
                     val data = getCoursesData(context, CourseDataAccessLevel.QUESTIONS_DATA)
                     imageHeight += oneHeightPart
-                    loadCompletedAnswers(data, context)
+//                    loadCompletedAnswers(data, context)
                     Log.d(
                         "TAG",
                         "[login] Download time: ${(System.currentTimeMillis() - start) / 1000.0} s"
@@ -163,41 +165,67 @@ class SplashScreen(
             }
         }
     }
-
-    private fun loadCompletedAnswers(data: List<CourseData>, context: Context) {
-        val tests = mutableMapOf<Int, MutableMap<Int, List<Int>>>()
-        val completedTests = mutableListOf<TestData>()
-        val completedAnswersId = mutableListOf<Int>()
-
-        // беру все вопросы из РЕШЁННЫХ тестов
-        data.forEach { course ->
-            course.modules.forEach { module ->
-                completedTests.addAll(module.lessonTests.filter { it.isCompleted }.map { it })
-            }
-        }
-
-        // сливаю в мапу [id вопроса; ответы]
-        completedTests.forEach { test ->
-            test.questions.forEach { question ->
-                val answersId = question.answers.map { answer -> answer.id }
-                tests[test.id]?.set(question.id, answersId)
-            }
-        }
-
-        // в лоб проверяю, какие ответы есть в бд (решённые вопросы по id теста)
-        tests.forEach { test ->
-            completedAnswersId.addAll(CompletedAnswersService(context).execute(test.key).get())
-        }
-
-        // в найденные ответы ставлю wasChoosedByUser
-        completedTests.forEach { test ->
-            test.questions.forEach { question ->
-                question.answers.forEach { answer ->
-                    answer.wasChooseByUser = completedAnswersId.contains(answer.id)
-                }
-            }
-        }
-    }
+//
+//    private fun loadCompletedAnswers(data: List<CourseData>, context: Context) {
+//        val tests = mutableMapOf<Int, MutableMap<Int, List<Int>>>()
+//        val completedTests = mutableListOf<TestData>()
+//        val chosenAnswersId = mutableListOf<Int>()
+//
+//        // беру все вопросы из РЕШЁННЫХ тестов
+//        data.forEach { course ->
+//            course.modules.forEach { module ->
+//                completedTests.addAll(module.lessonTests.filter { it.isCompleted }.map { it })
+//            }
+//        }
+//
+//        // сливаю в мапу [id вопроса; ответы]
+//        completedTests.forEach { test ->
+//            test.questions.forEach { question ->
+//                val answersId = question.answers.map { answer -> answer.id }
+//                tests[test.id]?.set(question.id, answersId)
+//            }
+//        }
+//
+//        // в лоб проверяю, какие ответы есть в бд (решённые вопросы по id теста)
+//        tests.forEach { test ->
+//            chosenAnswersId.addAll(CompletedAnswersService(context).execute(test.key).get())
+//        }
+//
+//        // в найденные ответы ставлю wasChoosedByUser
+//        completedTests.forEach { test ->
+//            test.questions.forEach { question ->
+//                question.answers.forEach { answer ->
+//                    answer.wasChooseByUser = chosenAnswersId.contains(answer.id)
+//                }
+//            }
+//        }
+//
+//        Log.d("TAG", "checked answers: " + chosenAnswersId)
+//
+//        val coursesData = getCoursesData(context, CourseDataAccessLevel.ONLY_COURSES_DATA)
+//        coursesData.forEach { course ->
+//            course.modules.forEach { module ->
+//                module.lessonTests.forEach { test ->
+//                    test.isCompleted = completedTests.any { t -> t == test }
+//                    test.questions.forEach { question ->
+//                        question.answers.forEach { answer ->
+//                            answer.wasChooseByUser = chosenAnswersId.any { a -> a == answer.id }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//
+//
+//        val sPref = getSharedPreferences()
+//        if (sPref.contains("UNIQUE_KEY")) {
+//            sPref.edit().remove("UNIQUE_KEY").apply()
+//
+//            sPref.edit().putString(
+//                "UNIQUE_KEY", ObjectMapper().registerKotlinModule().writeValueAsString(data)
+//            ).apply()
+//        }
+//    }
 
     @Composable
     private fun CreateAnimation() {
@@ -205,7 +233,8 @@ class SplashScreen(
         LaunchedEffect(Unit) {
             isAnimationStart = true
         }
-        imageHeightState = animateDpAsState(targetValue = if (isAnimationStart) 500.dp else 0.dp,
+        imageHeightState = animateDpAsState(
+            targetValue = if (isAnimationStart) 500.dp else 0.dp,
             animationSpec = keyframes {
                 durationMillis = 3000
             },

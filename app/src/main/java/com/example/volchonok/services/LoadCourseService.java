@@ -35,7 +35,7 @@ import java.util.Map;
 
 public class LoadCourseService extends GetService<Pair<CourseDataAccessLevel, List<CourseData>>, List<CourseData>> {
     protected final Gson gson;
-    private final Map<String, List<String>> completedItems;
+    private final Map<String, List<Integer>> completedItems;
 
     public LoadCourseService(Context ctx) {
         super(ctx);
@@ -87,7 +87,8 @@ public class LoadCourseService extends GetService<Pair<CourseDataAccessLevel, Li
                 if (false) break;
             }
 
-        } catch (JSONException ignored) {}
+        } catch (JSONException ignored) {
+        }
 
         courses.add(new CourseData(
                 courseId,
@@ -218,7 +219,8 @@ public class LoadCourseService extends GetService<Pair<CourseDataAccessLevel, Li
                                 answer.getString(TEXT_KEY.getValue()),
                                 answer.getBoolean(IS_RIGHT_KEY.getValue()),
                                 answer.getString(EXPLANATION_KEY.getValue()),
-                                false
+                                isItemCompleted(COMPLETED_QUESTIONS_REQUEST_ADDRESS.getValue() + testQuestionId,
+                                        (double) answer.getInt(ID_KEY.getValue()))
                         ));
                     } catch (JSONException ex) {
                         throw new RuntimeException(ex);
@@ -234,15 +236,34 @@ public class LoadCourseService extends GetService<Pair<CourseDataAccessLevel, Li
         }
     }
 
-    private boolean isItemCompleted(String requestAddress, Double noteId) {
-        if (!completedItems.containsKey(requestAddress))
-            completedItems.put(
-                    requestAddress,
-                    ServiceUtil.getJsonAsList(sendGetRequestToURL(requestAddress))
-            );
+    private boolean isItemCompleted(String requestAddress, Double itemId) {
+        if (!completedItems.containsKey(requestAddress)) {
+            if (!requestAddress.contains(COMPLETED_QUESTIONS_REQUEST_ADDRESS.getValue()))
+                completedItems.put(
+                        requestAddress,
+                        ServiceUtil.getJsonAsList(sendGetRequestToURL(requestAddress))
+                );
+            else {
+                try {
+                    JSONArray questions = new JSONArray(sendGetRequestToURL(requestAddress));
+                    JSONArray answers;
+                    if (questions.length() > 0) {
+                        answers = questions.getJSONObject(0).getJSONArray("answers");
+
+                        completedItems.put(requestAddress, new ArrayList<>());
+
+                        for (int i = 0; i < answers.length(); i++) {
+                            completedItems.get(requestAddress).add(answers.getJSONObject(i).getInt("answer_id"));
+                        }
+                    }
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
 
         return completedItems.containsKey(requestAddress)
-                && completedItems.get(requestAddress).contains(noteId.intValue());
+                && completedItems.get(requestAddress).contains(itemId.intValue());
     }
 
 

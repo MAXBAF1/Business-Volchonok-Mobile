@@ -1,6 +1,8 @@
 package com.example.volchonok.services;
 
 import static com.example.volchonok.RemoteInfoStorage.getCoursesData;
+import static com.example.volchonok.RemoteInfoStorage.getSharedPreferences;
+import static com.example.volchonok.RemoteInfoStorage.setContext;
 import static com.example.volchonok.services.enums.ServiceStringValue.COMPLETED_COURSES_REQUEST_ADDRESS;
 import static com.example.volchonok.services.enums.ServiceStringValue.COMPLETED_MODULES_REQUEST_ADDRESS;
 import static com.example.volchonok.services.enums.ServiceStringValue.CONTENT_TYPE_JSON;
@@ -10,6 +12,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.example.volchonok.RemoteInfoStorage;
 import com.example.volchonok.data.ModuleData;
 import com.example.volchonok.data.NoteData;
 import com.example.volchonok.data.TestData;
@@ -37,8 +40,8 @@ public class CompleteCourseService extends PostService<Integer> {
     public CompleteCourseService(ServiceStringValue requestAddress, Context ctx) {
         super(ctx);
         this.requestAddress = requestAddress;
-        accessToken = ctx
-                .getSharedPreferences(ServiceStringValue.SHARED_PREFERENCES_NAME.getValue(), Context.MODE_PRIVATE)
+        setContext(ctx);
+        accessToken = getSharedPreferences()
                 .getString(ServiceStringValue.ACCESS_TOKEN_KEY.getValue(), "");
     }
 
@@ -66,8 +69,6 @@ public class CompleteCourseService extends PostService<Integer> {
                                         .flatMap(m -> m.getLessonNotes().stream())
                                         .allMatch(ILesson::isCompleted)) {
 
-                                    Log.d("TAG", "course complete: " + course.getId());
-
                                     new CompleteCourseService(COMPLETED_COURSES_REQUEST_ADDRESS, ctx)
                                             .execute(course.getId());
                                 }
@@ -78,8 +79,8 @@ public class CompleteCourseService extends PostService<Integer> {
                             .forEach(course ->
                                     course.getModules().forEach(module -> {
                                         module.getLessonNotes().stream()
-                                                .filter(note -> ids.contains(((NoteData) note).getId()))
-                                                .forEach(note -> ((NoteData) note).setCompleted(true));
+                                                .filter(note -> ids.contains(note.getId()))
+                                                .forEach(note -> note.setCompleted(true));
 
                                         if (Stream.concat(module.getLessonTests().stream(),
                                                 module.getLessonNotes().stream())
@@ -96,8 +97,8 @@ public class CompleteCourseService extends PostService<Integer> {
                             .forEach(course ->
                                     course.getModules().forEach(module -> {
                                         module.getLessonTests().stream()
-                                                .filter(test -> ids.contains(((TestData) test).getId()))
-                                                .forEach(test -> ((TestData) test).setCompleted(true));
+                                                .filter(test -> ids.contains(test.getId()))
+                                                .forEach(test -> test.setCompleted(true));
 
                                         if (Stream.concat(module.getLessonTests().stream(),
                                                         module.getLessonNotes().stream())
