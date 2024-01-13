@@ -1,13 +1,23 @@
 package com.example.volchonok.services;
 
+import static android.content.Context.MODE_PRIVATE;
+import static com.example.volchonok.RemoteInfoStorage.getCoursesData;
+import static com.example.volchonok.enums.CourseDataAccessLevel.ONLY_COURSES_DATA;
 import static com.example.volchonok.services.enums.ServiceStringValue.ACCESS_TOKEN_KEY;
 import static com.example.volchonok.services.enums.ServiceStringValue.LOGIN_REQUEST_ADDRESS;
 import static com.example.volchonok.services.enums.ServiceStringValue.REFRESH_TOKENS_REQUEST_ADDRESS;
 import static com.example.volchonok.services.enums.ServiceStringValue.REQUEST_METHOD_POST;
 import static com.example.volchonok.services.enums.ServiceStringValue.RESPONSE_STATUS_KEY;
+import static com.example.volchonok.services.enums.ServiceStringValue.SHARED_PREFERENCES_NAME;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
+
+import com.example.volchonok.RemoteInfoStorage;
+import com.example.volchonok.enums.CourseDataAccessLevel;
+import com.example.volchonok.services.enums.ServiceStringValue;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -49,8 +59,25 @@ public abstract class PostService<In> extends AbstractService<In, Double> {
                     String.valueOf(responseBodyAsMap.get(RESPONSE_STATUS_KEY.getValue()))
             );
 
-            if (response.code() == 200 && List.of(LOGIN_REQUEST_ADDRESS.getValue(), REFRESH_TOKENS_REQUEST_ADDRESS.getValue()).contains(url)) {
-                ServiceUtil.saveTokensToPreferences(responseBodyAsMap, sPref.edit());
+            if (response.code() == 200) {
+
+                if (List.of(LOGIN_REQUEST_ADDRESS.getValue(), REFRESH_TOKENS_REQUEST_ADDRESS.getValue()).contains(url)) {
+                    ServiceUtil.saveTokensToPreferences(responseBodyAsMap, sPref.edit());
+                }
+
+                if (!LOGIN_REQUEST_ADDRESS.getValue().equals(url)) {
+                    RemoteInfoStorage.setContext(ctx);
+                    SharedPreferences sharedPreferences = RemoteInfoStorage.getSharedPreferences();
+                    sharedPreferences.edit()
+                            .remove("UNIQUE_KEY")
+                            .apply();
+                    Log.d("TAG", "=============== " + new ObjectMapper().convertValue(getCoursesData(ctx, ONLY_COURSES_DATA), String.class));
+                    sharedPreferences.edit()
+                            .putString(
+                                    "UNIQUE_KEY", new ObjectMapper().writeValueAsString(getCoursesData(ctx, ONLY_COURSES_DATA))
+                            ).apply();
+                }
+
             }
 
             return responseCode;

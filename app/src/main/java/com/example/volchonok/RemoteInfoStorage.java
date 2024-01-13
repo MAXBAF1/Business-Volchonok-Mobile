@@ -1,6 +1,7 @@
 package com.example.volchonok;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.util.Pair;
 
@@ -9,6 +10,7 @@ import com.example.volchonok.data.TestData;
 import com.example.volchonok.data.UserData;
 import com.example.volchonok.enums.CourseDataAccessLevel;
 import com.example.volchonok.services.LoadCourseService;
+import com.example.volchonok.services.enums.ServiceStringValue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,11 +18,8 @@ import java.util.concurrent.ExecutionException;
 
 public class RemoteInfoStorage {
     private static UserData userData;
-
-    public static void setCoursesData(List<CourseData> coursesData) {
-        RemoteInfoStorage.coursesData = coursesData;
-    }
-
+    private static SharedPreferences sharedPreferences;
+    private static Context context;
     private static List<CourseData> coursesData;
     private static boolean wasSentRefreshRequest;
 
@@ -50,6 +49,10 @@ public class RemoteInfoStorage {
         }
 
         return coursesData;
+    }
+
+    public static void setCoursesData(List<CourseData> coursesData) {
+        RemoteInfoStorage.coursesData = coursesData;
     }
 
     public static boolean checkCourseDataLevel(CourseDataAccessLevel level) {
@@ -92,7 +95,18 @@ public class RemoteInfoStorage {
         return wasSentRefreshRequest;
     }
 
+    public static void setContext(Context context) {
+        if (RemoteInfoStorage.context == null) {
+            RemoteInfoStorage.context = context;
+            RemoteInfoStorage.sharedPreferences = context.getSharedPreferences(ServiceStringValue.SHARED_PREFERENCES_NAME.getValue(), Context.MODE_PRIVATE);
+        }
+    }
+
     public static void setWasSentRefreshRequest(boolean wasSentRefreshRequest) {
         RemoteInfoStorage.wasSentRefreshRequest = wasSentRefreshRequest;
+    }
+
+    public static SharedPreferences getSharedPreferences() {
+        return sharedPreferences;
     }
 }

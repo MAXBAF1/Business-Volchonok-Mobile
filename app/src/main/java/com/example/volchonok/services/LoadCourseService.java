@@ -1,5 +1,6 @@
 package com.example.volchonok.services;
 
+import static com.example.volchonok.RemoteInfoStorage.setCoursesData;
 import static com.example.volchonok.services.enums.ServiceStringValue.*;
 
 import android.content.Context;
@@ -18,6 +19,8 @@ import com.example.volchonok.enums.AuthorType;
 import com.example.volchonok.enums.CourseDataAccessLevel;
 import com.example.volchonok.enums.MessageType;
 import com.example.volchonok.interfaces.ILesson;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
@@ -39,6 +42,7 @@ public class LoadCourseService extends GetService<Pair<CourseDataAccessLevel, Li
         completedItems = new HashMap<>();
         gson = new Gson();
     }
+
 
     public List<CourseData> getCourses() {
         List<CourseData> response = new ArrayList<>();
