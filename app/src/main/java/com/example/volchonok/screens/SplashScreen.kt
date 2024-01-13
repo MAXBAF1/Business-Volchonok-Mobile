@@ -66,13 +66,14 @@ class SplashScreen(
     fun Create() {
         if (!isInternetAvailable(LocalContext.current)) toNetworkErrorScreen()
 
+        if (!isDownloadStep) CreateAnimation()
+        CreateUI()
+
         if (isDownloadStep) {
             DownloadAllData()
         } else {
-            CreateAnimation()
             SetData()
         }
-        CreateUI()
     }
 
     @Composable
