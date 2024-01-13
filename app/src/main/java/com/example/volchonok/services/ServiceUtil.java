@@ -75,6 +75,5 @@ public class ServiceUtil {
                 .putString(REFRESH_TOKEN_KEY.getValue(),
                         String.valueOf(tokens.get(REFRESH_TOKEN_KEY.getValue())))
                 .apply();
-        Log.d("TAG", "svd: ");
     }
 }

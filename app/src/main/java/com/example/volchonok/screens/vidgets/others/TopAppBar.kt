@@ -59,8 +59,6 @@ class TopAppBar(
             userData = UserInfoService(context).execute().get()
         }
 
-        Log.d("TAG", "ud: $userData")
-
         backgroundColor = if (isLessonScreen) {
             MaterialTheme.colorScheme.primary
         } else MaterialTheme.colorScheme.background

@@ -29,7 +29,7 @@ public class UpdateUserInfoService extends PostService<UserData> {
                 ServiceStringValue.USER_INFO_REQUEST_ADDRESS.getValue(),
                 RequestBody.create(
                         String.format(Locale.ROOT,
-                                "{\"email\":\"%s\", \"phone\":\"%s\", \"avatar\":\"%d\"}",
+                                "{\"email\":\"%s\", \"phone\":\"%s\", \"avatar\":\"%s\"}",
                                 userData.getEmail(), userData.getPhone(), userData.getAvatar()),
                         MediaType.get(ServiceStringValue.MEDIA_TYPE_JSON.getValue())
                 ),
