@@ -41,20 +41,17 @@ public class UserInfoService extends AsyncTask<Void, Void, UserData> {
     public UserData getUserInfo() {
         if (userData != null) return userData;
 
-        String a = ctx.getSharedPreferences(SHARED_PREFERENCES_NAME.getValue(), Context.MODE_PRIVATE).getString(ACCESS_TOKEN_KEY.getValue(), "");
-        Log.d("TAG", "BEFORE: " + a);
         String response = tryGetUserInfo();
 
         if (response == null && !isWasSentRefreshRequest()) {
             new RefreshTokenService(ctx).execute();
-            a = ctx.getSharedPreferences(SHARED_PREFERENCES_NAME.getValue(), Context.MODE_PRIVATE).getString(ACCESS_TOKEN_KEY.getValue(), "");
-            Log.d("TAG", "AFTER: " + a);
             setWasSentRefreshRequest(true);
             response = tryGetUserInfo();
         }
 
 
         try {
+            Log.d("TAG", "UserInfo: " + response);
             return response == null ? null : new ObjectMapper().readValue(response, UserData.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);

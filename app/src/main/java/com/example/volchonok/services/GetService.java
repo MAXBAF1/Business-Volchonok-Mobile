@@ -35,7 +35,6 @@ public abstract class GetService<In, Out> extends AbstractService<In, Out> {
             Map<String, Object> responseBodyAsMap = ServiceUtil.getJsonAsMap(responseBody.string());
 
             if (response.code() == 403) return null;
-//            Log.d("TAG", "RESPONSE: " + response);
 
             double responseCode = Double.parseDouble(
                     String.valueOf(responseBodyAsMap.get(RESPONSE_STATUS_KEY.getValue()))
