@@ -64,7 +64,10 @@ class SplashScreen(
 
     @Composable
     fun Create() {
-        if (!isInternetAvailable(LocalContext.current)) toNetworkErrorScreen()
+        if (!isInternetAvailable(LocalContext.current)) {
+            toNetworkErrorScreen()
+            return
+        }
 
         if (!isDownloadStep) CreateAnimation()
         CreateUI()
@@ -82,7 +85,7 @@ class SplashScreen(
         var isInvalidDataSaved by remember { mutableStateOf(false) }
         val checkTokenCode = CheckUserToken(context).execute().get()
 
-        if (checkTokenCode.isNaN() || isInvalidDataSaved) {
+        if (checkTokenCode != 200.0 || isInvalidDataSaved) {
             toWelcomeScreen()
         } else {
             LaunchedEffect(Int) {
