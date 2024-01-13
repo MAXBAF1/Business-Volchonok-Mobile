@@ -1,6 +1,7 @@
 package com.example.volchonok.screens
 
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.util.Log
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.keyframes
@@ -83,7 +84,8 @@ class SplashScreen(
     private fun SetData() {
         val context = LocalContext.current
         var isInvalidDataSaved by remember { mutableStateOf(false) }
-        val checkTokenCode = CheckUserToken(context).execute().get()
+        val srvc = CheckUserToken(context)
+        val checkTokenCode = srvc.execute().get()
 
         if (checkTokenCode != 200.0 || isInvalidDataSaved) {
             toWelcomeScreen()
@@ -97,13 +99,16 @@ class SplashScreen(
                             DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false
                         )
 
-                        val sPref = context.getSharedPreferences(
-                            ServiceStringValue.SHARED_PREFERENCES_NAME.name, Context.MODE_PRIVATE
-                        )
-                        val s = sPref.getString("UNIQUE_KEY", "")
+                        RemoteInfoStorage.setContext(context)
+
+                        val sharedPreferences = RemoteInfoStorage.getSharedPreferences()
+
+                        val s = sharedPreferences.getString("UNIQUE_KEY", "")
+
                         try {
                             setCoursesData(mapper.readValue<List<CourseData>>(s!!))
                         } catch (e: MismatchedInputException) {
+                            e.printStackTrace()
                             isInvalidDataSaved = true
                         }
                     }
