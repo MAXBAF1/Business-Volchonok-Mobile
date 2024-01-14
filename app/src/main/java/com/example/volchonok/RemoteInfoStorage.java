@@ -1,5 +1,7 @@
 package com.example.volchonok;
 
+import static com.example.volchonok.services.enums.ServiceStringValue.SHARED_PREFERENCES_NAME;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
@@ -61,25 +63,29 @@ public class RemoteInfoStorage {
                 return coursesData.size() != 0;
             }
             case MODULES_DATA -> {
-                return coursesData.get(0).getModules().size() != 0;
+                return coursesData.stream().allMatch(c -> c.getModules().size() != 0);
             }
             case NOTES_DATA -> {
                 if (checkCourseDataLevel(CourseDataAccessLevel.MODULES_DATA)) {
-                    return coursesData.get(0).getModules().get(0).getLessonNotes().size() != 0;
+                    return coursesData.stream().allMatch(c -> c.getModules()
+                            .stream().allMatch(m -> m.getLessonNotes().size() != 0));
                 } else {
                     return false;
                 }
             }
             case TESTS_DATA -> {
                 if (checkCourseDataLevel(CourseDataAccessLevel.MODULES_DATA)) {
-                    return coursesData.get(0).getModules().get(0).getLessonTests().size() != 0;
+                    return coursesData.stream().allMatch(c -> c.getModules()
+                            .stream().allMatch(m -> m.getLessonTests().size() != 0));
                 } else {
                     return false;
                 }
             }
             case QUESTIONS_DATA -> {
                 if (checkCourseDataLevel(CourseDataAccessLevel.TESTS_DATA)) {
-                    return ((TestData) coursesData.get(0).getModules().get(0).getLessonTests().get(0)).getQuestions().size() != 0;
+                    return coursesData.stream().allMatch(c -> c.getModules()
+                            .stream().allMatch(m -> m.getLessonTests()
+                                    .stream().allMatch(t -> t.getQuestions().size() != 0)));
                 } else {
                     return false;
                 }
@@ -98,7 +104,8 @@ public class RemoteInfoStorage {
     public static void setContext(Context context) {
         if (RemoteInfoStorage.context == null) {
             RemoteInfoStorage.context = context;
-            RemoteInfoStorage.sharedPreferences = context.getSharedPreferences(ServiceStringValue.SHARED_PREFERENCES_NAME.getValue(), Context.MODE_PRIVATE);
+            RemoteInfoStorage.sharedPreferences =
+                    context.getSharedPreferences(SHARED_PREFERENCES_NAME.getValue(), Context.MODE_PRIVATE);
         }
     }
 

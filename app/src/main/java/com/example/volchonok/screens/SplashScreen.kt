@@ -1,6 +1,5 @@
 package com.example.volchonok.screens
 
-import android.content.Context
 import android.util.Log
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.keyframes
@@ -36,10 +35,8 @@ import androidx.compose.ui.unit.dp
 import com.example.volchonok.R
 import com.example.volchonok.RemoteInfoStorage.*
 import com.example.volchonok.data.CourseData
-import com.example.volchonok.data.TestData
 import com.example.volchonok.enums.CourseDataAccessLevel
 import com.example.volchonok.services.CheckUserToken
-import com.example.volchonok.services.CompletedAnswersService
 import com.example.volchonok.utils.isInternetAvailable
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -149,7 +146,6 @@ class SplashScreen(
 
                     val data = getCoursesData(context, CourseDataAccessLevel.QUESTIONS_DATA)
                     imageHeight += oneHeightPart
-//                    loadCompletedAnswers(data, context)
                     Log.d(
                         "TAG",
                         "[login] Download time: ${(System.currentTimeMillis() - start) / 1000.0} s"
@@ -165,67 +161,6 @@ class SplashScreen(
             }
         }
     }
-//
-//    private fun loadCompletedAnswers(data: List<CourseData>, context: Context) {
-//        val tests = mutableMapOf<Int, MutableMap<Int, List<Int>>>()
-//        val completedTests = mutableListOf<TestData>()
-//        val chosenAnswersId = mutableListOf<Int>()
-//
-//        // беру все вопросы из РЕШЁННЫХ тестов
-//        data.forEach { course ->
-//            course.modules.forEach { module ->
-//                completedTests.addAll(module.lessonTests.filter { it.isCompleted }.map { it })
-//            }
-//        }
-//
-//        // сливаю в мапу [id вопроса; ответы]
-//        completedTests.forEach { test ->
-//            test.questions.forEach { question ->
-//                val answersId = question.answers.map { answer -> answer.id }
-//                tests[test.id]?.set(question.id, answersId)
-//            }
-//        }
-//
-//        // в лоб проверяю, какие ответы есть в бд (решённые вопросы по id теста)
-//        tests.forEach { test ->
-//            chosenAnswersId.addAll(CompletedAnswersService(context).execute(test.key).get())
-//        }
-//
-//        // в найденные ответы ставлю wasChoosedByUser
-//        completedTests.forEach { test ->
-//            test.questions.forEach { question ->
-//                question.answers.forEach { answer ->
-//                    answer.wasChooseByUser = chosenAnswersId.contains(answer.id)
-//                }
-//            }
-//        }
-//
-//        Log.d("TAG", "checked answers: " + chosenAnswersId)
-//
-//        val coursesData = getCoursesData(context, CourseDataAccessLevel.ONLY_COURSES_DATA)
-//        coursesData.forEach { course ->
-//            course.modules.forEach { module ->
-//                module.lessonTests.forEach { test ->
-//                    test.isCompleted = completedTests.any { t -> t == test }
-//                    test.questions.forEach { question ->
-//                        question.answers.forEach { answer ->
-//                            answer.wasChooseByUser = chosenAnswersId.any { a -> a == answer.id }
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//
-//
-//        val sPref = getSharedPreferences()
-//        if (sPref.contains("UNIQUE_KEY")) {
-//            sPref.edit().remove("UNIQUE_KEY").apply()
-//
-//            sPref.edit().putString(
-//                "UNIQUE_KEY", ObjectMapper().registerKotlinModule().writeValueAsString(data)
-//            ).apply()
-//        }
-//    }
 
     @Composable
     private fun CreateAnimation() {

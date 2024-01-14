@@ -2,7 +2,6 @@ package com.example.volchonok.screens
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.scaleIn
@@ -22,7 +21,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,21 +34,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.volchonok.R
-import com.example.volchonok.RemoteInfoStorage
 import com.example.volchonok.RemoteInfoStorage.setUserData
-import com.example.volchonok.data.CourseData
-import com.example.volchonok.data.TestData
-import com.example.volchonok.enums.CourseDataAccessLevel
 import com.example.volchonok.screens.vidgets.others.DefaultButton
 import com.example.volchonok.screens.vidgets.others.StylizedTextInput
-import com.example.volchonok.services.CompletedAnswersService
 import com.example.volchonok.services.UserInfoService
 import com.example.volchonok.services.enums.ServiceStringValue
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 
 class LoginScreen(
