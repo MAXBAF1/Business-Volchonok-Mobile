@@ -154,6 +154,7 @@ class SplashScreen(
                     // сохраняем джэйсоном всё локально
                     setContext(context)
                     val sPref = getSharedPreferences()
+                    Log.d("TAG", "data: " + ObjectMapper().registerKotlinModule().writeValueAsString(data[1].modules[0].lessonTests[0]))
                     sPref.edit().putString(
                         "UNIQUE_KEY", ObjectMapper().registerKotlinModule().writeValueAsString(data)
                     ).apply()

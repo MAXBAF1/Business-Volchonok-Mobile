@@ -63,12 +63,12 @@ public class RemoteInfoStorage {
                 return coursesData.size() != 0;
             }
             case MODULES_DATA -> {
-                return coursesData.stream().allMatch(c -> c.getModules().size() != 0);
+                return coursesData.stream().noneMatch(c -> c.getModules().isEmpty());
             }
             case NOTES_DATA -> {
                 if (checkCourseDataLevel(CourseDataAccessLevel.MODULES_DATA)) {
                     return coursesData.stream().allMatch(c -> c.getModules()
-                            .stream().allMatch(m -> m.getLessonNotes().size() != 0));
+                            .stream().noneMatch(m -> m.getLessonNotes().isEmpty()));
                 } else {
                     return false;
                 }
@@ -76,7 +76,7 @@ public class RemoteInfoStorage {
             case TESTS_DATA -> {
                 if (checkCourseDataLevel(CourseDataAccessLevel.MODULES_DATA)) {
                     return coursesData.stream().allMatch(c -> c.getModules()
-                            .stream().allMatch(m -> m.getLessonTests().size() != 0));
+                            .stream().noneMatch(m -> m.getLessonTests().isEmpty()));
                 } else {
                     return false;
                 }
@@ -85,7 +85,7 @@ public class RemoteInfoStorage {
                 if (checkCourseDataLevel(CourseDataAccessLevel.TESTS_DATA)) {
                     return coursesData.stream().allMatch(c -> c.getModules()
                             .stream().allMatch(m -> m.getLessonTests()
-                                    .stream().allMatch(t -> t.getQuestions().size() != 0)));
+                                    .stream().noneMatch(t -> t.getQuestions().isEmpty())));
                 } else {
                     return false;
                 }

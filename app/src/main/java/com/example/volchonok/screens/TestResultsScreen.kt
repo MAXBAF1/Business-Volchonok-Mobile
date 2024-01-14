@@ -1,5 +1,6 @@
 package com.example.volchonok.screens
 
+import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -67,6 +68,15 @@ class TestResultsScreen(
                     if (!onCompleteBtn.invoke()) return@DefaultButton
 
                     testData.isCompleted = true
+
+                    Log.d("TAG", "test res: ${testData.id} ${testData.questions.associate { q ->
+                        Pair(
+                            q.id,
+                            q.answers
+                                .filter { a -> a.wasChooseByUser }
+                                .map { a -> a.id }
+                        )
+                    }}")
 
                     ChooseAnswerService(context).execute(
                             mapOf(Pair(testData.id, Collections.emptyList())),

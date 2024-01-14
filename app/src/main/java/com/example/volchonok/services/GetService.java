@@ -34,13 +34,10 @@ public abstract class GetService<In, Out> extends AbstractService<In, Out> {
             ResponseBody responseBody = response.body();
             Map<String, Object> responseBodyAsMap = ServiceUtil.getJsonAsMap(responseBody.string());
 
-            if (response.code() == 403) return null;
+            if (response.code() == 403)
+                return null;
 
-            double responseCode = Double.parseDouble(
-                    String.valueOf(responseBodyAsMap.get(RESPONSE_STATUS_KEY.getValue()))
-            );
-
-            if (Math.abs(responseCode - 200.0) < 1e6) {
+            if (response.code() == 200) {
                 return responseBodyAsMap.get(RESPONSE_DATA_KEY.getValue()).toString();
             }
         } catch (IOException | NullPointerException e) {
