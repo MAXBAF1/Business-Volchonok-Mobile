@@ -1,5 +1,5 @@
 # Бизнес волчонок
-### Мобильное приложение для бизнес школы
+### Мобильное приложение для бизнес школы на Jetpack Compose
 
 Презентация: https://docs.google.com/presentation/d/1cS7O7Iu5gQu-Br-l4qqEWsSZ5-i98ivt/edit#slide=id.p8
 
